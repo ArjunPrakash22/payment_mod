@@ -1,0 +1,73 @@
+.register-form {
+  background: #f2f2f2;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 700px; /* Set a maximum width for better form control */
+  margin: auto; /* Center the form horizontally */
+  height: auto;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(119, 117, 117, 0.1);
+  border: 6px solid rgba(11, 3, 3, 0.3);
+}
+
+.form-container {
+  width: 100%;
+  margin: 0 auto; /* Center the form container horizontally */
+}
+
+.register-form div {
+  margin-bottom: 5px;
+}
+
+.register-label {
+  display: block;
+  margin-bottom: 1px;
+  font-weight: 700;
+  color: #070707;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; /* Slightly larger gap for better spacing */
+}
+
+.input-group-div {
+  flex: 1;
+  min-width: 180px;
+}
+
+.register-input,
+.register-select {
+  width: 100%;
+  padding: 10px; /* Slightly more padding for better readability */
+  border: 1px solid #ccc; /* More subtle border color */
+  border-radius: 5px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
+}
+
+.register-input:focus,
+.register-select:focus {
+  background: rgba(216, 211, 211, 0.9);
+  border-color: #999; /* Highlight border on focus */
+}
+
+.register-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #000;
+  color: #fff; /* Improved contrast for text */
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase; /* For a more formal look */
+}
+
+.register-btn:hover {
+  background-color: #333;
+}
