@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const app = express();
+const bcrypt = require('bcrypt');
 
 app.use(cors());
 app.use(cookieParser());
