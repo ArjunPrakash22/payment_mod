@@ -6,30 +6,34 @@ const AdminPanel = () => {
 
   const Download_hostel = async () => {
     try {
-      // Post request to fetch the PDF
-      const response = await axios.post(
-        "http://localhost:5003/api/download_hostel_receipt",
-        {},
-        {
-          responseType: "blob", // Specify responseType as 'blob' to receive binary data
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+        // Post request to fetch the PDF
+        const response = await axios.post(
+            "http://localhost:5003/api/download_hostel_receipt",
+            {},
+            {
+                responseType: "blob", // Specify responseType as 'blob' to receive binary data
+            }
+        );
 
-      // Create a link element and trigger download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `hostel_rec.pdf`; // Specify the filename
-      document.body.appendChild(a);
-      a.click();
+        // Create a URL for the blob object
+        const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      // Clean up the temporary URL
-      window.URL.revokeObjectURL(url);
-      // console.log(marksheet)
+        // Create a link element and trigger the download
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('download', 'hostel_receipt.pdf'); // Specify the filename
+        document.body.appendChild(a);
+        a.click();
+
+        // Remove the link element and clean up the temporary URL
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
     } catch (error) {
-      console.error(error);
+        console.error('Error downloading the PDF:', error);
     }
-  };
+};
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const students = [

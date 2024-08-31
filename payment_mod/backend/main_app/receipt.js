@@ -4,8 +4,6 @@ const fs = require('fs');
 const path = require('path');
 
 const Hostel_receipt = async (req, res) => {
-    let browser;  // Declare browser here so it's accessible throughout the function
-
     try {
         const studentname = "arjun";
 
@@ -13,24 +11,35 @@ const Hostel_receipt = async (req, res) => {
         const page = await browser.newPage();
 
         // Generate the HTML content using the template function
-        const htmlContent = pdftemplate({ studentname });
+        const htmlContent = pdftemplate( studentname );
 
         // Set the HTML content on the Puppeteer page
         await page.setContent(htmlContent);
 
         // Generate the PDF file
-        const pdfBuffer = await page.pdf({printBackground:true, format:'A4'});
+        const pdfPath = path.join(__dirname, 'debug.pdf');
 
-        // Set HTTP headers for download
-        const filename = `hostel_rec.pdf`;
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        // Save the PDF to the filesystem
+        await page.pdf({ path: pdfPath, format: 'A4', printBackground: true });
 
-        // Send the PDF buffer as response
-        res.send(pdfBuffer);
-
-        // Close the browser instance
         await browser.close();
+
+        // Send the PDF file to the client
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=hostel_receipt.pdf`,
+        });
+
+        // Stream the PDF file to the client
+        const fileStream = fs.createReadStream(pdfPath);
+        fileStream.pipe(res);
+
+        // Optionally delete the file after sending it
+        fileStream.on('end', () => {
+            fs.unlink(pdfPath, (err) => {
+                if (err) console.error('Error deleting PDF:', err);
+            });
+        });
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: error });
