@@ -158,9 +158,41 @@ const login=async (req, res) => {
     });
   };
 
+  const displayDashboard = async (req, res) => {
+    const studentEmail = req.body.studentEmail; // Assuming the email is passed in the request body
+  
+    try {
+      console.log(`Fetching details for student with email: ${studentEmail}`);
+  
+      // Query the database for the student's details
+      db.query(
+        "SELECT admission_no, regno, name, gender, dob, email, phone_no, aadhar_no, govt_school, course_name, batchyr, quota, clg_fees, hosteller, hostel_fees, tuition_fees, miscellaneous_fees, reason, transport_fees, exam_fees FROM students WHERE email = ?",
+        [studentEmail],
+        (err, results) => {
+          if (err) {
+            console.error('Error fetching user from MySQL:', err);
+            res.status(500).json({ error: "Error fetching user from MySQL" });
+            return;
+          }
+  
+          if (results.length > 0) {
+            console.log('Student details fetched:', results[0]);
+            res.json(results[0]);
+          } else {
+            console.log('No student found with that email.');
+            res.status(404).json({ error: "Student not found" });
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      res.status(500).json({ error: "Unexpected error occurred" });
+    }
+  };
 
 module.exports = {
     login,
     registration,
+    displayDashboard,
     db
 };

@@ -68,7 +68,9 @@ const Login = () => {
 
       if (response.data.success) {
         // Redirect to the dashboard on successful login
-        navigate('/dashboard');
+        navigate('/dashboard',{state:{key:username
+
+        }});
       } else {
         setErrorMessage('Invalid username or password');
       }
