@@ -1,43 +1,133 @@
-import React from 'react'
-import './Login.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import $ from 'jquery';
+import 'jquery-validation';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import './Login.css';
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    // jQuery script to handle form interaction and validation
+    $('.placeholder').click(function() {
+      $(this).siblings('input').focus();
+    });
+
+    $('.form-control').focus(function() {
+      $(this).parent().addClass('focused');
+    });
+
+    $('.form-control').blur(function() {
+      const $this = $(this);
+      if ($this.val().length === 0) $(this).parent().removeClass('focused');
+    });
+    $('.form-control').blur();
+
+    $.validator.setDefaults({
+      errorElement: 'span',
+      errorClass: 'validate-tooltip',
+    });
+
+    $('#formvalidate').validate({
+      rules: {
+        userName: {
+          required: true,
+          minlength: 6,
+        },
+        userPassword: {
+          required: true,
+          minlength: 6,
+        },
+      },
+      messages: {
+        userName: {
+          required: 'Please enter your username.',
+          minlength: 'Please provide a valid username.',
+        },
+        userPassword: {
+          required: 'Enter your password to Login.',
+          minlength: 'Incorrect login or password.',
+        },
+      },
+    });
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5003/api/login', {
+        username,
+        password,
+      });
+
+      if (response.data.success) {
+        // Redirect to the dashboard on successful login
+        navigate('/dashboard');
+      } else {
+        setErrorMessage('Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setErrorMessage('An error occurred. Please try again.');
+    }
+  };
+
   return (
-    <div className='login-div'>
-        <div class="logo text-center">
-  <h1>Logo</h1>
-</div>
-<div class="wrapper">
-  <div class="inner-warpper text-center">
-    <h2 class="title">Login to your account</h2>
-    <form action="" id="formvalidate">
-      <div class="input-group">
-        <label class="palceholder" for="userName">User Name</label>
-        <input class="form-control" name="userName" id="userName" type="text" placeholder="" />
-        <span class="lighting"></span>
+    <div className="login-div">
+      <div className="logo text-center">
+        <h1>Logo</h1>
       </div>
-      <div class="input-group">
-        <label class="palceholder" for="userPassword">Password</label>
-        <input class="form-control" name="userPassword" id="userPassword" type="password" placeholder="" />
-        <span class="lighting"></span>
-      </div>
+      <div className="wrapper">
+        <div className="inner-wrapper text-center">
+          <h2 className="title">Login to your account</h2>
+          <form id="formvalidate" onSubmit={handleSubmit}>
+            <div className="input-group">
+              <label className="placeholder" htmlFor="userName">User Name</label>
+              <input
+                className="form-control"
+                name="userName"
+                id="userName"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <span className="lighting"></span>
+            </div>
+            <div className="input-group">
+              <label className="placeholder" htmlFor="userPassword">Password</label>
+              <input
+                className="form-control"
+                name="userPassword"
+                id="userPassword"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span className="lighting"></span>
+            </div>
 
-      <button type="submit" id="login">Login</button>
-      <div class="clearfix supporter">
-        <div class="pull-left remember-me">
-          <input id="rememberMe" type="checkbox"/>
-          <label for="rememberMe">Remember Me</label>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+            <button type="submit" id="login">Login</button>
+            <div className="clearfix supporter">
+              <div className="pull-left remember-me">
+                <input id="rememberMe" type="checkbox" />
+                <label htmlFor="rememberMe">Remember Me</label>
+              </div>
+              {<a className="forgot pull-right" href="#">Forgot Password?</a> }
+            </div>
+          </form>
         </div>
-        <a class="forgot pull-right" href="#">Forgot Password?</a>
+        <div className="signup-wrapper text-center">
+          { <a href="#">Don't have an account? <span className="text-primary">Create One</span></a> }
+        </div>
       </div>
-    </form>
-  </div>
-  <div class="signup-wrapper text-center">
-    <a href="/register">Don't have an accout? <span class="text-primary">Create One</span></a>
-  </div>
-</div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
