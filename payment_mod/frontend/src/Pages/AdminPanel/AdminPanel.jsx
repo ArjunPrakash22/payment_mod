@@ -1,76 +1,115 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './AdminPanel.css';
-import axios from "axios";
 
 const AdminPanel = () => {
 
   const Download_hostel = async () => {
     try {
-      // Post request to fetch the PDF
-      const response = await axios.post(
-        "http://localhost:5003/api/download_hostel_receipt",
-        {},
-        {
-          responseType: "blob", // Specify responseType as 'blob' to receive binary data
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+        // Post request to fetch the PDF
+        const response = await axios.post(
+            "http://localhost:5003/api/download_hostel_receipt",
+            {},
+            {
+                responseType: "blob", // Specify responseType as 'blob' to receive binary data
+            }
+        );
 
-      // Create a link element and trigger download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `hostel_rec.pdf`; // Specify the filename
-      document.body.appendChild(a);
-      a.click();
+        // Create a URL for the blob object
+        const url = window.URL.createObjectURL(new Blob([response.data]));
 
-      // Clean up the temporary URL
-      window.URL.revokeObjectURL(url);
-      // console.log(marksheet)
+        // Create a link element and trigger the download
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('download', 'hostel_receipt.pdf'); // Specify the filename
+        document.body.appendChild(a);
+        a.click();
+
+        // Remove the link element and clean up the temporary URL
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+
     } catch (error) {
-      console.error(error);
+        console.error('Error downloading the PDF:', error);
     }
-  };
+};
 
+
+  const [students, setStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const students = [
-    {
-      name: "John Doe",
-      regNo: "123456",
-      parentName: "Jane Doe",
-      aadhar: "1234-5678-9101",
-      email: "john@example.com",
-      phone: "9876543210",
-      address: "123 Main St, City",
-      hosteller: true,
-      yearOfStudy: "3rd Year",
-      batch: "2021-2025",
-      hostelFees: "50000",
-      collegeFees: "200000",
-      tuitionFees: "100000",
-      otherFees: "15000",
-      status: "Paid"
-    },
-  
-  ];
+  const [editStudent, setEditStudent] = useState(null);
+  const [formData, setFormData] = useState({});
+const navigate = useNavigate();
 
+const handleTuitionPayNowClick = (student) => {
+  navigate('/tuition-fees', { state: { student } });
+};
+const handleHostelPayNowClick = (student) => {
+  navigate('/hostel-fees', { state: { student } });
+};
+const handleOtherPayNowClick = (student) => {
+  navigate('/other-fees', { state: { student } });
+};
+const handleCollegePayNowClick = (student) => {
+  navigate('/college-fees', { state: { student } });
+};
+
+
+  useEffect(() => {
+    axios.get('http://localhost:5003/api/students')
+      .then(response => {
+        setStudents(response.data);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the data!", error);
+      });
+  }, []);
 
   const filteredStudents = students.filter(student => 
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.regNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.parentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.aadhar.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.yearOfStudy.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.batch.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.status.toLowerCase().includes(searchTerm.toLowerCase())
+    student.regNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEditClick = (student) => {
+    setEditStudent(student);
+    setFormData({ ...student });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("inside handle submit");
+    console.log('Submitting form data:', formData);
+    axios.put(`http://localhost:5003/api/students/${formData.regNo}`, formData)
+      .then(response => {
+        console.log('Update successful:', response.data);
+    
+        axios.get('http://localhost:5003/api/students')
+          .then(response => {
+            console.log('Fetched updated data:', response.data);
+            setStudents(response.data);
+          })
+          .catch(error => {
+            console.error("There was an error fetching the data!", error);
+          });
+  
+        setEditStudent(null);
+      })
+      .catch(error => {
+        console.error("There was an error updating the data!", error);
+      });
+  };
 
   return (
     <div className="admin-panel">
-      <h1>Student Information</h1>
-      <button className='download-btn' onClick={Download_hostel}>Download</button>
+      <h1 className='h1'>Student Information</h1>
+
       <input
         type="text"
         placeholder="Search..."
@@ -78,59 +117,236 @@ const AdminPanel = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="search-input"
       />
-      
-      
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Reg No</th>
-            <th>Parent Name</th>
-            <th>Aadhar Number</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Address</th>
-            <th>Hosteller/Dayscholar</th>
-            <th>Year of Study</th>
-            <th>Batch</th>
-            <th>Hostel Fees</th>
-            <th>College Fees</th>
-            <th>Tuition Fees</th>
-            <th>Other Fees</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredStudents.length > 0 ? (
-            filteredStudents.map((student, index) => (
-              <tr key={index}>
-                <td>{student.name}</td>
-                <td>{student.regNo}</td>
-                <td>{student.parentName}</td>
-                <td>{student.aadhar}</td>
-                <td>{student.email}</td>
-                <td>{student.phone}</td>
-                <td>{student.address}</td>
-                <td>{student.hosteller ? "Hosteller" : "Dayscholar"}</td>
-                <td>{student.yearOfStudy}</td>
-                <td>{student.batch}</td>
-                <td>{student.hosteller ? student.hostelFees : "N/A"}</td>
-                <td>{student.collegeFees}</td>
-                <td>{student.tuitionFees}</td>
-                <td>{student.otherFees}</td>
-                <td>{student.status}</td>
+
+      <div className="content-container">
+        <div className="table-container">
+          <table className='table'>
+            <thead className='thead'>
+              <tr className="tr">
+                <th className='th'>Name</th>
+                <th className='th'>Reg No</th>
+                <th className='th'>Parent Name</th>
+                <th className='th'>Aadhar Number</th>
+                <th className='th'>Email</th>
+                <th className='th'>Phone Number</th>
+                <th className='th'>Address</th>
+                <th className='th'>Hosteller/Dayscholar</th>
+                <th className='th'>Year of Study</th>
+                <th className='th'>Batch</th>
+                <th className='th'>Hostel Fees</th>
+                <th className='th'>College Fees</th>
+                <th className='th'>Tuition Fees</th>
+                <th className='th'>Other Fees</th>
+                <th className='th'>Status</th>
+                <th className='th'>Edit</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="15" className="no-data">No matching records found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      
+            </thead>
+            <tbody>
+              {filteredStudents.length > 0 ? (
+                filteredStudents.map((student, index) => (
+                  <tr className="tr" key={index}>
+                    <td className="td">{student.name}</td>
+                    <td className="td">{student.regNo}</td>
+                    <td className="td">{student.parentName}</td>
+                    <td className="td">{student.aadhar}</td>
+                    <td className="td">{student.email}</td>
+                    <td className="td">{student.phone}</td>
+                    <td className="td">{student.address}</td>
+                    <td className="td">{student.hosteller ? "Hosteller" : "Dayscholar"}</td>
+                    <td className="td">{student.yearOfStudy}</td>
+                    <td className="td">{student.batch}</td>
+                    <td className="td">{student.hosteller ? student.hostelFees : "N/A"}
+                    <Link to="/hostel-fees" state={{ student }}><button onClick={() => handleHostelPayNowClick(student)}>Pay Now</button></Link>
+                    </td>
+                    <td className="td">{student.collegeFees}
+                    <Link to="/college-fees" state={{ student }}><button onClick={() => handleCollegePayNowClick(student)}>Pay Now</button></Link>
+                    </td>
+                    <td className="td">{student.tuitionFees}
+                    <Link to="/tuition-fees" state={{ student }}><button onClick={() => handleTuitionPayNowClick(student)}>Pay Now</button></Link>
+                    </td>
+                    <td className="td">{student.otherFees}
+                    <Link to="/other-fees" state={{ student }}><button onClick={() => handleOtherPayNowClick(student)}>Pay Now</button></Link>
+                    </td>
+                    <td className="td">{student.status}</td>
+                    <td className="td">
+                      <button onClick={() => handleEditClick(student)}>Edit</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="16" className="no-data">No matching records found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {editStudent && (
+          <div className="edit-section">
+            <div className="edit-form">
+              <h2>Edit Student Information</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Name:</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Reg No:</label>
+                    <input
+                      type="text"
+                      name="regNo"
+                      value={formData.regNo || ''}
+                      onChange={handleChange}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Parent Name:</label>
+                    <input
+                      type="text"
+                      name="parentName"
+                      value={formData.parentName || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Aadhar Number:</label>
+                    <input
+                      type="text"
+                      name="aadhar"
+                      value={formData.aadhar || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Email:</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number:</label>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={formData.phone || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Address:</label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Hosteller:</label>
+                    <input
+                      type="checkbox"
+                      name="hosteller"
+                      checked={formData.hosteller || false}
+                      onChange={e => setFormData({ ...formData, hosteller: e.target.checked })}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Year of Study:</label>
+                    <input
+                      type="text"
+                      name="yearOfStudy"
+                      value={formData.yearOfStudy || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Batch:</label>
+                    <input
+                      type="text"
+                      name="batch"
+                      value={formData.batch || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Hostel Fees:</label>
+                    <input
+                      type="number"
+                      name="hostelFees"
+                      value={formData.hostelFees || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>College Fees:</label>
+                    <input
+                      type="number"
+                      name="collegeFees"
+                      value={formData.collegeFees || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Tuition Fees:</label>
+                    <input
+                      type="number"
+                      name="tuitionFees"
+                      value={formData.tuitionFees || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Other Fees:</label>
+                    <input
+                      type="number"
+                      name="otherFees"
+                      value={formData.otherFees || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Status:</label>
+                    <input
+                      type="text"
+                      name="status"
+                      value={formData.status || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <button className='button' type="submit">Update</button>
+                <button className='button' type="button" onClick={() => setEditStudent(null)}>Cancel</button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default AdminPanel;

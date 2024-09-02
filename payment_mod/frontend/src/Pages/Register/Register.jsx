@@ -1,54 +1,55 @@
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
-import { Helmet } from 'react-helmet';
 import './Register.css';
+import clglogo from '../../Assets/pictures/logo.png';
 
 const Register = () => {
     const [errors, setErrors] = useState({});
     const studentNameRef = useRef(null);
-    const counsellingCodeRef = useRef(null);
+    const regnoRef = useRef(null);
+    const genderRef = useRef(null);
     const dateOfBirthRef = useRef(null);
-    const communityRef = useRef(null);
+    const emailRef = useRef(null);
+    const phoneNumberRef = useRef(null);
+    const aadharNoRef = useRef(null);
+    const govtSchoolRef = useRef(null);
     const courseNameRef = useRef(null);
     const batchYearRef = useRef(null);
-    const phoneNumberRef = useRef(null);
-    const emailRef = useRef(null);
+    const quotaRef = useRef(null);
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
-    // const photoRef = useRef(null);
+    const hostellerRef=useRef(null);
 
     const validateForm = () => {
         let validationErrors = {};
 
         const studentName = studentNameRef.current.value;
-        const counsellingCode = counsellingCodeRef.current.value;
+        const regno = regnoRef.current.value;
+        const gender = genderRef.current.value;
         const dateOfBirth = dateOfBirthRef.current.value;
-        const community = communityRef.current.value;
+        const email = emailRef.current.value;
+        const phoneNumber = phoneNumberRef.current.value;
+        const aadharNo = aadharNoRef.current.value;
+        const govtSchool = govtSchoolRef.current.value;
+        const hosteller = hostellerRef.current.value;
         const courseName = courseNameRef.current.value;
         const batchYear = batchYearRef.current.value;
-        const phoneNumber = phoneNumberRef.current.value;
-        const email = emailRef.current.value;
+        const quota = quotaRef.current.value;
         const password = passwordRef.current.value;
         const confirmPassword = confirmPasswordRef.current.value;
 
         // Validate required fields
         if (!studentName) validationErrors.studentName = "Student name is required";
-        if (!counsellingCode) validationErrors.counsellingCode = "Counselling code is required";
+        if (!gender) validationErrors.gender = "Gender is required";
         if (!dateOfBirth) validationErrors.dateOfBirth = "Date of birth is required";
         if (!email) validationErrors.email = "Email is required";
+        if (!phoneNumber) validationErrors.phoneNumber = "Phone number is required";
+        if (!aadharNo) validationErrors.aadharNo = "Aadhar number is required";
+        if (!courseName) validationErrors.courseName = "Course name is required";
+        if (!batchYear) validationErrors.batchYear = "Batch year is required";
+        if (!quota) validationErrors.quota = "Quota is required";
         if (!password) validationErrors.password = "Password is required";
         if (!confirmPassword) validationErrors.confirmPassword = "Confirm your password";
-
-    // Validate phone number length
-    if (phoneNumber && phoneNumber.length !== 10) {
-      validationErrors.phoneNumber = "Phone number must be exactly 10 digits";
-    }
-
-        // Validate names to allow only alphabets and spaces
-        const namePattern = /^[A-Za-z\s]+$/;
-        if (studentName && !namePattern.test(studentName)) {
-            validationErrors.studentName = "Student name must contain only alphabets";
-        }
 
         // Validate email
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,7 +60,7 @@ const Register = () => {
         // Validate password strength
         const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/;
         if (password && !passwordPattern.test(password)) {
-            validationErrors.password = "Password must be at least 8 characters long and contain both letters and numbers";
+            validationErrors.password = "Password must be at least 8 characters long and contain letters, numbers, and special characters";
         }
 
         // Validate password confirmation
@@ -80,29 +81,29 @@ const Register = () => {
             // Clear errors
             setErrors({});
 
-            const formData = new FormData();
-            formData.append('counseling_code', counsellingCodeRef.current.value);
-            formData.append('student_name', studentNameRef.current.value);
-            formData.append('date_of_birth', dateOfBirthRef.current.value);
-            formData.append('community', communityRef.current.value);
-            formData.append('course_name', courseNameRef.current.value);
-            formData.append('batch_year', batchYearRef.current.value);
-            formData.append('phone_number', phoneNumberRef.current.value);
-            formData.append('email_id', emailRef.current.value);
-            formData.append('password', passwordRef.current.value);
-            // Uncomment if photo upload is needed
-            // formData.append('photo', photoRef.current.files[0]);
-            for (const [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
+            const registrationData = {
+                regno: regnoRef.current.value,
+                student_name: studentNameRef.current.value,
+                gender: genderRef.current.value,
+                dob: dateOfBirthRef.current.value,
+                email_id: emailRef.current.value,
+                phone_number: phoneNumberRef.current.value,
+                aadhar_no: aadharNoRef.current.value,
+                govt_school: govtSchoolRef.current.value,
+                hosteller: hostellerRef.current.value,
+                course_name: courseNameRef.current.value,
+                batch_year: batchYearRef.current.value,
+                quota: quotaRef.current.value,
+                password: passwordRef.current.value,
+            };
 
             try {
-                const response = await axios.post('http://localhost:5003/api/register', formData, {
+                const response = await axios.post('http://localhost:5003/api/register', registrationData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type': 'application/json',
                     },
                 });
-            
+
                 if (response.status === 200) {
                     alert(response.data.message || "Registration successful!");
                 } else {
@@ -117,25 +118,51 @@ const Register = () => {
 
     return (
         <div className="form-container">
-            
+            <div className="logo text-center">
+                <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+            </div>
             <form onSubmit={handleSubmit} className='register-form'>
-            <h1>Registration Form</h1>
-                {/* Form fields with validation errors displayed */}
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>First Name:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="text"
-                            ref={studentNameRef}
-                            placeholder="Enter your first name"
-                        />
-                        {errors.studentName && <p className="error">{errors.studentName}</p>}
-                    </div>
+                <h1 className='h1'>REGISTER HERE</h1>
+
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="text"
+                        ref={regnoRef}
+                        placeholder="Enter registration number"
+                    />
                 </div>
 
-                <div>
-                    {/* <h4><label className='register-label'>Email:</label></h4> */}
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="text"
+                        ref={studentNameRef}
+                        placeholder="Enter your full name"
+                    />
+                    {errors.studentName && <p className="error">{errors.studentName}</p>}
+                </div>
+
+                <div className="input-group-div">
+                    <select className="register-select" ref={genderRef}>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    {errors.gender && <p className="error">{errors.gender}</p>}
+                </div>
+
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="date"
+                        ref={dateOfBirthRef}
+                    />
+                    {errors.dateOfBirth && <p className="error">{errors.dateOfBirth}</p>}
+                </div>
+
+                <div className="input-group-div">
                     <input
                         className="register-input"
                         type="email"
@@ -145,102 +172,87 @@ const Register = () => {
                     {errors.email && <p className="error">{errors.email}</p>}
                 </div>
 
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Password:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="password"
-                            ref={passwordRef}
-                            placeholder="Enter your password"
-                        />
-                        {errors.password && <p className="error">{errors.password}</p>}
-                    </div>
-
-                    <div>
-                        {/* <h4><label className='register-label'>Confirm Password:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="password"
-                            ref={confirmPasswordRef}
-                            placeholder="Confirm your password"
-                        />
-                        {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
-                    </div>
-                </div>
-
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Counselling Code:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="text"
-                            ref={counsellingCodeRef}
-                            placeholder="Enter counselling code"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    {/* <h4><label className='register-label'>Date of Birth:</label></h4> */}
+                <div className="input-group-div">
                     <input
                         className="register-input"
-                        type="date"
-                        ref={dateOfBirthRef}
+                        type="text"
+                        ref={phoneNumberRef}
+                        placeholder="Enter your phone number"
+                    />
+                    {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
+                </div>
+
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="text"
+                        ref={aadharNoRef}
+                        placeholder="Enter Aadhar number"
+                    />
+                    {errors.aadharNo && <p className="error">{errors.aadharNo}</p>}
+                </div>
+
+                <div className="input-group-div">
+                    <select className="register-select" ref={govtSchoolRef}>
+                        <option value="">Attended Government School?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div className="input-group-div">
+                    <select className="register-select" ref={hostellerRef}>
+                        <option value="">Hosteller?</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div className="input-group-div">
+                    <select className="register-select" ref={courseNameRef}>
+                        <option value="">Select Course</option>
+                        <option value="B.S.M.S">B.S.M.S</option>
+                    </select>
+                </div>
+
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="text"
+                        ref={batchYearRef}
+                        placeholder="Enter batch year"
                     />
                 </div>
 
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Community:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="text"
-                            ref={communityRef}
-                            placeholder="Enter community"
-                        />
-                    </div>
+                <div className="input-group-div">
+                    <select className="register-select" ref={quotaRef}>
+                        <option value="">Select Quota</option>
+                        <option value="Govt">Govt</option>
+                        <option value="Management">Management</option>
+                    </select>
                 </div>
 
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Course Name:</label></h4> */}
-                        <select
-                            className='register-select'
-                            ref={courseNameRef}
-                        >
-                            <option value="">Select Course</option>
-                            <option value="B.S.M.S">B.S.M.S</option>
-                        </select>
-                    </div>
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="password"
+                        ref={passwordRef}
+                        placeholder="Enter your password"
+                    />
+                    {errors.password && <p className="error">{errors.password}</p>}
                 </div>
 
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Batch Year:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="text"
-                            ref={batchYearRef}
-                            placeholder="Enter batch year"
-                        />
-                    </div>
+                <div className="input-group-div">
+                    <input
+                        className="register-input"
+                        type="password"
+                        ref={confirmPasswordRef}
+                        placeholder="Confirm your password"
+                    />
+                    {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
                 </div>
 
-                <div className="input-group-register">
-                    <div className="input-group-div">
-                        {/* <h4><label className='register-label'>Phone Number:</label></h4> */}
-                        <input
-                            className="register-input"
-                            type="text"
-                            ref={phoneNumberRef}
-                            placeholder="Enter phone number"
-                        />
-                        {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
-                    </div>
-                </div>
-
-                <button className="register-button" type="submit">Register</button>
+                <button className="button-login register" type="submit">Register</button>
             </form>
             <div>
                 <p className='login-p'>Already registered? <a className='login-a' href='/'>Sign in</a></p>

@@ -4,6 +4,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './Login.css';
+import clglogo from '../../Assets/pictures/logo.png'
 
 
 const Login = () => {
@@ -80,11 +81,11 @@ const Login = () => {
   return (
     <div className="login-div">
       <div className="logo text-center">
-        <h1>Logo</h1>
+        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
       </div>
       <div className="wrapper">
         <div className="inner-wrapper text-center">
-          <h2 className="title">Login to your account</h2>
+          <h2 className="title  h1">WELCOME</h2>
           <form id="formvalidate" onSubmit={handleSubmit}>
             <div className="input-group">
               <label className="placeholder" htmlFor="userName">User Name</label>
@@ -113,7 +114,7 @@ const Login = () => {
 
             {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-            <button type="submit" id="login">Login</button>
+            <button className='button-login' type="submit" id="login">Login</button>
             <div className="clearfix supporter">
               <div className="pull-left remember-me">
                 <input id="rememberMe" type="checkbox" />
@@ -124,7 +125,7 @@ const Login = () => {
           </form>
         </div>
         <div className="signup-wrapper text-center">
-          { <a href="#">Don't have an account? <span className="text-primary">Create One</span></a> }
+          { <a href="/register">Don't have an account? <span className="text-primary">Create One</span></a> }
         </div>
       </div>
     </div>
