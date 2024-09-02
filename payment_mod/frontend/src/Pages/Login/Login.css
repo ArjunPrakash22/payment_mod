@@ -1,6 +1,11 @@
 body {
   background: #f2f2f2;
 }
+.clg-logo{
+  width: 300px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 .animate {
   -webkit-transition: all 0.3s linear;
   transition: all 0.3s linear;
@@ -56,9 +61,9 @@ input:-webkit-autofill {
 input[type="checkbox"] {
   width: auto;
 }
-button {
+.button-login {
   cursor: pointer;
-  background:   #17a462;
+  background:   #078a4d;
   width: 100%;
   border: 0;
   padding: 10px 15px;
@@ -143,7 +148,7 @@ span.validate-tooltip {
   min-height: 200px;
   border: 1px solid #f3f3f3;
 }
-.wrapper .inner-warpper {
+.wrapper .inner-wrapper {
   padding: 50px 30px 60px;
   box-shadow: 1px 1.732px 10px 0px rgba(0, 0, 0, 0.063);
 }
@@ -180,6 +185,7 @@ span.validate-tooltip {
 .wrapper .signup-wrapper a:hover {
   text-decoration: underline;
 }
+
 @-webkit-keyframes tooltipanimation {
   from {
     margin-top: -28px;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Dashboard.css';
+import clglogo from '../../Assets/pictures/logo.png'
 
 const Dashboard = () => {
   const [student, setStudent] = useState({
@@ -42,7 +43,11 @@ const Dashboard = () => {
   };
 
   return (
+    
     <div className="dashboard">
+      <div className="logo text-center">
+        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+      </div>
       <h2>Student Dashboard</h2>
       <div className="student-info">
         <p><strong>Name:</strong> {student.name}</p>

@@ -58,7 +58,7 @@ const handleCollegePayNowClick = (student) => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/students')
+    axios.get('http://localhost:5003/api/students')
       .then(response => {
         setStudents(response.data);
       })
@@ -86,11 +86,11 @@ const handleCollegePayNowClick = (student) => {
     e.preventDefault();
     console.log("inside handle submit");
     console.log('Submitting form data:', formData);
-    axios.put(`http://localhost:5000/api/students/${formData.regNo}`, formData)
+    axios.put(`http://localhost:5003/api/students/${formData.regNo}`, formData)
       .then(response => {
         console.log('Update successful:', response.data);
     
-        axios.get('http://localhost:5000/api/students')
+        axios.get('http://localhost:5003/api/students')
           .then(response => {
             console.log('Fetched updated data:', response.data);
             setStudents(response.data);
@@ -108,7 +108,7 @@ const handleCollegePayNowClick = (student) => {
 
   return (
     <div className="admin-panel">
-      <h1>Student Information</h1>
+      <h1 className='h1'>Student Information</h1>
 
       <input
         type="text"
@@ -120,55 +120,55 @@ const handleCollegePayNowClick = (student) => {
 
       <div className="content-container">
         <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Reg No</th>
-                <th>Parent Name</th>
-                <th>Aadhar Number</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Address</th>
-                <th>Hosteller/Dayscholar</th>
-                <th>Year of Study</th>
-                <th>Batch</th>
-                <th>Hostel Fees</th>
-                <th>College Fees</th>
-                <th>Tuition Fees</th>
-                <th>Other Fees</th>
-                <th>Status</th>
-                <th>Edit</th>
+          <table className='table'>
+            <thead className='thead'>
+              <tr className="tr">
+                <th className='th'>Name</th>
+                <th className='th'>Reg No</th>
+                <th className='th'>Parent Name</th>
+                <th className='th'>Aadhar Number</th>
+                <th className='th'>Email</th>
+                <th className='th'>Phone Number</th>
+                <th className='th'>Address</th>
+                <th className='th'>Hosteller/Dayscholar</th>
+                <th className='th'>Year of Study</th>
+                <th className='th'>Batch</th>
+                <th className='th'>Hostel Fees</th>
+                <th className='th'>College Fees</th>
+                <th className='th'>Tuition Fees</th>
+                <th className='th'>Other Fees</th>
+                <th className='th'>Status</th>
+                <th className='th'>Edit</th>
               </tr>
             </thead>
             <tbody>
               {filteredStudents.length > 0 ? (
                 filteredStudents.map((student, index) => (
-                  <tr key={index}>
-                    <td>{student.name}</td>
-                    <td>{student.regNo}</td>
-                    <td>{student.parentName}</td>
-                    <td>{student.aadhar}</td>
-                    <td>{student.email}</td>
-                    <td>{student.phone}</td>
-                    <td>{student.address}</td>
-                    <td>{student.hosteller ? "Hosteller" : "Dayscholar"}</td>
-                    <td>{student.yearOfStudy}</td>
-                    <td>{student.batch}</td>
-                    <td>{student.hosteller ? student.hostelFees : "N/A"}
+                  <tr className="tr" key={index}>
+                    <td className="td">{student.name}</td>
+                    <td className="td">{student.regNo}</td>
+                    <td className="td">{student.parentName}</td>
+                    <td className="td">{student.aadhar}</td>
+                    <td className="td">{student.email}</td>
+                    <td className="td">{student.phone}</td>
+                    <td className="td">{student.address}</td>
+                    <td className="td">{student.hosteller ? "Hosteller" : "Dayscholar"}</td>
+                    <td className="td">{student.yearOfStudy}</td>
+                    <td className="td">{student.batch}</td>
+                    <td className="td">{student.hosteller ? student.hostelFees : "N/A"}
                     <Link to="/hostel-fees" state={{ student }}><button onClick={() => handleHostelPayNowClick(student)}>Pay Now</button></Link>
                     </td>
-                    <td>{student.collegeFees}
+                    <td className="td">{student.collegeFees}
                     <Link to="/college-fees" state={{ student }}><button onClick={() => handleCollegePayNowClick(student)}>Pay Now</button></Link>
                     </td>
-                    <td>{student.tuitionFees}
+                    <td className="td">{student.tuitionFees}
                     <Link to="/tuition-fees" state={{ student }}><button onClick={() => handleTuitionPayNowClick(student)}>Pay Now</button></Link>
                     </td>
-                    <td>{student.otherFees}
+                    <td className="td">{student.otherFees}
                     <Link to="/other-fees" state={{ student }}><button onClick={() => handleOtherPayNowClick(student)}>Pay Now</button></Link>
                     </td>
-                    <td>{student.status}</td>
-                    <td>
+                    <td className="td">{student.status}</td>
+                    <td className="td">
                       <button onClick={() => handleEditClick(student)}>Edit</button>
                     </td>
                   </tr>
@@ -338,8 +338,8 @@ const handleCollegePayNowClick = (student) => {
                     />
                   </div>
                 </div>
-                <button type="submit">Update</button>
-                <button type="button" onClick={() => setEditStudent(null)}>Cancel</button>
+                <button className='button' type="submit">Update</button>
+                <button className='button' type="button" onClick={() => setEditStudent(null)}>Cancel</button>
               </form>
             </div>
           </div>

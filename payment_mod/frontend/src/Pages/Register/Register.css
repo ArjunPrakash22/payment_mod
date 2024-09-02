@@ -3,15 +3,15 @@
 .register-form {
   background: white;
   border-radius: 10px;
-  padding: 20px;
+  padding: 30px;
   width: 100%;
-  max-width: 700px; /* Set a maximum width for better form control */
+ max-width: 700px; /* Set a maximum width for better form control */
   margin: auto; /* Center the form horizontally */
   height: auto;
   overflow-y: auto;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 30px rgba(119, 117, 117, 0.1);
-  border: 6px solid rgba(11, 3, 3, 0.3);
+  /* border: 6px solid rgba(11, 3, 3, 0.3); */
 }
 
 .form-container {
@@ -20,14 +20,16 @@
 }
 
 .register-form div {
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
 }
 
-.input-group {
-  display: flex;
+.input-group-div {
+  padding: 20px;
+  /* display: flex;
   flex-wrap: wrap;
-  gap: 35px; /* Slightly larger gap for better spacing */
+  gap: 35px; */
 }
+
 .form-container h1{
   color: #078a4d
 }
@@ -36,7 +38,7 @@
 .register-select {
   width: 100%;
   padding: 10px; /* Slightly more padding for better readability */
-  margin: 10px 0; /* Adjusted margin for better spacing */
+  /*margin: 10px 0; /* Adjusted margin for better spacing */
   border: 1px solid #ccc; /* More subtle border color */
   border-radius: 5px;
   outline: none;
@@ -51,12 +53,16 @@
 }
 
 .register-button {
-  width: 100%;
+  width: 50%;
   padding: 10px;
   margin-top: 15px;
-  border-radius: 5px;
+  /* border-radius: 5px; */
   background-color: #078a4d;
   font-weight: bold;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
 .login-p {
@@ -94,5 +100,14 @@
   .input-group-div {
     flex: 1;
     min-width: 0; /* Allow flexibility in width */
+  }
+}
+
+@media (max-width:360px){
+  .input-group-div {
+    padding: 10px;
+    /* display: flex;
+    flex-wrap: wrap;
+    gap: 35px; */
   }
 }

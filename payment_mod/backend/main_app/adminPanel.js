@@ -1,27 +1,6 @@
-const express = require('express');
-const mysql = require('mysql');
-const cors = require('cors');
-const app = express();
-app.use(cors()); 
-app.use(express.json()); 
+const db=require('./db');
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', 
-  password: '', 
-  database: 'studentdetails' 
-});
-
-db.connect(err => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-    return;
-  }
-  console.log('Connected to MySQL');
-});
-
-
-app.get('/api/students', (req, res) => {
+const getStudents = (req, res) => {
   const sqlQuery = 'SELECT * FROM student';
   db.query(sqlQuery, (err, result) => {
     if (err) {
@@ -31,13 +10,11 @@ app.get('/api/students', (req, res) => {
       res.json(result);
     }
   });
-});
+};
 
-
-app.put('/api/students/:regNo', (req, res) => {
+const updateStudent = (req, res) => {
   const regNo = req.params.regNo;
   const updatedData = req.body;
-
 
   console.log('Received data for update:', updatedData);
 
@@ -50,9 +27,9 @@ app.put('/api/students/:regNo', (req, res) => {
       res.json(results);
     }
   });
-});
+};
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports={
+  getStudents,
+  updateStudent
+}

@@ -5,7 +5,7 @@ const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'paymentdb'
+    database: 'payment_db'
 });
 
 db.connect(err => {
@@ -16,38 +16,108 @@ db.connect(err => {
     console.log('Connected to the database');
 });
 
-function insertRegistrationData(data) {
-    const sqlInsert = `INSERT INTO students_registration (
-        counseling_code, email_id, student_name, date_of_birth,
-        community, course_name, phone_number, batch_year
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-     const sqlinsert= `Insert into users (username,password) values (?,?)`;
 
-    return new Promise((resolve, reject) => {
-        db.query(sqlInsert, [
-            data.counseling_code, data.email_id, data.student_name, data.date_of_birth,
-            data.community, data.course_name, data.phone_number, data.batch_year
-        ], (err, result) => {
+const multer = require("multer");
+const { hashPassword } = require("./hashing");
+
+const upload = multer(); // Add multer for handling file uploads
+
+const registration = async (req, res) => {
+  console.log("inside /register");
+  const {
+    regno,
+    student_name,
+    gender,
+    dob,
+    email_id,
+    phone_number,
+    aadhar_no,
+    govt_school,
+    hosteller,
+    course_name,
+    batch_year,
+    quota,
+    password,
+  } = req.body;
+
+  // Validate required fields
+  if (
+    !hosteller ||
+    !email_id ||
+    !password ||
+    !student_name ||
+    !dob ||
+    !aadhar_no ||
+    !course_name ||
+    !govt_school ||
+    !phone_number ||
+    !batch_year ||
+    !quota ||
+    !gender
+  ) {
+    return res.status(400).json({ message: "Required fields are missing" });
+  }
+
+  try {
+    // Hash the password
+    const hashedPassword = await hashPassword(password);
+
+    // Insert into students_registration table
+    db.query(
+      `INSERT INTO students (
+        regno,
+        name,
+        gender,
+        dob,
+        email,
+        phone_no,
+        aadhar_no,
+        govt_school,
+        hosteller,
+        course_name,
+        batchyr,
+        quota
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [
+        regno,
+        student_name,
+        gender,
+        dob,
+        email_id,
+        phone_number,
+        aadhar_no,
+        govt_school,
+        hosteller,
+        course_name,
+        batch_year,
+        quota
+      ],
+      (err, result) => {
+        if (err) {
+          console.error('Error inserting data into students:', err);
+          return res.status(500).json({ message: 'Registration failed', error: err.message });
+        }
+
+        // Insert into users table
+        db.query(
+          `INSERT INTO users (email, password) VALUES (?, ?)`,
+          [email_id, hashedPassword],
+          (err, result) => {
             if (err) {
-                console.error('Error inserting data:', err);
-                reject({ message: 'Error inserting data', error: err });
-            } else {
-                resolve('Registration successful');
+              console.error('Error inserting data into users:', err);
+              return res.status(500).json({ message: 'Registration failed', error: err.message });
             }
-        });
-        db.query(sqlinsert,[
-            data.email_id,
-            data.password
-        ], (err, result) => {
-            if (err) {
-                console.error('Error inserting data:', err);
-                reject({ message: 'Error inserting data', error: err });
-            } else {
-                resolve('Registration successful');
-            }
-    });
-    });
-}
+
+            res.status(200).json({ message: 'Registration successful' });
+          }
+        );
+      }
+    );
+  } catch (error) {
+    console.error("Error during registration:", error);
+    res.status(500).json({ message: "Registration failed", error: error.message });
+  }
+};
 
 const login=async (req, res) => {
   
@@ -89,6 +159,7 @@ const login=async (req, res) => {
 
 
 module.exports = {
-    insertRegistrationData,
-    login
+    login,
+    registration,
+    db
 };
