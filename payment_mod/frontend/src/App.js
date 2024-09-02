@@ -5,6 +5,7 @@ import { Login,
   Register,
   Dashboard,
 AdminPanel } from "./Pages";
+import Footer from './Footer';
 
 function App() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function App() {
         <Route path="/admin" element={<AdminPanel />} /> 
         <Route path="/dashboard" element={<Dashboard/>}/>
       </Routes>
+      <Footer/>
     </div>
   );
 }
