@@ -122,10 +122,11 @@ const registration = async (req, res) => {
 const login=async (req, res) => {
   
     const { username, password } = req.body;
+    console.log("login inside");
     console.log(req.body);
   
     // Check if the user exists in the database
-    db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
+    db.query("SELECT * FROM users WHERE email = ?", [username], (err, results) => {
       if (err) {
         res.status(500).json({ error: "Error fetching user from MySQL" });
         return;
