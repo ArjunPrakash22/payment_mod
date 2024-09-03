@@ -1,3 +1,4 @@
+/* Dashboard container styling */
 .dashboard {
   max-width: 1200px;
   margin: 40px auto;
@@ -7,74 +8,85 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading Styles */
-.dashboard h2 {
+/* Logo styling */
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  max-width: 150px;
+}
+
+/* Heading styling */
+h2 {
   font-size: 2rem;
   color: #17a462;
   margin-bottom: 20px;
   border-bottom: 2px solid #17a462;
   padding-bottom: 10px;
+  text-align: center;
 }
 
-.dashboard h3 {
-  font-size: 1.5rem;
-  margin-top: 30px;
-  color: #495057;
-}
-
-.dashboard h4 {
-  font-size: 1.25rem;
-  margin-top: 20px;
-  color: #343a40;
-}
-
-/* Student Info Section */
+/* Student info section styling */
 .student-info {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   margin-bottom: 30px;
 }
 
+/* Responsive grid settings */
+@media (min-width: 1024px) {
+  .student-info {
+    grid-template-columns: repeat(3, 1fr); /* 3 items in a row for laptop view */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .student-info {
+    grid-template-columns: repeat(2, 1fr); /* 2 items in a row for tablet view */
+  }
+}
+
+@media (max-width: 767px) {
+  .student-info {
+    grid-template-columns: 1fr; /* 1 item in a row for mobile view */
+  }
+}
+
+/* Student info items */
 .student-info p {
   font-size: 1rem;
   background-color: #e9ecef;
   padding: 15px;
   border-radius: 5px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
+/* Strong text highlighting */
 .student-info p strong {
   color: #495057;
 }
 
-/* Fees Section */
+/* Fees section styling */
 .fees-section {
   margin-top: 20px;
 }
 
-.fee-option {
+/* Fees section text */
+.fees-section p {
+  font-size: 1rem;
   margin-bottom: 10px;
+  text-align: center;
 }
 
-.fee-option input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.add-fee input {
-  width: calc(50% - 12px);
+/* Pay now button styling */
+.pay-now-button {
+  width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ced4da;
-  border-radius: 5px;
   font-size: 1rem;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.add-fee button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #17a462;
+  background-color:#17a462;
   color: white;
   border: none;
   border-radius: 5px;
@@ -82,19 +94,7 @@
   transition: background-color 0.3s;
 }
 
-.add-fee button:hover {
-  background-color: #0056b3;
-}
-
-.selected-fees ul {
-  list-style: none;
-  padding: 0;
-}
-
-.selected-fees ul li {
-  padding: 10px;
-  background-color: #e9ecef;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* Pay now button hover effect */
+.pay-now-button:hover {
+  background-color: #17a462;
 }
