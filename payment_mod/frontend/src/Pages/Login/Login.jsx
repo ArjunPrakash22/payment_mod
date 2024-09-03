@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './Login.css';
 import clglogo from '../../Assets/pictures/logo.png'
 
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -67,7 +68,9 @@ const Login = () => {
 
       if (response.data.success) {
         // Redirect to the dashboard on successful login
-        navigate('/dashboard');
+        navigate('/dashboard',{state:{key:username
+
+        }});
       } else {
         setErrorMessage('Invalid username or password');
       }

@@ -10,6 +10,7 @@ import HostelFeesPage from "./Pages/AdminPanel/HostelFeesPage";
 import CollegeFeesPage from "./Pages/AdminPanel/CollegeFeesPage"; 
 import OtherFeesPage from "./Pages/AdminPanel/OtherFeesPage"; 
 
+import Footer from './Footer';
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function App() {
         <Route path="/college-fees" element={<CollegeFeesPage />}/>
         <Route path="/other-fees" element={<OtherFeesPage />}/>
       </Routes>
+      <Footer/>
     </div>
   );
 }
