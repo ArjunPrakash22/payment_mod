@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './AdminPanel.css';
 import clglogo from '../../Assets/pictures/logo.png'
+import { Logout } from '../../Widgets';
 
 const AdminPanel = () => {
   const [students, setStudents] = useState([]);
@@ -33,10 +34,12 @@ const AdminPanel = () => {
 
 
   useEffect(() => {
-    if (!location.state || !location.state.key) {
+    if (!key) {
       // If the key is missing, redirect to the login page
       navigate('/');
     };
+
+
     axios.post('http://localhost:5003/api/students_details/')
       .then(response => {
         console.log('Fetched students:', response.data); 
@@ -71,17 +74,16 @@ const AdminPanel = () => {
         alert('Update successful:');
     
         axios.get('http://localhost:5003/api/students_details')
-          .then(response => {
-            console.log('Fetched updated data:', response.data);
-            setStudents(response.data);
-            
-          })
+        .then(response => {
+          setStudents(response.data);
+          setEditStudent(null); // Close the edit form
+        })
          
           .catch(error => {
             console.error("There was an error fetching the data!", error);
           });
   
-        setEditStudent(null);
+        // setEditStudent(null);
         window.location.reload();
       })
       
@@ -98,7 +100,11 @@ const AdminPanel = () => {
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
         629153</p>
       </div>
+
+      <div>
       <h1 className="h1">ADMIN PANEL</h1>
+      <Logout/>
+      </div>
     
       <input
         type="text"
