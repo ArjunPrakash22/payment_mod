@@ -31,7 +31,7 @@ const TuitionFeesPage = () => {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { email: students.email,
-          amount: amountToPay,
+          amount: students.tuition_fees,
           feestype: 'Tuition',
           paymentMode:paymentMode,
           name:students.name,
@@ -69,7 +69,16 @@ const TuitionFeesPage = () => {
 
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
       await Download_tuition();
-      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
+      navigate('/admin', {
+        state: { key: "SsSaDmin153@gmail.com" },
+        replace: true,
+      });
+
+      // Prevent back navigation
+      window.history.pushState(null, null, window.location.href);
+      window.addEventListener('popstate', function(event) {
+        window.history.pushState(null, null, window.location.href);
+      });
     } catch (error) {
       console.error('Error processing payment:', error);
 

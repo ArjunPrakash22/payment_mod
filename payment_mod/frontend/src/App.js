@@ -5,14 +5,15 @@ import {
   Login, 
   Register, 
   Dashboard, 
-  AdminPanel 
+  AdminPanel,
+  TuitionFeesPage, 
+  HostelFeesPage,
+  CollegeFeesPage,
+  OtherFeesPage,
+  TransportFeesPage
 } from "./Pages";
-import TuitionFeesPage from "./Pages/AdminPanel/TuitionFeesPage";
-import HostelFeesPage from "./Pages/AdminPanel/HostelFeesPage";
-import CollegeFeesPage from "./Pages/AdminPanel/CollegeFeesPage";
-import OtherFeesPage from "./Pages/AdminPanel/OtherFeesPage";
-import TransportFeesPage from "./Pages/AdminPanel/TransportFeesPage";
-import Footer from "./Components/Footer/Footer";
+
+import {Footer} from "./Components";
 
 function App() {
   const location = useLocation();

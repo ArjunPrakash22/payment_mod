@@ -39,7 +39,7 @@ const pdftemplate = ({name, admission_no, email, feeDetails,feestype,paymentMode
                 font-size: 14px;
             }
             .head1,.head2{
-            margin-left:20px;
+            margin-left:18px;
             text-align:center;
             font-size:22px;
             font-weight:600;
@@ -48,7 +48,7 @@ const pdftemplate = ({name, admission_no, email, feeDetails,feestype,paymentMode
             .head3{
             margin-left:20px;
             text-align:center;
-            font-size:18px;
+            font-size:14px;
             font-weight:600;
             }
             .head{

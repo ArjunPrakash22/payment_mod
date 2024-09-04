@@ -3,6 +3,7 @@ import { useLocation,useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import clglogo from '../../Assets/pictures/logo.png';
 import axios from 'axios';
+import {Logout} from '../../Widgets';
 
 const Dashboard = () => {
   const [student, setStudent] = useState({});
@@ -72,6 +73,9 @@ const Dashboard = () => {
         <p><strong>Exam Fees:</strong> {student.exam_fees}</p>
         <p><strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}</p>
         <p><strong>Reason:</strong> {student.reason}</p>
+      </div>
+      <div>
+        <Logout/>
       </div>
     </div>
   );
