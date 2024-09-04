@@ -25,17 +25,36 @@
 
 .table-container {
   width: 100%;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
-  /* padding: 0 10px;  */
   box-sizing: border-box;
-  overflow-x: auto; 
+  overflow-x: auto;
+  scroll-behavior: smooth; 
 }
+
+/* Optionally, you can add some padding or margins for better visuals */
+.table-container::-webkit-scrollbar {
+  height: 8px; /* Adjust the height of the scrollbar */
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar handle */
+  border-radius: 4px; /* Rounded corners */
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color on hover */
+}
+
 
 
 .table {
   width: 100%; 
-  /* max-width: 1200px;  */
+  max-width: 1200px;
   margin: 20px auto; 
   border-collapse: collapse;
   background-color: white;

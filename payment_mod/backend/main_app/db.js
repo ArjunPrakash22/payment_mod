@@ -22,6 +22,88 @@ const { hashPassword } = require("./hashing");
 
 const upload = multer(); // Add multer for handling file uploads
 
+
+const getStudents = (req, res) => {
+  console.log(1);
+  db.query(`SELECT * FROM students`, (error, results) => {
+    if (error) {
+      console.error("Error fetching data:", error);
+      return res.status(500).json({ error: error.message });
+    } else {
+      res.json(results);
+    }
+  });
+};
+
+const FeeUpdate = (req, res) => {
+  console.log("vantaen");
+  const email = req.body.email;
+  const updatedData = req.body;
+
+  // Debugging checks
+  console.log('Received email:', email);
+  console.log('Received data for update:', updatedData);
+
+  // Validate email
+  if (!email || email === '0') {
+    return res.status(400).json({ error: 'Valid email is required' });
+  }
+
+  if (!Object.keys(updatedData).length) {
+    return res.status(400).json({ error: 'Update data is required' });
+  }
+
+  const query = `UPDATE students SET ? WHERE email = ?`;
+  db.query(query, [updatedData, email], (error, results) => {
+    if (error) {
+      console.error("Error updating data:", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (results.affectedRows === 0) {
+      // No rows were updated, possibly because the email doesn't exist
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json({ message: 'Student updated successfully', results });
+  });
+};
+
+const updateStudent = (req, res) => {
+  const admission_no = req.body.admission_no;
+  const updatedData = req.body;
+
+  // Debugging checks
+  console.log('Received admission_no:', admission_no);
+  console.log('Received data for update:', updatedData);
+
+  // Validate admission_no
+  if (!admission_no || admission_no === '0') {
+    return res.status(400).json({ error: 'Valid admission_no is required' });
+  }
+
+  if (!Object.keys(updatedData).length) {
+    return res.status(400).json({ error: 'Update data is required' });
+  }
+
+  db.query(`UPDATE students SET ? WHERE admission_no = ?`, [updatedData, admission_no], (error, results) => {
+    if (error) {
+      console.error("Error updating data:", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (results.affectedRows === 0) {
+      // No rows were updated, possibly because the admission_no doesn't exist
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    res.json({ message: 'Student updated successfully', results });
+  });
+};
+
+
+
+
 const registration = async (req, res) => {
   console.log("inside /register");
   const {
@@ -194,5 +276,8 @@ module.exports = {
     login,
     registration,
     displayDashboard,
+    updateStudent,
+    getStudents,
+    FeeUpdate,
     db
 };

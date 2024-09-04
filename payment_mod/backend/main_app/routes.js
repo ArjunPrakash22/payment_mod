@@ -1,19 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const multer=require('multer');
-const { Hostel_receipt } = require('./receipt');
-const {registration} = require('./db');
+const { download_receipt } = require('./receipt');
+const {registration, FeeUpdate,getStudents,updateStudent} = require('./db');
 const {login} = require('./db');
-const {getStudents,updateStudent}=require('./adminPanel');
 const {displayDashboard}=require('./db');
 
 const upload = multer();
 
-router.post('/api/download_hostel_receipt', Hostel_receipt);
+router.post('/api/download_receipt', download_receipt);
 router.post('/api/register',upload.none(),registration);
 router.post('/api/login',login);
-router.get('/students', getStudents);
-router.put('/students/:regNo', updateStudent);
+router.post('/api/students_details/', getStudents);
+router.post('/api/students/', updateStudent);
 router.post('/api/dashboard/',displayDashboard)
+router.post('/api/studentfee',FeeUpdate);
 
 module.exports = router;

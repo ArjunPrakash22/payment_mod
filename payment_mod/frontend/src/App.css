@@ -44,19 +44,7 @@
     transform: rotate(360deg);
   }
 }
-footer {
-  background-color:#17a462;
-  color: #fff;
-  text-align: center;
-  padding: 20px 0;
-  width: 100%;
-  font-size: 14px;
-  position: relative; 
-}
 
-footer p {
-  margin: 0px auto;
-}
 
 footer a {
   color: #fff;
