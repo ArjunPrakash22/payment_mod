@@ -22,6 +22,24 @@ const { hashPassword } = require("./hashing");
 
 const upload = multer(); // Add multer for handling file uploads
 
+const emailcheck=(req,res)=>{
+  const email=req.body.mailid;
+  // console.log(email);
+  db.query(
+    `select count(*) as count from students where email=?`,[email],(err,result)=>{
+      if(err){
+        return res.status(500).send({error:"Database error"});
+      }
+      if(result[0].count>=1){
+        return res.status(409).send({error:"email already exist"});
+      }
+      return res.status(200).send({message:"Available"});
+    }
+  )
+
+};
+
+
 const registration = async (req, res) => {
   console.log("inside /register");
   const {
@@ -194,5 +212,6 @@ module.exports = {
     login,
     registration,
     displayDashboard,
-    db
+    emailcheck,
+    db,
 };
