@@ -66,7 +66,12 @@ const Login = () => {
         password,
       });
 
-      if (response.data.success) {
+      if(username==='SsSaDmin153@gmail.com' && response.data.success){
+        // console.log("admin pass matched");
+        navigate("/admin",{state:{key:username}});
+      }
+
+      else if (response.data.success) {
         // Redirect to the dashboard on successful login
         navigate('/dashboard',{state:{key:username
 
@@ -84,6 +89,9 @@ const Login = () => {
     <div className="login-div">
       <div className="logo text-center">
         <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
+        629153</p>
       </div>
       <div className="wrapper">
         <div className="inner-wrapper text-center">

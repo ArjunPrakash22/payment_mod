@@ -1,10 +1,11 @@
 // Footer.js
 import React from 'react';
+import './Footer.css'
 
 const Footer = () => {
   return (
     <footer>
-      <p>© 2024 Your Company Name. All rights reserved.</p>
+      <p>© 2024 SSS MEDICAL COLLEGE & HOSPITAL. All rights reserved.</p>
       {/* Add more footer content here */}
     </footer>
   );

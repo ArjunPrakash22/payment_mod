@@ -4,30 +4,31 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './FeesPage.css';
 
-function OtherFeesPage() {
+const TransportFeesPage = () => {
   const location = useLocation();
-  const students = location.state?.students || {};
-  //const { student } = location.state;
-  const [paymentType, setPaymentType] = useState('full');
-  const [amountToPay, setAmountToPay] = useState(students.otherFees);
-  const [paymentMode, setPaymentMode] = useState('Cash');
+  const {students} = location.state?.students || {};
+  const [paymentType, setPaymentType] = useState('full'); 
+  const [amountToPay, setAmountToPay] = useState(students.transport_fees);
+  const [paymentMode,setPaymentMode] = useState('Cash');
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAmountToPay(students.miscellaneous_fees);
-  }, [paymentType, students.miscellaneous_fees]);
+    
+    setAmountToPay(students.transport_fees);
+  }, [paymentType, students.transport_fees]);
+
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
     setPaymentMode(e.target.value);
   };
 
-  const Download_Others= async () => {
+  const Download_Transport= async () => {
     try {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { email: students.email,
           amount: amountToPay,
-          feestype: 'Others',
+          feestype: 'Transport',
           paymentMode:paymentMode,
           name:students.name,
           admission_no:students.admission_no,
@@ -41,7 +42,7 @@ function OtherFeesPage() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.setAttribute('download', 'Others_receipt.pdf');
+      a.setAttribute('download', 'Transport_receipt.pdf');
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -55,55 +56,55 @@ function OtherFeesPage() {
   const handlePaymentSubmit = async (e) => {
     console.log('inside handlePaymentSubmit');
     e.preventDefault();
-
-    // Debugging: Ensure student data is correct
-    console.log('Student data:', students);
-
+  
+    // Debugging: Ensure studentss data is correct
+    console.log('students data:', students);
+  
     try {
-      await axios.post(`http://localhost:5003/api/studentfee`, {email:students.email, 
+      await axios.post(`http://localhost:5003/api/studentfee`, {email:students.email,
         ...students,
-        miscellaneous_fees: 0,
+        transport_fees: 0,
       });
-
+  
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
-      await Download_Others();
-      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
+      await Download_Transport();
+      navigate('/admin',{state:{key:students.email}});
     } catch (error) {
       console.error('Error processing payment:', error);
-
+  
       // Additional debugging
       if (error.response) {
         console.error('Server responded with:', error.response.data);
       }
     }
   };
-
+  
 
   return (
     <div className="payment-container">
       <h1>Payment Details</h1>
-      <div className="student-details">
-        <p><strong>Name:</strong> {students.name}</p>
-        <p><strong>Reg No:</strong> {students.regno}</p>
-        <p><strong>Fee Type:</strong>Miscellaneous Fee</p>
-        <p><strong>Total Amount:</strong> ₹{students.miscellaneous_fees}</p>
-      </div>
-      <form onSubmit={handlePaymentSubmit} className="payment-form">
-        <div className="form-group">
-          <label>Payment Type:</label>
-          <select value={paymentType} onChange={handlePaymentTypeChange}>
-            <option value="full">Full Payment</option>
-          </select>
-        </div>
-        <div className="amount-due">
+           <div className="students-details">
+              <p><strong>Name:</strong> {students.name}</p>
+              <p><strong>Reg No:</strong> {students.regNo}</p>
+              <p><strong>Fee Type:</strong> Transport Fee</p>
+              <p><strong>Total Amount:</strong> ₹{students.transport_fees}</p>
+           </div>
+           <form onSubmit={handlePaymentSubmit} className="payment-form">
+             <div className="form-group">
+               <label>Payment Type:</label>
+               <select value={paymentType} onChange={handlePaymentTypeChange}>
+                   <option value="full">Full Payment</option>
+                </select>
+              </div>
+          <div className="amount-due">
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>
-        <button type="submit" className="pay-button">Generate Payment Receipt</button>
-        <button type="button" className="cancel-button">Cancel</button>
+          <button type="submit" className="pay-button">Generate Payment Receipt</button>
+          <button type="button" className="cancel-button">Cancel</button>
 
       </form>
-    </div>
+      </div>
   );
-}
+};
 
-export default OtherFeesPage;
+export default TransportFeesPage;

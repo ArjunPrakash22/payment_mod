@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import clglogo from '../../Assets/pictures/logo.png'
 import axios from 'axios';
@@ -8,9 +8,16 @@ import axios from 'axios';
 const Dashboard = () => {
   const [student, setStudent] = useState({});
   const location = useLocation();
+  const navigate=useNavigate();
   const { key } = location.state || {}; // Extract 'key' from location.state
 
   useEffect(() => {
+
+    if (!location.state || !location.state.key) {
+      // If the key is missing, redirect to the login page
+      navigate('/');
+    }
+  ;
     async function fetchData() {
       try {
         if (key) {
@@ -37,6 +44,9 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="logo text-center">
         <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
+        629153</p>
       </div>
       <h2>Student Dashboard</h2>
       <div className="student-info">
