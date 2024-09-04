@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import './App.css';
-import { Login, Register, Dashboard, AdminPanel } from "./Pages";
-import TuitionFeesPage from "./Pages/AdminPanel/TuitionFeesPage"; 
-import HostelFeesPage from "./Pages/AdminPanel/HostelFeesPage"; 
-import CollegeFeesPage from "./Pages/AdminPanel/CollegeFeesPage"; 
-import OtherFeesPage from "./Pages/AdminPanel/OtherFeesPage"; 
-import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword"; 
-import Footer from './Footer';
+import "./App.css";
+import { 
+  Login,  Register,  Dashboard,    AdminPanel 
+} from "./Pages";
+import TuitionFeesPage from "./Pages/AdminPanel/TuitionFeesPage";
+import HostelFeesPage from "./Pages/AdminPanel/HostelFeesPage";
+import CollegeFeesPage from "./Pages/AdminPanel/CollegeFeesPage";
+import OtherFeesPage from "./Pages/AdminPanel/OtherFeesPage";
+import TransportFeesPage from "./Pages/AdminPanel/TransportFeesPage";import ForgotPassword from "./Pages/ForgotPassword/ForgotPassword"; 
+import Footer from "./Components/Footer/Footer";
 
 function App() {
   const location = useLocation();
@@ -22,14 +24,15 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} /> {/* Forgot Password route */}
-        <Route path="/admin" element={<AdminPanel />} /> 
-        <Route path="/dashboard" element={<Dashboard/>}/>
-        <Route path="/tuition-fees" element={<TuitionFeesPage />}/>
-        <Route path="/hostel-fees" element={<HostelFeesPage />}/>
-        <Route path="/college-fees" element={<CollegeFeesPage />}/>
-        <Route path="/other-fees" element={<OtherFeesPage />}/>
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/tuition-fees" element={<TuitionFeesPage />} />
+        <Route path="/hostel-fees" element={<HostelFeesPage />} />
+        <Route path="/college-fees" element={<CollegeFeesPage />} />
+        <Route path="/other-fees" element={<OtherFeesPage />} />
+        <Route path="/transport-fees" element={<TransportFeesPage />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

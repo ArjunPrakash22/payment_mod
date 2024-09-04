@@ -3,15 +3,22 @@ const pdftemplate = require('./hostel_receipt');
 const fs = require('fs');
 const path = require('path');
 
-const Hostel_receipt = async (req, res) => {
+const download_receipt = async (req, res) => {
     try {
-        const studentname = "arjun";
+        const paymentMode  = req.body.paymentMode;
+        const email=req.body.email;
+        const amount=req.body.amount;
+        const feestype=req.body.feestype;
+        const feeDetails = getFeeDetails(feestype);
+        const name=req.body.name;
+        const admission_no=req.body.admission_no;
+
 
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
 
         // Generate the HTML content using the template function
-        const htmlContent = pdftemplate( studentname );
+        const htmlContent = pdftemplate({ name, admission_no, email, feeDetails,feestype,paymentMode,amount });
 
         // Set the HTML content on the Puppeteer page
         await page.setContent(htmlContent);
@@ -47,6 +54,65 @@ const Hostel_receipt = async (req, res) => {
 
 };
 
+const clgfeeDetails = [
+    {particulars: "College Fee", amount: " "},
+    {particulars: "Admission Fee", amount: " "},
+    {particulars: "Book & Record Note fee", amount: " "},
+    {particulars: "Computer & Internet fee", amount: " "},
+    {particulars: "Library fee", amount: " "},
+    {particulars: "Sports fee", amount: " "},
+    {particulars: "Annual day / cultural fee", amount: " "},
+    {particulars: "Counselling fee (Mental wellness)", amount: " "},
+    {particulars: "Lab/Hospital fee", amount: " "},
+    {particulars: "ID Card", amount: " "},
+    {
+        particulars: "BP Apparatus, Stethoscope, Knee Hammer, Tongue Depressor, Thermometer, Tuning fork, Pen torch",
+        amount: " ",
+    },
+    {particulars: "Coat (White)", amount: " "},
+    {particulars: "Guest Lecture classes & Seminars", amount: " "},
+];
+
+const hostelFeeDetails = [
+    {particulars: "Hostel Fees / annum", amount: " "},
+];
+
+const HostelCautiondeposit = [
+    {particulars: "Hostel Caution deposit (Refundable)", amount: " "},
+];
+
+const tutionfeeDetails = [
+    {particulars: "Tuition Fees", amount: " "},
+];
+
+const registerFeeDetails = [
+    {particulars: "Dr. MGR Medical University Students Registration fee", amount: " "},
+];
+const TransportFeeDetails = [
+    {particulars: "Transport Boarding Point", amount: " "},
+];
+
+
+function getFeeDetails(feeType) {
+    switch(feeType) {
+        case 'College':
+            return clgfeeDetails;
+        case 'Hostel':
+            return hostelFeeDetails;
+        case 'HostelCaution':
+            return HostelCautiondeposit;
+        case 'Tuition':
+            return tutionfeeDetails;
+        case 'Registration':
+            return registerFeeDetails;
+        case 'Transport':
+            return TransportFeeDetails;
+        default:
+            return []; // Return an empty array or handle the default case
+    }
+}
+
+
 module.exports = {
-    Hostel_receipt
+    download_receipt
 };
