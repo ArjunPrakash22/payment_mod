@@ -121,6 +121,24 @@ const emailcheck=(req,res)=>{
 
 };
 
+//Aadhar Check 
+const Aadharcheck=(req,res)=>{
+  const Aadhar =req.body.aadharno ;
+  console.log(Aadhar);
+  db.query(
+    `select count(*) as count from students where aadhar_no=?`,[Aadhar],(err,result)=>{
+      if(err){
+        return res.status(500).send({error:"Database error"});
+      }
+      if(result[0].count>=1){
+        return res.status(409).send({error:"Aadhar already exist"});
+      }
+      return res.status(200).send({message:"Available"});
+    }
+  )
+
+}
+
 
 const registration = async (req, res) => {
   console.log("inside /register");
@@ -298,5 +316,6 @@ module.exports = {
     getStudents,
     FeeUpdate,
     emailcheck,
+    Aadharcheck,
     db,
 };

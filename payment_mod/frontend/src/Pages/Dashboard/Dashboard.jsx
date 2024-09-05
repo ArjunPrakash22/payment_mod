@@ -42,7 +42,7 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="logo text-center">
         <img className='clg-logo' src={clglogo} alt='clg-logo'/>
-        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <h2 className='h2'>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
         629153</p>
       </div>

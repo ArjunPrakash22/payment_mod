@@ -12,6 +12,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [emailStatus, setEmailStatus] = useState("");
   const [error, setError] = useState("");
+  const [aadharStatus, setAadharStatus] = useState("");
+  const [IsAadharUnique, setIsAadharUnique] = useState(true);
+  const [IsAadharChecking, setIsAadharChecking] = useState(false);
+
+
 
   const studentNameRef = useRef(null);
   const regnoRef = useRef(null);
@@ -141,6 +146,50 @@ const Register = () => {
       setIsEmailChecking(false);
     }
   };
+  //aadhar checking 
+  const checkAadharUnique = async () => {
+    const Aadhar = aadharNoRef.current.value;
+    console.log(Aadhar);
+
+    if (!Aadhar) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Aadhar Number is required",
+      }));
+      return;
+    }
+
+    setIsAadharChecking(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/check-aadhar/",
+        { aadharno : Aadhar}
+      );
+      console.log(response.data);
+
+      if (response.data.message) {
+        setIsAadharChecking(true);
+        setAadharStatus(response.data.message);
+      }
+    } catch (err) {
+      if (err.response && err.response.data.error) {
+        setIsAadharChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          aadharno : "Aadhar Number already exists",
+        }));
+      } else {
+        setIsAadharChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          aadharno : "Error in Aadhar Number Validation",
+        }));
+      }
+    } finally {
+      setIsAadharChecking(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -148,7 +197,8 @@ const Register = () => {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
+    } 
+    else {
       if (!isEmailUnique) {
         setErrors((prevErrors) => ({
           ...prevErrors,
@@ -229,7 +279,7 @@ const Register = () => {
         <div className="form-container">
             <div className="logo text-center">
         <img className='clg-logo' src={clglogo} alt='clg-logo'/>
-        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <h2 className="headingh2">SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
         629153</p>
       </div>
@@ -298,7 +348,7 @@ const Register = () => {
             className="register-input"
             type="text"
             ref={phoneNumberRef}
-            placeholder="Enter phone number"
+            placeholder = "Enter phone number"
             onFocus={() => handleFocus("phoneNumber")}
           />
           {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
@@ -310,9 +360,10 @@ const Register = () => {
             type="text"
             ref={aadharNoRef}
             placeholder="Enter Aadhar number"
+            onBlur={checkAadharUnique}
             onFocus={() => handleFocus("aadharNo")}
           />
-          {errors.aadharNo && <p className="error">{errors.aadharNo}</p>}
+          {errors.aadharno && <p className="error">{errors.aadharno}</p>}
         </div>
 
         <div className="input-group-div">
@@ -405,6 +456,9 @@ const Register = () => {
           Register
         </button>
       </form>
+      <div>
+                <p className='login-p'>Already registered? <a className='login-a' href='/'>Sign in</a></p>
+            </div>
     </div>
   );
 };
