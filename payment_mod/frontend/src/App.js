@@ -7,7 +7,8 @@ import {
   HostelFeesPage,
   CollegeFeesPage,
   OtherFeesPage,
-  TransportFeesPage
+  TransportFeesPage,
+  ForgotPassword
 } from "./Pages";
 import {Footer} from './Components';
 

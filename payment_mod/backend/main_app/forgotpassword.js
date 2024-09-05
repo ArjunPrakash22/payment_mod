@@ -4,8 +4,7 @@ const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const { registration, db } = require('./db');
 
-// Environment variables directly in the code
-const PORT = 5003;
+
 const EMAIL_USER = 'paymentmodule8@gmail.com'; // Replace with your Gmail address
 const EMAIL_PASS = 'adid juxb ijpe qkmi'; // Replace with your App Password if using 2-Step Verification
 
