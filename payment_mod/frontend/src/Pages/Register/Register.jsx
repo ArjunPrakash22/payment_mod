@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
 import clglogo from "../../Assets/pictures/logo.png";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
+  const [showPassword,setShowPassword]=useState(false);
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const studentNameRef = useRef(null);
@@ -21,6 +23,10 @@ const Register = () => {
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
   const hostellerRef = useRef(null);
+
+  const togglePasswordVisibility=()=>{
+    setShowPassword(!showPassword);
+  }
 
   const validateForm = () => {
     let validationErrors = {};
@@ -248,20 +254,32 @@ const Register = () => {
         <div className="input-group-div">
           <input
             className="register-input"
-            type="password"
+            type={showPassword?'text':'password'}
             ref={passwordRef}
             placeholder="Enter your password"
           />
+          <span
+                onClick={togglePasswordVisibility}
+                className="eye-icon"
+              >
+                {showPassword?<FaEyeSlash/>:<FaEye/>}
+              </span>
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
         <div className="input-group-div">
           <input
             className="register-input"
-            type="password"
+            type={showPassword?'text':'password'}
             ref={confirmPasswordRef}
             placeholder="Confirm your password"
           />
+          <span
+                onClick={togglePasswordVisibility}
+                className="eye-icon"
+              >
+                {showPassword?<FaEyeSlash/>:<FaEye/>}
+              </span>
           {errors.confirmPassword && (
             <p className="error">{errors.confirmPassword}</p>
           )}
