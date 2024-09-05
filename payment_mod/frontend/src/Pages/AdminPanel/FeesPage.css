@@ -1,6 +1,6 @@
 .payment-container {
   max-width: 600px; 
-  width: 100%; /* Ensure it takes full width available */
+  width: 100%; 
   margin: 40px auto; /* Vertical margin */
   padding: 40px; /* Increased padding for more space inside the container */
   background-color: #f8f8f8;

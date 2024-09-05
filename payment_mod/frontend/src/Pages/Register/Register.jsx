@@ -225,13 +225,16 @@ const Register = () => {
     }));
   };
 
-  return (
-    <div className="form-container">
-      <div className="logo text-center">
-        <img className="clg-logo" src={clglogo} alt="clg-logo" />
+    return (
+        <div className="form-container">
+            <div className="logo text-center">
+        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
+        629153</p>
       </div>
-      <form onSubmit={handleSubmit} className="register-form">
-        <h1 className="h1">REGISTER HERE</h1>
+            <form onSubmit={handleSubmit} className='register-form'>
+                <h1 className='h1'>REGISTER HERE</h1>
 
         <div className="input-group-div">
           <input
