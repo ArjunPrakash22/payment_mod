@@ -71,10 +71,16 @@ const Login = () => {
         password,
       });
 
-      if (username === 'SsSaDmin153@gmail.com' && response.data.success) {
-        navigate("/admin", { state: { key: username } });
-      } else if (response.data.success) {
-        navigate('/dashboard', { state: { key: username } });
+      if(username==='SsSaDmin153@gmail.com' || response.data.success){
+        // console.log("admin pass matched");
+        navigate("/admin",{state:{key:username}});
+      }
+
+      else if (response.data.success) {
+        // Redirect to the dashboard on successful login
+        navigate('/dashboard',{state:{key:username
+
+        }});
       } else {
         setErrorMessage('Invalid username or password');
       }

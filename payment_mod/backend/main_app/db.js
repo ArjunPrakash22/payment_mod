@@ -271,6 +271,32 @@ const login=async (req, res) => {
       res.status(500).json({ error: "Unexpected error occurred" });
     }
   };
+  
+  const insertData = (req, res) => {
+    const { subject_name, provisional_status, fees } = req.body;
+  
+    // Check if all required fields are provided
+    if (!subject_name || !provisional_status || !fees) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+  
+    // Insert data into the database
+    db.query(
+      "INSERT INTO datas (subject_name, provisional_status, fees) VALUES (?, ?, ?)",
+      [subject_name, provisional_status, fees],
+      (err, result) => {
+        if (err) {
+          console.error('Error inserting data into MySQL:', err);
+          return res.status(500).json({ error: "Database error" });
+        }
+  
+        res.status(200).json({ message: "Data successfully inserted" });
+      }
+    );
+  };
+  
+  
+  
 
 module.exports = {
     login,
@@ -279,5 +305,6 @@ module.exports = {
     updateStudent,
     getStudents,
     FeeUpdate,
+    insertData,
     db
 };

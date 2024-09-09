@@ -8,6 +8,7 @@ const {displayDashboard}=require('./db');
 const {OtpFunc,VerifyOtp,ResetPassword}=require('./forgotpassword');
 
 
+const {insertData}=require('./db');
 
 const upload = multer();
 
@@ -29,5 +30,6 @@ router.post('/api/reset-password', ResetPassword);
 
 
 router.post('/api/studentfee',FeeUpdate);
+router.post('/api/add-data',insertData);
 
 module.exports = router;
