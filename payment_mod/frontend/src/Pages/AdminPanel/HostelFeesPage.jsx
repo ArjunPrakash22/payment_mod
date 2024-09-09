@@ -65,7 +65,16 @@ const HostelFeesPage = () => {
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
       await Download_Hostel();
       // Redirect back to the admin panel
-      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
+      navigate('/admin', {
+        state: { key: "SsSaDmin153@gmail.com" },
+        replace: true,
+      });
+
+      // Prevent back navigation
+      window.history.pushState(null, null, window.location.href);
+      window.addEventListener('popstate', function(event) {
+        window.history.pushState(null, null, window.location.href);
+      });
     } catch (error) {
       console.error('Error processing payment:', error);
     }

@@ -5,6 +5,10 @@ const { download_receipt } = require('./receipt');
 const {registration, FeeUpdate,getStudents,updateStudent} = require('./db');
 const {login} = require('./db');
 const {displayDashboard}=require('./db');
+const {OtpFunc,VerifyOtp,ResetPassword}=require('./forgotpassword');
+
+
+const {insertData}=require('./db');
 const {emailcheck,Aadharcheck}=require('./db');
 
 const upload = multer();
@@ -15,8 +19,20 @@ router.post('/api/check-email/',emailcheck);
 router.post('/api/login',login);
 router.post('/api/students_details/', getStudents);
 router.post('/api/students/', updateStudent);
-router.post('/api/dashboard/',displayDashboard)
+router.post('/api/dashboard/',displayDashboard);
+router.post('/api/verify-otp', VerifyOtp);
+router.post('/api/forgot-password', OtpFunc);
+router.post('/api/reset-password', ResetPassword);
+
+
+
+
+// router.post('/api/update-password',UpdatePassword);
+
+
+
 router.post('/api/studentfee',FeeUpdate);
+router.post('/api/add-data',insertData);
 router.post('/api/check-aadhar/',Aadharcheck);
 
 

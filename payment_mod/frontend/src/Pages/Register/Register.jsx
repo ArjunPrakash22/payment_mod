@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
 import clglogo from "../../Assets/pictures/logo.png";
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
-  const [errors, setErrors] = useState({});
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isEmailChecking, setIsEmailChecking] = useState(false);
   const [isEmailUnique, setIsEmailUnique] = useState(true);
@@ -32,9 +34,18 @@ const Register = () => {
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
   const hostellerRef = useRef(null);
+  const [showPassword,setShowPassword]=useState(false);
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  
+
+  const togglePasswordVisibility=()=>{
+    setShowPassword(!showPassword);
+  }
 
   const validateForm = () => {
     let validationErrors = {};
+
     const studentName = studentNameRef.current.value;
     const regno = regnoRef.current.value;
     const gender = genderRef.current.value;
@@ -239,8 +250,6 @@ const Register = () => {
 
         if (response.status === 200) {
           alert(response.data.message || "Registration successful!");
-
-          // Clear the form fields after successful registration
           regnoRef.current.value = "";
           studentNameRef.current.value = "";
           genderRef.current.value = "";
@@ -259,15 +268,20 @@ const Register = () => {
           // Reset errors and states
           setErrors({});
           setIsEmailUnique(true);
+          navigate("/", { replace: true });
+          window.history.pushState(null, null, window.location.href);
+          window.addEventListener("popstate", function (event) {
+            window.history.pushState(null, null, window.location.href);
+          });
         } else {
           alert(response.data.error || "Registration failed!");
         }
       } catch (error) {
         alert("Error submitting form");
+        console.error("Error submitting form:", error);
       }
     }
   };
-
   const handleFocus = (field) => {
     setErrors((prevErrors) => ({
       ...prevErrors,
@@ -283,8 +297,8 @@ const Register = () => {
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
         629153</p>
       </div>
-            <form onSubmit={handleSubmit} className='register-form'>
-                <h1 className='h1'>REGISTER HERE</h1>
+      <form onSubmit={handleSubmit} className="register-form">
+        <h1 className="h1">REGISTER HERE</h1>
 
         <div className="input-group-div">
           <input
@@ -436,17 +450,16 @@ const Register = () => {
         <div className="input-group-div">
           <input
             className="register-input"
-            type={confirmPasswordVisible ? "text" : "password"}
+            type={showPassword?'text':'password'}
             ref={confirmPasswordRef}
             placeholder="Confirm your password"
-            onFocus={() => handleFocus("confirmPassword")}
           />
-          <i
-            className={`fas ${
-              confirmPasswordVisible ? "fa-eye-slash" : "fa-eye"
-            } password-toggle-icon`}
-            onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-          />
+          <span
+                onClick={togglePasswordVisibility}
+                className="eye-icon"
+              >
+                {showPassword?<FaEyeSlash/>:<FaEye/>}
+              </span>
           {errors.confirmPassword && (
             <p className="error">{errors.confirmPassword}</p>
           )}
@@ -457,8 +470,13 @@ const Register = () => {
         </button>
       </form>
       <div>
-                <p className='login-p'>Already registered? <a className='login-a' href='/'>Sign in</a></p>
-            </div>
+        <p className="login-p">
+          Already registered?{" "}
+          <a className="login-a" href="/">
+            Sign in
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
