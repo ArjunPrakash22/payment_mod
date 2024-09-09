@@ -24,10 +24,8 @@
 }
 
 .input-group-div {
-  padding: 20px;
-  /* display: flex;
-  flex-wrap: wrap;
-  gap: 35px; */
+  position: relative; /* Make the container relative for absolute positioning of the eye icon */
+  margin-bottom: 20px; /* Add some space between input fields */
 }
 
 .form-container h1{
@@ -44,6 +42,15 @@
   outline: none;
   background: rgba(239, 239, 239, 0.9);
   box-sizing: border-box;
+}
+.eye-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px; /* Position the icon inside the input field */
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #333; /* You can change the color */
+  z-index: 2; /* Make sure it appears on top of the input */
 }
 
 .register-input:focus,
