@@ -5,6 +5,7 @@ const { download_receipt } = require('./receipt');
 const {registration, FeeUpdate,getStudents,updateStudent} = require('./db');
 const {login} = require('./db');
 const {displayDashboard}=require('./db');
+const {insertData}=require('./db');
 
 const upload = multer();
 
@@ -15,5 +16,6 @@ router.post('/api/students_details/', getStudents);
 router.post('/api/students/', updateStudent);
 router.post('/api/dashboard/',displayDashboard)
 router.post('/api/studentfee',FeeUpdate);
+router.post('/api/add-data',insertData);
 
 module.exports = router;

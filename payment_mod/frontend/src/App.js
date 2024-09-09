@@ -10,7 +10,8 @@ import {
   HostelFeesPage,
   CollegeFeesPage,
   OtherFeesPage,
-  TransportFeesPage
+  TransportFeesPage,
+  AddData
 } from "./Pages";
 
 import {Footer} from "./Components";
@@ -34,6 +35,7 @@ function App() {
         <Route path="/college-fees" element={<CollegeFeesPage />} />
         <Route path="/other-fees" element={<OtherFeesPage />} />
         <Route path="/transport-fees" element={<TransportFeesPage />} />
+        <Route path="/add-data" element={<AddData />} />
       </Routes>
       <Footer />
     </div>
