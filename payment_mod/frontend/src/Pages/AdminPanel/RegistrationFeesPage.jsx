@@ -4,55 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './FeesPage.css';
 
-const CollegeFeesPage = () => {
+const RegistrationFeesPage = () => {
   const location = useLocation();
   const students = location.state?.students || {};
   const [paymentType, setPaymentType] = useState('full'); 
-  const [amountToPay, setAmountToPay] = useState(students.clg_fees);
+  const [amountToPay, setAmountToPay] = useState(students.reg_fees);
   const [paymentMode, setPaymentMode] = useState('Cash');
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAmountToPay(students.clg_fees);
-  }, [paymentType, students.clg_fees]);
+    setAmountToPay(students.reg_fees);
+  }, [paymentType, students.reg_fees]);
 
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
     setPaymentMode(e.target.value);
-  };
-
-
-
-
-
-  const Download_College= async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5003/api/download_receipt",
-        { email: students.email,
-          amount: amountToPay,
-          feestype: 'College',
-          paymentMode:paymentMode,
-          admission_no:students.admission_no,
-
-         }, // Send student email to identify receipt
-        {
-          responseType: "blob",
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.setAttribute('download', 'College_receipt.pdf');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-      console.error('Error downloading the PDF:', error);
-    }
   };
 
   const storePaymentDetails = async () => {
@@ -68,7 +34,7 @@ const CollegeFeesPage = () => {
         phone_no: students.phone_no, // Ensure this field exists in students object
         payment_mode: paymentMode,
         transaction_id: transactionId,
-        feeType: 'College Fee',
+        feeType: 'Registration Fee',
         date: paymentDate
       });
       
@@ -83,7 +49,6 @@ const CollegeFeesPage = () => {
   };
 
 
-
   const handlePaymentSubmit = async (e) => {
     console.log('inside handlePaymentSubmit');
     e.preventDefault();
@@ -93,14 +58,15 @@ const CollegeFeesPage = () => {
   
     try {
 
+      
       await storePaymentDetails();
       await axios.post(`http://localhost:5003/api/studentfee`, {email:students.email,
         ...students,
-        clg_fees: 0, 
+        reg_fees: 0,
       });
   
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
-      await Download_College();
+      // await Download_Hostel();
       navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
     } catch (error) {
       console.error('Error processing payment:', error);
@@ -111,6 +77,7 @@ const CollegeFeesPage = () => {
       }
     }
 };
+
 
 const handleCancel = () => {
   // Redirect back to the admin panel
@@ -123,9 +90,9 @@ const handleCancel = () => {
       <h1>Payment Details</h1>
            <div className="students-details">
               <p><strong>Name:</strong> {students.name}</p>
-              <p><strong>Reg No:</strong> {students.regNo}</p>
-              <p><strong>Fee Type:</strong> College Fee</p>
-              <p><strong>Total Amount:</strong> ₹{students.clg_fees}</p>
+              <p><strong>Reg No:</strong> {students.regno}</p>
+              <p><strong>Fee Type:</strong> Registration Fee</p>
+              <p><strong>Total Amount:</strong> ₹{students.reg_fees}</p>
            </div>
            <form onSubmit={handlePaymentSubmit} className="payment-form">
              <div className="form-group">
@@ -145,4 +112,4 @@ const handleCancel = () => {
   );
 };
 
-export default CollegeFeesPage;
+export default RegistrationFeesPage;

@@ -51,6 +51,37 @@ function OtherFeesPage() {
       console.error('Error downloading the PDF:', error);
     }
   };
+  const handleCancel = () => {
+    // Redirect back to the admin panel
+    navigate('/admin');
+  };
+
+  const storePaymentDetails = async () => {
+    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+    const paymentDate = new Date().toISOString().slice(0, 10); 
+    try {
+      await axios.post(`http://localhost:5003/api/storePaymentDetails`, {
+        name: students.name,
+        email: students.email,
+        admission_no: students.admission_no,
+        regno: students.regno,
+        amount: amountToPay,
+        phone_no: students.phone_no, // Ensure this field exists in students object
+        payment_mode: paymentMode,
+        transaction_id: transactionId,
+        feeType: 'Miscellaneous Fee',
+        date: paymentDate
+      });
+      
+      console.log('Payment details stored successfully');
+    } catch (error) {
+      console.error('Error storing payment details:', error);
+    }
+  };
+
+  const generateTransactionId = () => {
+    return 'TXN' + Math.floor(Math.random() * 1000000000);
+  };
 
   const handlePaymentSubmit = async (e) => {
     console.log('inside handlePaymentSubmit');
@@ -60,6 +91,7 @@ function OtherFeesPage() {
     console.log('Student data:', students);
 
     try {
+      await storePaymentDetails();
       await axios.post(`http://localhost:5003/api/studentfee`, {email:students.email, 
         ...students,
         miscellaneous_fees: 0,
@@ -99,7 +131,7 @@ function OtherFeesPage() {
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>
         <button type="submit" className="pay-button">Generate Payment Receipt</button>
-        <button type="button" className="cancel-button">Cancel</button>
+        <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
 
       </form>
     </div>

@@ -194,3 +194,39 @@
     width: 100%;
   }
 }
+/* History Button Specific Styles */
+.history-button {
+  height: 30px;
+  width: 150px; /* Adjust width to fit longer text */
+  font-size: 14px;
+  color: #ffffff;
+  background-color: #17a462; /* Keep the same background color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 10px; /* Add some margin between buttons */
+  display: inline-block; /* To align buttons horizontally */
+}
+
+/* Hover and active states */
+.history-button:hover {
+  background-color: #a1aed4; /* Lighter color on hover */
+}
+
+.history-button:active {
+  background-color: #0c633a; /* Darker green when clicked */
+}
+
+.history-button:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(39, 60, 117, 0.5); /* Slight focus glow */
+}
+
+/* Button Container Styling */
+.button-container {
+  display: flex;
+  justify-content: center; /* Center the buttons horizontally */
+  margin-top: 20px; /* Add space above the button container */
+  margin-bottom: 20px;
+}

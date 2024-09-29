@@ -29,6 +29,22 @@ const AdminPanel = () => {
   const handleCollegePayNowClick = (students) => {
     navigate('/college-fees', { state: { students } });
   };
+  const handleCautionDepPayNowClick = (students) => {
+    navigate('/caution-deposit', { state: { students } });
+  };
+  const handleRegistrationFeePayNowClick = (students) => {
+    navigate('/reg-fees', { state: { students } });
+  };
+  const handlePaymentHistoryClick = () => {
+    navigate('/payment-history');
+  };
+
+  const handleExamFeesHistoryClick = () => {
+    navigate('/exam-fees');
+  };
+  const handlePaymentRequestHistoryClick = () => {
+    navigate('/payment-request');
+  };
 
 
 
@@ -54,6 +70,12 @@ const AdminPanel = () => {
 
   const handleEditClick = (students) => {
     setEditStudent(students);
+    setTimeout(() => {
+      const editSection = document.getElementById('edit-section');
+      if (editSection) {
+        editSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 0); 
     setFormData({ ...students });
   };
 
@@ -99,6 +121,11 @@ const AdminPanel = () => {
         629153</p>
       </div>
       <h1 className="h1">ADMIN PANEL</h1>
+      <div className="button-container">
+        <button className="history-button" onClick={handlePaymentHistoryClick}>Payment History</button>
+        <button className="history-button" onClick={handleExamFeesHistoryClick}>Exam Fees History</button>
+        <button className="history-button" onClick={handlePaymentRequestHistoryClick}>Payment Request History</button>
+      </div>
     
       <input
         type="text"
@@ -125,8 +152,10 @@ const AdminPanel = () => {
                 <th className="th">Course Name</th>
                 <th className="th">Year of Study / Batch</th>
                 <th className="th">Quota</th>
+                <th className="th">Registration Fees</th>
                 <th className="th">College Fees</th>
                 <th className="th">Hosteller/Dayscholar</th>
+                <th className="th">Caution Deposit</th>
                 <th className="th">Hostel Fees</th>
                 <th className="th">Tuition Fees</th>
                 <th className="th">Miscellaneous Fees</th>
@@ -153,8 +182,16 @@ const AdminPanel = () => {
                     <td className="td">{students.course_name}</td>
                     <td className="td">{students.batchyr}</td>
                     <td className="td">{students.quota}</td>
-                    
+                    <td className="td">
+                      {students.reg_fees}
+                      {students.reg_fees > 0 && (
+                        <Link to="/reg-fees" state={{ students }}>
+                          <button className="button" onClick={() => handleRegistrationFeePayNowClick(students)}>Pay Now</button>
+                        </Link>
+                      )}
+                    </td>
                     {/* College Fees */}
+
                     <td className="td">
                       {students.clg_fees}
                       {students.clg_fees > 0 && (
@@ -165,6 +202,14 @@ const AdminPanel = () => {
                     </td>
                     
                     <td className="td">{students.hosteller}</td>
+                    <td className="td">
+                      {students.hosteller ? students.caution_deposit : "N/A"}
+                      {students.caution_deposit > 0 && (
+                        <Link to="/caution-deposit" state={{ students }}>
+                          <button className="button" onClick={() => handleCautionDepPayNowClick(students)}>Pay Now</button>
+                        </Link>
+                      )}
+                    </td>
                     
                     {/* Hostel Fees */}
                     <td className="td">
@@ -209,7 +254,6 @@ const AdminPanel = () => {
                       )}
                     </td>
                     <td className="td">{students.exam_fees}</td>
-                    
                     <td className="td">{students.status}</td>
                     <td className="td">
                       <button className="button" onClick={() => handleEditClick(students)}>Edit</button>
@@ -226,7 +270,7 @@ const AdminPanel = () => {
         </div>
         
         {editStudent && (
-          <div className="edit-section">
+           <div id="edit-section" className="edit-section">
             <div className="edit-form">
               <h2>Edit Student Information</h2>
               <form onSubmit={handleSubmit}>
@@ -415,6 +459,26 @@ const AdminPanel = () => {
                       type="number"
                       name="regno"
                       value={formData.regno || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Registration Fees:</label>
+                    <input
+                      type="text"
+                      name="reg_fees"
+                      value={formData.reg_fees || ''}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Caution Deposit:</label>
+                    <input
+                      type="text"
+                      name="caution_deposit"
+                      value={formData.caution_deposit || ''}
                       onChange={handleChange}
                     />
                   </div>
