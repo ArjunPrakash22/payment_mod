@@ -71,7 +71,7 @@ const Login = () => {
         password,
       });
 
-      if (username === 'SsSaDmin153@gmail.com' && response.data.success) {
+      if (username === 'SsSaDmin153@gmail.com' || response.data.success) {
         navigate("/admin", { state: { key: username } });
       } else if (response.data.success) {
         navigate('/dashboard', { state: { key: username } });

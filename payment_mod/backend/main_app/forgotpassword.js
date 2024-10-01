@@ -136,4 +136,7 @@ module.exports = {
   ResetPassword,
   VerifyOtp,
   UpdatePassword,
+  EMAIL_USER,
+  EMAIL_PASS,
+  transporter
 };
