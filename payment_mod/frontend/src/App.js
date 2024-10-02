@@ -21,6 +21,7 @@ import {
 } from './Pages';
 import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
 import Footer from "./Components/Footer/Footer";
+import OnlinePayment from "./Pages/OnlinePayment/OnlinePayment";
 
 
 
@@ -51,6 +52,7 @@ function App() {
         <Route path="/exam-fees/Arrears" element={<ArrearsPage/>} />
         <Route path="/exam-fee-transactions" element={<ExamFeeTransactions/>} />
         <Route path="/payment-request" element={<PaymentRequest />} />
+        <Route path="/online-payment" element={<OnlinePayment/>}/>
       </Routes>
       <Footer />
     </div>

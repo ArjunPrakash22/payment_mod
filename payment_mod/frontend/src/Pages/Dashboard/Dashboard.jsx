@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [student, setStudent] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
-  const { key } = location.state || {}; // Extract 'key' from location.state
+  const { key } = location.state || {}; // Extract 'key' from location.state 
 
   useEffect(() => {
     if (!location.state || !location.state.key) {
