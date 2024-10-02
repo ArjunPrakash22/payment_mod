@@ -1,19 +1,28 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
-import { 
-  Login, 
-  Register, 
-  Dashboard, 
+import {
+  Login,
+  Register,
+  Dashboard,
   AdminPanel,
-  TuitionFeesPage, 
+  TuitionFeesPage,
   HostelFeesPage,
   CollegeFeesPage,
   OtherFeesPage,
-  TransportFeesPage
-} from "./Pages";
+  TransportFeesPage,
+  RegistrationFeesPage,
+  CautionDeposit,
+  PaymentHistory,
+  HomePage,
+  ProvisionalPage,
+  ArrearsPage,
+  ExamFeeTransactions
+} from './Pages';
+import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
+import Footer from "./Components/Footer/Footer";
 
-import {Footer} from "./Components";
+
 
 function App() {
   const location = useLocation();
@@ -34,6 +43,14 @@ function App() {
         <Route path="/college-fees" element={<CollegeFeesPage />} />
         <Route path="/other-fees" element={<OtherFeesPage />} />
         <Route path="/transport-fees" element={<TransportFeesPage />} />
+        <Route path="/reg-fees" element={<RegistrationFeesPage />} />
+        <Route path="/caution-deposit" element={<CautionDeposit />} />
+        <Route path="/payment-history" element={<PaymentHistory />} />
+        <Route path="/exam-fees" element={<HomePage />} />
+        <Route path="/exam-fees/Provisional" element={<ProvisionalPage />} />
+        <Route path="/exam-fees/Arrears" element={<ArrearsPage/>} />
+        <Route path="/exam-fee-transactions" element={<ExamFeeTransactions/>} />
+        <Route path="/payment-request" element={<PaymentRequest />} />
       </Routes>
       <Footer />
     </div>
