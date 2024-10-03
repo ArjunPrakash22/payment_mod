@@ -50,11 +50,50 @@ const AdminPanel = () => {
   const handleExamFeesPayNowClick = (students) => {
     navigate('/exam-fees', { state: { students } });
   };
+ // Centralized function for payment request logic
+ const handlePaymentRequest = (feeType, student) => {
+  const paymentDetails = {
+    admission_no: student.admission_no,
+    regno: student.regno,
+    name: student.name,
+    phone_no: student.phone_no,
+    email: student.email,
+    fee_type: feeType,
+    amount: student[feeType.toLowerCase().replace(' ', '_')],
+    status: 'pending',
+  };
+  
+  axios.post('http://localhost:5003/api/payment_request', paymentDetails)
+    .then(response => {
+      console.log('Payment request added:', response.data);
+      // Further logic to handle response can go here
+    })
+    .catch(error => {
+      console.error("Error submitting payment request!", error);
+    });
+};
 
+
+const handlePaymentCompletion = (feeType, student) => {
+  const updatedData = {
+    ...student,
+    [feeType.toLowerCase().replace(' ', '_')]: 0, 
+    status: 'paid',
+  };
+
+  axios.post(`http://localhost:5003/api/students/update/${student.admission_no}`, updatedData)
+    .then(response => {
+      console.log('Student fees updated:', response.data);
+      // Reload students data
+      axios.get('http://localhost:5003/api/students_details')
+        .then(response => setStudents(response.data))
+        .catch(error => console.error("Error fetching updated students data!", error));
+    })
+    .catch(error => console.error("Error updating student fees!", error));
+};
 
   useEffect(() => {
     if (!key) {
-      // If the key is missing, redirect to the login page
       navigate('/');
     };
 
@@ -101,14 +140,14 @@ const AdminPanel = () => {
         axios.get('http://localhost:5003/api/students_details')
         .then(response => {
           setStudents(response.data);
-          setEditStudent(null); // Close the edit form
+          setEditStudent(null);
         })
          
           .catch(error => {
             console.error("There was an error fetching the data!", error);
           });
   
-        // setEditStudent(null);
+        
         window.location.reload();
       })
       

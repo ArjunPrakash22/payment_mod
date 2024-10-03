@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'swetha15',
+    password: '',
     database: 'payment_db'
 });
 
@@ -386,37 +386,53 @@ const login=async (req, res) => {
     });
 
 };
-  const StoreInPaymentRequest = async (req, res) => {
-    const { admissionNo, name, regno, feeType, amount, email, phone_no } = req.body;
+const StoreInPaymentRequest = async (req, res) => {
+  const { admissionNo, name, regno, feeType, amount, email, phone_no } = req.body;
 
-    try {
-      // Insert the payment request into the payment_request table
-      const query = ` INSERT INTO payment_request (admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, status, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'online', 'pending', NOW())`;
-  
-      await db.query(query, [admissionNo, name, regno, feeType, amount, email, phone_no]);
-  
-      // Respond with success message
-      res.status(200).json({ message: 'Payment request created successfully.' });
-    } catch (error) {
-      console.error('Error creating payment request:', error);
-      res.status(500).json({ message: 'Server error. Could not create payment request.' });
-    }
-  };
-  const DisplayPaymentRequest = async (req, res) => {
-    try {
-      const query = `SELECT admission_number, regno, name, email, phone_no, payment_mode, transaction_id, fee_type, amount, status FROM payment_request`;
-      db.query(query, (err, results) => {
-          if (err) {
-              console.error('Error fetching payment requests:', err);
-              return res.status(500).json({ error: 'Database error' });
-          }
-          res.json(results);
-      });
+  try {
+    // Insert the payment request into the payment_request table
+    const query = `INSERT INTO payment_request (admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, status, created_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, 'online', 'pending', NOW())`;
+
+    await db.query(query, [admissionNo, name, regno, feeType, amount, email, phone_no]);
+
+    // Respond with success message
+    res.status(200).json({ message: 'Payment request created successfully.' });
   } catch (error) {
-      console.error('Error fetching payment requests:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error creating payment request:', error);
+    res.status(500).json({ message: 'Server error. Could not create payment request.' });
   }
+};
+
+const DisplayPaymentRequest = async (req, res) => {
+  try {
+    const query = `SELECT admission_no, regno, name, email, phone_no, cash_mode, fee_type, amount, status, created_at FROM payment_request`;
+
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching payment requests:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.json(results);
+    });
+  } catch (error) {
+    console.error('Error fetching payment requests:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const UpdateAdminPanel= async (req, res) => {
+  const { reg_no } = req.params;
+  const { fee_type } = req.body;
+
+  const query = `UPDATE student SET ${fee_type} = 0 WHERE regNo = ?`;
+
+  db.query(query, [reg_no], (err, result) => {
+      if (err) {
+          return res.status(500).send(err);
+      }
+      res.send('Fee updated to 0');
+  });
 };
 
 module.exports = {
@@ -433,5 +449,6 @@ module.exports = {
     displaySubject,
     StoreInPaymentRequest,
     DisplayPaymentRequest,
+    UpdateAdminPanel,
     db
 };

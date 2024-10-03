@@ -1,31 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import './OnlinePayment.css'; 
 import qrCodeImage from '../../Assets/pictures/qr.png';
 
 const OnlinePayment = () => {
+  const location = useLocation(); 
+  const { students } = location.state; 
+
   const [transactionId, setTransactionId] = useState('');
   const [transactionDate, setTransactionDate] = useState('');
-  const [name] = useState('John Doe'); 
-  const [rollNo] = useState('12345'); 
-  const [emailId] = useState('john.doe@example.com'); 
-  const feeType = 'Tuition Fee';
-  const totalFeeAmount = 1000; 
+  const [transactionTime, setTransactionTime] = useState('');
   const [isHalfPayment, setIsHalfPayment] = useState(false);
-  const [isPaymentTypeSelected, setIsPaymentTypeSelected] = useState(false); 
+  const [isPaymentTypeSelected, setIsPaymentTypeSelected] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('Pending');
   const [showQRCode, setShowQRCode] = useState(false);
-  const [transactionDateTime, setTransactionDateTime] = useState('');
   const [isPaymentInitiated, setIsPaymentInitiated] = useState(false);
-  const [error, setError] = useState(''); 
+  const [error, setError] = useState('');
+
+  const feeType = 'Tuition Fee'; 
+  const totalFeeAmount = students.tuition_fees; 
 
   const handlePaymentSubmission = async () => {
     const paymentData = {
-      name,
-      rollNo,
-      emailId,
+      name: students.name, 
+      regNo: students.regno, 
+      emailId: students.email, 
       transactionId,
-      transactionDate,
+      transactionDate: `${transactionDate} ${transactionTime}`,
       feeType,
       feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
       verificationStatus,
@@ -39,41 +41,48 @@ const OnlinePayment = () => {
     }
   };
 
-  const handleTransactionIdChange = (event) => {
-    setTransactionId(event.target.value);
+  const handlePaymentSuccess = () => {
+    const studentId = students.regno;
+    axios.put(`http://localhost:3001/payment-request/${studentId}`, { status: 'paid' })
+        .then(response => {
+            alert('Payment successful!');
+            axios.put(`http://localhost:3001/update-fee/${studentId}`, { fee_type: feeType })
+                .then(() => {
+                    console.log('Fee updated in admin panel.');
+                })
+                .catch(error => {
+                    console.error('Error updating fee:', error);
+                });
+        })
+        .catch(error => {
+            console.error('Error updating payment status:', error);
+        });
   };
 
   const handlePayOnlineClick = () => {
     setShowQRCode(true);
-    setIsPaymentInitiated(true); 
+    setIsPaymentInitiated(true);
   };
 
   const handlePaymentTypeChange = (e) => {
     setIsHalfPayment(e.target.value === 'half');
-    setIsPaymentTypeSelected(true); 
+    setIsPaymentTypeSelected(true);
   };
 
   const handleSubmitPayment = () => {
-    setError(''); 
+    setError('');
 
-    
     if (!transactionId) {
       setError('Please enter Transaction ID for online payments.');
       return;
     }
 
-    if (!transactionDateTime) {
+    if (!transactionDate || !transactionTime) {
       setError('Please enter both transaction date and time.');
       return;
     }
 
-    const [date, time] = transactionDateTime.split('T');
-    if (!date || !time) {
-      setError('Please ensure the date and time are correctly entered.');
-      return;
-    }
-
-    
+    handlePaymentSubmission();
     alert('Payment submitted, verification in progress');
   };
 
@@ -89,26 +98,27 @@ const OnlinePayment = () => {
   return (
     <div className="fee-payment-container">
       <h1 className="title">Online Fee Payment</h1>
+      <div className="student-details">
+        <h3>Student Name: {students.name}</h3>
+        <h3>Registration No: {students.regno}</h3>
+        <h3>Email: {students.email}</h3>
+        <h3>Phone: {students.phone_no}</h3>
+      </div>
       <div className="fee-details">
         <h2 className="fee-type">Fee Type: {feeType}</h2>
         <h3 className="fee-amount">Fee Amount: ₹{isHalfPayment ? (totalFeeAmount / 2).toFixed(2) : totalFeeAmount.toFixed(2)}</h3>
       </div>
 
-   
       {!isPaymentTypeSelected && (
         <div className="payment-type-container">
           <label htmlFor="payment-type">Select Payment Type:</label>
-          <select
-            id="payment-type"
-            onChange={handlePaymentTypeChange}
-          >
+          <select id="payment-type" onChange={handlePaymentTypeChange}>
             <option value="full">Full Payment</option>
             <option value="half">Half Payment</option>
           </select>
         </div>
       )}
 
-     
       {showQRCode && (
         <div className="payment-info-container">
           <div className="qr-code-container">
@@ -122,7 +132,7 @@ const OnlinePayment = () => {
               type="text"
               id="transaction-id"
               value={transactionId}
-              onChange={handleTransactionIdChange}
+              onChange={(e) => setTransactionId(e.target.value)}
               className="transaction-id-input"
             />
           </div>
@@ -130,8 +140,8 @@ const OnlinePayment = () => {
             <label htmlFor="transaction-date">Enter Transaction Date:</label>
             <input
               type="date"
-              value={transactionDateTime.split('T')[0] || ''} 
-              onChange={(e) => setTransactionDateTime(`${e.target.value}T${transactionDateTime.split('T')[1] || ''}`)}
+              value={transactionDate}
+              onChange={(e) => setTransactionDate(e.target.value)}
               className="transaction-date-input"
             />
           </div>
@@ -139,15 +149,15 @@ const OnlinePayment = () => {
             <label htmlFor="transaction-time">Enter Transaction Time:</label>
             <input
               type="time"
-              value={transactionDateTime.split('T')[1] || ''} 
-              onChange={(e) => setTransactionDateTime(`${transactionDateTime.split('T')[0]}T${e.target.value}`)}
+              value={transactionTime}
+              onChange={(e) => setTransactionTime(e.target.value)}
               className="transaction-time-input"
             />
           </div>
         </div>
       )}
 
-      {error && <p className="error-message">{error}</p>} 
+      {error && <p className="error-message">{error}</p>}
 
       {!isPaymentInitiated ? (
         <button type="button" onClick={handlePayOnlineClick} className="payment-button">

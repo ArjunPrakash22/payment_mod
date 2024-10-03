@@ -7,7 +7,6 @@ import './FeesPage.css';
 const CautionDeposit = () => {
   const location = useLocation();
   const students = location.state?.students || {};
-  //const { studentss } = location.state;
   const [paymentType, setPaymentType] = useState('full'); 
   const [amountToPay, setAmountToPay] = useState(students.caution_deposit);
   const [paymentMode, setPaymentMode] = useState('Cash');
@@ -22,7 +21,7 @@ const CautionDeposit = () => {
   };
 
   const storePaymentDetails = async () => {
-    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; 
     const paymentDate = new Date().toISOString().slice(0, 10); 
     try {
       await axios.post(`http://localhost:5000/api/storePaymentDetails`, {
@@ -62,7 +61,7 @@ const CautionDeposit = () => {
           name:students.name,
           admission_no:students.admission_no,
 
-         }, // Send student email to identify receipt
+         }, 
         {
           responseType: "blob",
         }
