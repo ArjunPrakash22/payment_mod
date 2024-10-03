@@ -41,12 +41,15 @@ const AdminPanel = () => {
   };
 
   const handleExamFeesHistoryClick = () => {
-    navigate('/exam-fees');
+    navigate('/exam-fees-transactions');
   };
   const handlePaymentRequestHistoryClick = () => {
     navigate('/payment-request');
   };
 
+  const handleExamFeesPayNowClick = (students) => {
+    navigate('/exam-fees', { state: { students } });
+  };
 
 
   useEffect(() => {
@@ -257,7 +260,11 @@ const AdminPanel = () => {
                         </Link>
                       )}
                     </td>
-                    <td className="td">{students.exam_fees}</td>
+                    <td className="td">{students.exam_fees}
+                        <Link to="/exam-fees" state={{ students }}>
+                          <button className="button" onClick={() => handleExamFeesPayNowClick(students)}>Pay Now</button>
+                        </Link>
+                    </td>
                     <td className="td">{students.status}</td>
                     <td className="td">
                       <button className="button" onClick={() => handleEditClick(students)}>Edit</button>

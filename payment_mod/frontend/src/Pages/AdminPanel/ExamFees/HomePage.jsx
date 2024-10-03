@@ -18,10 +18,8 @@ function HomePage() {
 
     return (
         <div className="home-container">
-             <button className="history-button" onClick={() => navigate('/admin')}>
-                        Admin Panel
-                    </button>
-            <h1 className="home-title">Exam Fee Payment - Admin Side</h1>
+         
+            <h1 className="home-title">Exam Fee Payment - Admin</h1>
             <button className="home-button" onClick={() => handleSelection('provisional')}>Provisional</button>
             <button className="home-button" onClick={() => handleSelection('arrears')}>Arrears</button>
         </div>

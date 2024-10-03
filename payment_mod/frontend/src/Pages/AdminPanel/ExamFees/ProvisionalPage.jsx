@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './ProvisionalPage.css';
 
-
 function ProvisionalPage() {
     const location = useLocation();
     const students = location.state?.students || {};
@@ -13,9 +12,9 @@ function ProvisionalPage() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [paymentMode, setPaymentMode] = useState('offline');
     const [transactionId, setTransactionId] = useState('');
-    
     const [amountToPay, setAmountToPay] = useState(0);
-   
+    const [error, setError] = useState(''); // For error messages
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -29,7 +28,7 @@ function ProvisionalPage() {
                 setSubjects(fetchedSubjects);
                 const total = fetchedSubjects.reduce((sum, sub) => sum + sub.fee_amount, 0);
                 setTotalAmount(total);
-                setAmountToPay(total); // Assuming total amount to pay is the sum of all subject fees
+                setAmountToPay(total);
             } catch (error) {
                 console.error('Error fetching provisional subjects', error.response?.data || error.message);
             }
@@ -50,15 +49,9 @@ function ProvisionalPage() {
         setTransactionId(event.target.value);
     };
 
-    // const handleGenerateReceipt = () => {
-    //     // Handle receipt generation, maybe include transactionId and paymentMode in request
-    //     navigate('/transactions');
-    // };
-
     const storeExamFeeTransactions = async () => {
         const paymentDate = new Date().toISOString().slice(0, 10); 
         try {
-            console.log(students.name);
             await axios.post(`http://localhost:5003/api/examfee/record`, {
                 name: students.name,
                 regno: students.regno,
@@ -76,10 +69,15 @@ function ProvisionalPage() {
         }
     };
 
-    
-
     const handlePaymentSubmit = async (e) => {
         e.preventDefault();
+        setError(''); // Reset error message
+
+        if (paymentMode === 'online' && !transactionId) {
+            setError('Please enter Transaction ID for online payments.');
+            return;
+        }
+
         try {
             await storeExamFeeTransactions();
             await axios.post(`http://localhost:5003/api/studentfee`, {
@@ -87,14 +85,9 @@ function ProvisionalPage() {
                 ...students,
                 exam_fees: 0,
             });
-            console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentMode} payment)`);
-            
             navigate('/exam-fee-transactions');
         } catch (error) {
             console.error('Error processing payment:', error);
-            if (error.response) {
-                console.error('Server responded with:', error.response.data);
-            }
         }
     };
 
@@ -142,7 +135,8 @@ function ProvisionalPage() {
                         />
                     </div>
                 )}
-                <button type="submit" className="provisional-button">
+                {error && <p className="error-message">{error}</p>}
+                <button type="submit" className="provisional-button" disabled={amountToPay <= 0}>
                     Generate Payment Receipt
                 </button>
             </form>

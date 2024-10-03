@@ -3,9 +3,10 @@ import axios from 'axios';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import './ArrearsPage.css';
+import qrCodeImage from '../../Assets/pictures/qr.png';
+import './ArrearExamFeesOnline.css';
 
-function ArrearsPage() {
+function ArrearExamFeesOnline() {
     const location = useLocation();
     const students = location.state?.students || {};
     const [allSubjects, setAllSubjects] = useState([]);
@@ -13,8 +14,11 @@ function ArrearsPage() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [paymentMode, setPaymentMode] = useState('offline');
     const [transactionId, setTransactionId] = useState('');
-    const [error, setError] = useState(''); // For error messages
     const navigate = useNavigate();
+    const [showQRCode, setShowQRCode] = useState(false);
+    const [transactionDateTime, setTransactionDateTime] = useState('');
+    const [error, setError] = useState('');
+    const [isPaymentInitiated, setIsPaymentInitiated] = useState(false); 
 
     useEffect(() => {
         const fetchAllSubjects = async () => {
@@ -51,23 +55,64 @@ function ArrearsPage() {
             };
         });
         setArrearSubjects(selectedSubjects);
-        
-        // Clear error if any subjects are selected
-        if (selectedSubjects.length > 0) {
-            setError('');
-        }
+        setError(''); 
     };
 
     const handleRemoveArrear = (subjectCode) => {
         setArrearSubjects(prev => prev.filter(sub => sub.value !== subjectCode));
     };
 
-    const handlePaymentModeChange = (event) => {
-        setPaymentMode(event.target.value);
-    };
-
     const handleTransactionIdChange = (event) => {
         setTransactionId(event.target.value);
+    };
+
+    const handlePayOnlineClick = () => {
+        if (arrearSubjects.length === 0) {
+            setError('Please select at least one subject.');
+            return;
+        }
+        setShowQRCode(true);
+        setIsPaymentInitiated(true); 
+    };
+
+    const handleSubmitPayment = async (e) => {
+        e.preventDefault();
+        setError('');
+
+      
+        if (arrearSubjects.length === 0) {
+            setError('Please select at least one subject.');
+            return;
+        }
+
+        
+            if (!transactionId) {
+                setError('Please enter Transaction ID for online payments.');
+                return;
+            }
+
+            if (!transactionDateTime) {
+                setError('Please enter both transaction date and time.');
+                return;
+            }
+
+            const [date, time] = transactionDateTime.split('T');
+            if (!date || !time) {
+                setError('Please ensure the date and time are correctly entered.');
+                return;
+            }
+            alert('Payment submitted, verification in progress');
+
+        
+    };
+
+    const downloadQRCode = () => {
+        const link = document.createElement('a');
+        link.href = qrCodeImage;
+        link.download = 'payment-qr-code.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
     const subjectOptions = allSubjects.map(subject => ({
@@ -95,37 +140,12 @@ function ArrearsPage() {
         }
     };
 
-    const handlePaymentSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Reset error message
-
-        if (arrearSubjects.length === 0) {
-            setError('Please select at least one subject.');
-            return;
-        }
-
-        if (paymentMode === 'online' && !transactionId) {
-            setError('Please enter Transaction ID for online payments.');
-            return;
-        }
-
-        try {
-            await storeExamFeeTransactions();   
-            navigate('/exam-fee-transactions');
-        } catch (error) {
-            console.error('Error processing payment:', error);
-            if (error.response) {
-                console.error('Server responded with:', error.response.data);
-            }
-        }
-    };
-
     return (
         <div className="arrears-container">
             <div className="arrears-header">
                 <h1>Select Arrears Subjects</h1>
             </div>
-            <form onSubmit={handlePaymentSubmit}>
+            <form onSubmit={handleSubmitPayment}>
                 <div className="arrear-subject-select-container">
                     <label htmlFor="arrear-subject" className="arrear-subject-select-label">
                         Select subjects to add as arrears:
@@ -158,37 +178,60 @@ function ArrearsPage() {
                     </ul>
                 </div>
                 <h2 className="arrears-total">Total Amount: ₹{totalAmount.toFixed(2)}</h2>
-                <div className="payment-mode-container">
-                    <label htmlFor="payment-mode" className="payment-mode-label">Payment Mode:</label>
-                    <select
-                        id="payment-mode"
-                        value={paymentMode}
-                        onChange={handlePaymentModeChange}
-                        className="payment-mode-select"
-                    >
-                        <option value="offline">Offline</option>
-                        <option value="online">Online</option>
-                    </select>
-                </div>
-                {paymentMode === 'online' && (
-                    <div className="transaction-id-container">
-                        <label htmlFor="transaction-id" className="transaction-id-label">Enter Transaction ID:</label>
-                        <input
-                            type="text"
-                            id="transaction-id"
-                            value={transactionId}
-                            onChange={handleTransactionIdChange}
-                            className="transaction-id-input"
-                        />
+                {showQRCode && (
+                    <div className="payment-info-container">
+                        <div className="qr-code-container">
+                            <h3>QR Code for Payment</h3>
+                            <img src={qrCodeImage} alt="Payment QR Code" style={{ width: '200px', height: '200px' }} />
+                            <button type="button" onClick={downloadQRCode}>Download QR Code</button>
+                        </div>
+                        <div className="transaction-id-container">
+                            <label htmlFor="transaction-id">Enter Transaction ID:</label>
+                            <input
+                                type="text"
+                                id="transaction-id"
+                                value={transactionId}
+                                onChange={handleTransactionIdChange}
+                                className="transaction-id-input"
+                            />
+                        </div>
+                        <div className="date-time-container">
+                            <label htmlFor="transaction-date">Enter Transaction Date:</label>
+                            <input
+                                type="date"
+                                value={transactionDateTime.split('T')[0]} 
+                                onChange={(e) => setTransactionDateTime(`${e.target.value}T${transactionDateTime.split('T')[1] || ''}`)}
+                                className="transaction-date-input"
+                            />
+                        </div>
+                        <div className="time-container">
+                            <label htmlFor="transaction-time">Enter Transaction Time:</label>
+                            <input
+                                type="time"
+                                value={transactionDateTime.split('T')[1] || ''}
+                                onChange={(e) => setTransactionDateTime(`${transactionDateTime.split('T')[0]}T${e.target.value}`)}
+                                className="transaction-time-input"
+                            />
+                        </div>
                     </div>
                 )}
-                {error && <p className="error-message">{error}</p>} {/* Display error message */}
-                <button type="submit" className="arrears-button" >
-                    Proceed to Payment
-                </button>
+
+                {error && <p className="error-message">{error}</p>}
+
+                {!isPaymentInitiated && (
+                    <button type="button" onClick={handlePayOnlineClick} className="arrears-button">
+                        Pay Online
+                    </button>
+                )}
+
+                {isPaymentInitiated && ( 
+                    <button type="submit" className="arrears-button" disabled={!showQRCode}>
+                        Submit Payment
+                    </button>
+                )}
             </form>
         </div>
     );
 }
 
-export default ArrearsPage;
+export default ArrearExamFeesOnline;

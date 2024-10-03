@@ -17,7 +17,9 @@ import {
   HomePage,
   ProvisionalPage,
   ArrearsPage,
-  ExamFeeTransactions
+  ExamFeeTransactions,
+  ProvisionalExamFeesOnline,
+  ArrearExamFeesOnline
 } from './Pages';
 import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
 import Footer from "./Components/Footer/Footer";
@@ -50,9 +52,11 @@ function App() {
         <Route path="/exam-fees" element={<HomePage />} />
         <Route path="/exam-fees/Provisional" element={<ProvisionalPage />} />
         <Route path="/exam-fees/Arrears" element={<ArrearsPage/>} />
-        <Route path="/exam-fee-transactions" element={<ExamFeeTransactions/>} />
+        <Route path="/exam-fees-transactions" element={<ExamFeeTransactions/>} />
         <Route path="/payment-request" element={<PaymentRequest />} />
         <Route path="/online-payment" element={<OnlinePayment/>}/>
+        <Route path="/online-payment-exam-provisional" element={<ProvisionalExamFeesOnline/>}/>
+        <Route path="/online-payment-exam-arrear" element={<ArrearExamFeesOnline/>}/>
       </Routes>
       <Footer />
     </div>

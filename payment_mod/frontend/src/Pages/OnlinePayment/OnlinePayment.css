@@ -28,7 +28,7 @@ body {
   }
   
   .fee-type {
-    color: #007bff;
+    color: #28a745;
   }
   
   .fee-amount {
@@ -70,21 +70,7 @@ body {
     border-radius: 4px;
     font-size: 1em;
   }
-  
-  .submit-button {
-    width: 100%;
-    padding: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1.1em;
-    cursor: pointer;
-  }
-  
-  .submit-button:hover {
-    background: #0056b3;
-  }
+
   
   .verification-status {
     text-align: center;
@@ -94,17 +80,26 @@ body {
     margin-bottom: 10px;
   }
   
-  .verify-button {
-    padding: 10px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 1.1em;
-    cursor: pointer;
+  
+  .payment-type-container {
+    margin: 20px 0;
   }
   
-  .verify-button:hover {
-    background: #218838;
+  .payment-type-container label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .payment-type-container select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .payment-button
+  {
+    display: inline-block;
   }
   
