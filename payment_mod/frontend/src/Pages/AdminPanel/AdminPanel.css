@@ -32,22 +32,22 @@
   scroll-behavior: smooth; 
 }
 
-/* Optionally, you can add some padding or margins for better visuals */
+
 .table-container::-webkit-scrollbar {
-  height: 8px; /* Adjust the height of the scrollbar */
+  height: 8px; 
 }
 
 .table-container::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Background of the scrollbar track */
+  background: #f1f1f1; 
 }
 
 .table-container::-webkit-scrollbar-thumb {
-  background: #888; /* Color of the scrollbar handle */
-  border-radius: 4px; /* Rounded corners */
+  background: #888; 
+  border-radius: 4px; 
 }
 
 .table-container::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color on hover */
+  background: #555;
 }
 
 
@@ -194,39 +194,39 @@
     width: 100%;
   }
 }
-/* History Button Specific Styles */
+
 .history-button {
   height: 30px;
-  width: 150px; /* Adjust width to fit longer text */
+  width: 150px;
   font-size: 14px;
   color: #ffffff;
-  background-color: #17a462; /* Keep the same background color */
+  background-color: #17a462; 
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin: 0 10px; /* Add some margin between buttons */
-  display: inline-block; /* To align buttons horizontally */
+  margin: 0 10px; 
+  display: inline-block; 
 }
 
-/* Hover and active states */
+
 .history-button:hover {
-  background-color: #a1aed4; /* Lighter color on hover */
+  background-color: #a1aed4; 
 }
 
 .history-button:active {
-  background-color: #0c633a; /* Darker green when clicked */
+  background-color: #0c633a; 
 }
 
 .history-button:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(39, 60, 117, 0.5); /* Slight focus glow */
+  box-shadow: 0 0 5px rgba(39, 60, 117, 0.5); 
 }
 
-/* Button Container Styling */
+
 .button-container {
   display: flex;
-  justify-content: center; /* Center the buttons horizontally */
-  margin-top: 20px; /* Add space above the button container */
+  justify-content: center; 
+  margin-top: 20px; 
   margin-bottom: 20px;
 }

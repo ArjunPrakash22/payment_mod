@@ -11,10 +11,10 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    // jQuery script to handle form interaction and validation
+   
     $('.placeholder').click(function() {
       $(this).siblings('input').focus();
     });
@@ -67,12 +67,12 @@ const Login = () => {
       });
 
       if(username==='SsSaDmin153@gmail.com' && response.data.success){
-        // console.log("admin pass matched");
+       
         navigate("/admin",{state:{key:username}});
       }
 
       else if (response.data.success) {
-        // Redirect to the dashboard on successful login
+        
         navigate('/dashboard',{state:{key:username
 
         }});

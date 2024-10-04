@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [student, setStudent] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
-  const { key } = location.state || {}; // Extract 'key' from location.state 
+  const { key } = location.state || {}; 
 
   useEffect(() => {
     if (!location.state || !location.state.key) {
@@ -44,7 +44,8 @@ const Dashboard = () => {
       amount: amount,
       cash_mode: 'online',
       });
-      navigate('/qr-payment', { state: { feeType, amount, studentEmail: student.email } });
+      console.log("1");
+      navigate('/online-payment', { state: { feeType, amount, studentEmail: student.email } });
     } catch (error) {
       console.error('Error sending payment request:', error);
     }
@@ -91,10 +92,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Add a small gap between the two sections */}
+     
       <div className="section-gap"></div>
 
-      {/* College Details Section */}
+    
       <h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>College Details</h1>
       <div className="cards-container">
         <div className="card">
@@ -134,11 +135,11 @@ const Dashboard = () => {
         </div>
         <div className="card">
           <p><strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}</p>
-          <button onClick={() => handlePayNow('Registration Fees', student.reg_fees)}>Pay Miscellaneous Fees</button>
+          <button onClick={() => handlePayNow('Miscellaneous Fees', student.reg_fees)}>Pay Miscellaneous Fees</button>
         </div>
       </div>
 
-      {/* Display the reason if available */}
+   
       <div className="cards-container">
         <div className="card">
           <p><strong>Reason:</strong> {student.reason}</p>
