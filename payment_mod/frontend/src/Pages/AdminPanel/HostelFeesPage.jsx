@@ -56,7 +56,7 @@ const HostelFeesPage = () => {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { email: students.email,
-          amount: amountToPay,
+          amount: students.hostel_fees,
           feestype: 'Hostel',
           paymentMode:paymentMode,
           name:students.name,

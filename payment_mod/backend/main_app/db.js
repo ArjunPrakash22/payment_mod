@@ -387,20 +387,23 @@ const login=async (req, res) => {
 
 };
 const StoreInPaymentRequest = async (req, res) => {
-  const { admissionNo, name, regno, feeType, amount, email, phone_no } = req.body;
-
+  const { admission_number, name, regno, fee_type, amount, email, phone_no } = req.body;
+  
   try {
-    // Insert the payment request into the payment_request table
-    const query = `INSERT INTO payment_request (admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, status, created_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, 'online', 'pending', NOW())`;
+    console.log("Received data:", req.body);  // Logging received data
 
-    await db.query(query, [admissionNo, name, regno, feeType, amount, email, phone_no]);
-
-    // Respond with success message
+    const query = `INSERT INTO payment_request (admission_number, name, regno, fee_type, amount, email, phone_no, status)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`;
+    
+    // Logging query execution step
+    console.log("Executing query...");
+    await db.query(query, [admission_number, name, regno, fee_type, amount, email, phone_no]);
+    
     res.status(200).json({ message: 'Payment request created successfully.' });
   } catch (error) {
-    console.error('Error creating payment request:', error);
-    res.status(500).json({ message: 'Server error. Could not create payment request.' });
+    console.error('Error details:', error.message); // Logging error message
+    console.error('Error stack:', error.stack);     // Logging stack trace
+    res.status(500).json({ message: 'Server error. Could not create payment request.', error: error.message });
   }
 };
 

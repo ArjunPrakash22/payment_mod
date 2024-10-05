@@ -30,7 +30,7 @@ const CollegeFeesPage = () => {
         "http://localhost:5003/api/download_receipt",
         { 
           email: students.email,
-          amount: amountToPay,
+          amount: students.clg_fees,
           feestype: 'College',
           paymentMode:paymentMode,
           admission_no:students.admission_no,

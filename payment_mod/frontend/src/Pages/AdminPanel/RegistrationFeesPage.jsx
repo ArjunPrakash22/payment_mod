@@ -20,6 +20,36 @@ const RegistrationFeesPage = () => {
     setPaymentType(e.target.value);
     setPaymentMode(e.target.value);
   };
+  const Download_registration= async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/download_receipt",
+        { email: students.email,
+          amount: students.reg_fees,
+          feestype: 'Registration',
+          paymentMode:paymentMode,
+          name:students.name,
+          admission_no:students.admission_no,
+
+         }, // Send student email to identify receipt
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'Registration_receipt.pdf');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading the PDF:', error);
+    }
+  };
 
   const storePaymentDetails = async () => {
     const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
@@ -66,8 +96,15 @@ const RegistrationFeesPage = () => {
       });
   
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
-      // await Download_Hostel();
-      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
+       await Download_registration();
+      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"},
+      replace:true,
+    });
+    // Prevent back navigation
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, null, window.location.href);
+    });
     } catch (error) {
       console.error('Error processing payment:', error);
   

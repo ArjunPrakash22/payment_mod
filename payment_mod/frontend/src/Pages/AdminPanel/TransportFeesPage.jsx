@@ -19,6 +19,36 @@ const TransportFeesPage = () => {
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
   };
+  const Download_transport= async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/download_receipt",
+        { email: students.email,
+          amount: students.transport_fees,
+          feestype: 'Transport',
+          paymentMode:paymentMode,
+          name:students.name,
+          admission_no:students.admission_no,
+
+         }, // Send student email to identify receipt
+        {
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'Transport_receipt.pdf');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading the PDF:', error);
+    }
+  };
 
   const storePaymentDetails = async () => {
     const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
@@ -62,8 +92,14 @@ const TransportFeesPage = () => {
       });
   
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
-    
-      navigate('/admin', { state: { key: students.email } });
+      await Download_transport();
+      navigate('/admin', { state: { key: students.email },
+                           replace:true,
+                           });
+                           window.history.pushState(null, null, window.location.href);
+                           window.addEventListener('popstate', function(event) {
+                             window.history.pushState(null, null, window.location.href);
+                           });
     } catch (error) {
       console.error('Error processing payment:', error);
       if (error.response) {

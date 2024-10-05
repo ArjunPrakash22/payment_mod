@@ -26,7 +26,7 @@ function OtherFeesPage() {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { email: students.email,
-          amount: amountToPay,
+          amount: students.miscellaneous_fees,
           feestype: 'Others',
           paymentMode:paymentMode,
           name:students.name,
