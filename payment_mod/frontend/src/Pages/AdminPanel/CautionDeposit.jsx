@@ -50,13 +50,13 @@ const CautionDeposit = () => {
 
 
 
-  const Download_Hostel= async () => {
+  const Download_cautionDeposit= async () => {
     try {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { email: students.email,
-          amount: amountToPay,
-          feestype: 'Hostel',
+          amount: students.caution_deposit,
+          feestype: 'CautionDeposit',
           paymentMode:paymentMode,
           name:students.name,
           admission_no:students.admission_no,
@@ -70,7 +70,7 @@ const CautionDeposit = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.setAttribute('download', 'Hostel_receipt.pdf');
+      a.setAttribute('download', 'CD_receipt.pdf');
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -89,15 +89,22 @@ const CautionDeposit = () => {
     try {
 
         await storePaymentDetails();
-       await axios.post(`http://localhost:5003/api/studentfee`,{email:students.email, 
+        await axios.post(`http://localhost:5003/api/studentfee`,{email:students.email, 
         ...students,
         caution_deposit: 0,
       });
 
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
-      await Download_Hostel();
+      await Download_cautionDeposit();
       // Redirect back to the admin panel
-      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"}});
+      navigate('/admin',{state:{key:"SsSaDmin153@gmail.com"},
+      replace:true,
+    });
+    // Prevent back navigation
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, null, window.location.href);
+    });
     } catch (error) {
       console.error('Error processing payment:', error);
       if (error.response) {

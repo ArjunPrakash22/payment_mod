@@ -19,7 +19,7 @@ const Dashboard = () => {
     async function fetchData() {
       try {
         if (key) {
-          const response = await axios.post('http://localhost:5003/api/dashboard/', {
+          const response = await axios.post(`http://localhost:5003/api/dashboard/`, {
             studentEmail: key,
           });
           setStudent(response.data);
@@ -34,18 +34,26 @@ const Dashboard = () => {
 
   const handlePayNow = async (feeType, amount) => {
     try {
-      const response = await axios.post('http://localhost:5003/api/storepaymentrequest', {
-      admissionNo: student.admission_no,
+     await axios.post('http://localhost:5003/api/storepaymentrequest', {
+      admission_number: student.admission_number,
       name: student.name,
       regno: student.regno,
       email: student.email,
       phone_no: student.phone_no,
-      feeType: feeType,
+      fee_type: feeType,
       amount: amount,
-      cash_mode: 'online',
       });
-      console.log("1");
-      navigate('/online-payment', { state: { feeType, amount, studentEmail: student.email } });
+      navigate('/online-payment', {
+         state: { 
+          students:{
+          name: student.name,
+          regno: student.regno,
+          email: student.email,
+          phone_no: student.phone_no,
+         },feeType,
+         amount,
+        },
+      });
     } catch (error) {
       console.error('Error sending payment request:', error);
     }
@@ -60,7 +68,7 @@ const Dashboard = () => {
       </div>
       <h2>Student Dashboard</h2>
 
-      {/* Personal Details Section */}
+  
       <h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>Personal Details</h1>
       <div className="cards-container">
         <div className="card">

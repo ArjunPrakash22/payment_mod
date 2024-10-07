@@ -6,8 +6,21 @@ import qrCodeImage from '../../Assets/pictures/qr.png';
 
 const OnlinePayment = () => {
   const location = useLocation(); 
-  const { students } = location.state; 
+  const { students, feeType } = location.state; // feeType passed from dashboard
 
+
+  const feeAmounts = {
+    'Tuition': 100000,
+    'College': 400000,
+    'Hostel': 50000,
+    'Miscellaneous' : 40000,
+    'Caution Deposit': 10000,
+    'Transport': 20000,
+    'Registration': 5000
+  };
+
+  // Set the total fee amount based on the feeType
+  const [totalFeeAmount, setTotalFeeAmount] = useState(feeAmounts[feeType] || 0);
   const [transactionId, setTransactionId] = useState('');
   const [transactionDate, setTransactionDate] = useState('');
   const [transactionTime, setTransactionTime] = useState('');
@@ -17,9 +30,7 @@ const OnlinePayment = () => {
   const [showQRCode, setShowQRCode] = useState(false);
   const [isPaymentInitiated, setIsPaymentInitiated] = useState(false);
   const [error, setError] = useState('');
-
-  const feeType = 'Tuition Fee'; 
-  const totalFeeAmount = students.tuition_fees; 
+  const paymentMode = 'online';
 
   const handlePaymentSubmission = async () => {
     const paymentData = {
@@ -41,22 +52,72 @@ const OnlinePayment = () => {
     }
   };
 
+  const storePaymentDetails = async () => {
+    try {
+      await axios.post('http://localhost:5003/api/storePaymentDetails', {
+        name: students.name,
+        email: students.email,
+        admission_no: students.admission_no,
+        regno: students.regno,
+        phone_no: students.phone_no, 
+        transactionId,
+        transactionDate: `${transactionDate} ${transactionTime}`,
+        feeType,
+        feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
+        verificationStatus,
+      });
+      console.log('Payment details stored successfully');
+    } catch (error) {
+      console.error('Error storing payment details:', error);
+    }
+  };
+
   const handlePaymentSuccess = () => {
+    storePaymentDetails();
     const studentId = students.regno;
     axios.put(`http://localhost:3001/payment-request/${studentId}`, { status: 'paid' })
-        .then(response => {
-            alert('Payment successful!');
-            axios.put(`http://localhost:3001/update-fee/${studentId}`, { fee_type: feeType })
-                .then(() => {
-                    console.log('Fee updated in admin panel.');
-                })
-                .catch(error => {
-                    console.error('Error updating fee:', error);
-                });
-        })
-        .catch(error => {
-            console.error('Error updating payment status:', error);
-        });
+      .then(response => {
+        alert('Payment successful!');
+        axios.put(`http://localhost:3001/update-fee/${studentId}`, { fee_type: feeType })
+          .then(() => {
+            console.log('Fee updated in admin panel.');
+          })
+          .catch(error => {
+            console.error('Error updating fee:', error);
+          });
+      })
+      .catch(error => {
+        console.error('Error updating payment status:', error);
+      });
+  };
+
+  const Download_Receipt = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/download_receipt",
+        {
+          email: students.email,
+          amount: totalFeeAmount,
+          feestype: feeType,
+          paymentMode,
+          name: students.name,
+          admission_no: students.admission_no,
+        }, 
+        { responseType: "blob" }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'fees_receipt.pdf');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error downloading the PDF:', error);
+    }
   };
 
   const handlePayOnlineClick = () => {
@@ -71,20 +132,32 @@ const OnlinePayment = () => {
 
   const handleSubmitPayment = () => {
     setError('');
-
+  
     if (!transactionId) {
       setError('Please enter Transaction ID for online payments.');
       return;
     }
-
+  
     if (!transactionDate || !transactionTime) {
       setError('Please enter both transaction date and time.');
       return;
     }
-
-    handlePaymentSubmission();
+  
+    handlePaymentSubmission();  // Submit payment details
+  
     alert('Payment submitted, verification in progress');
+  
+    Download_Receipt();  // Download the receipt after submission
+  
+    handlePaymentSuccess();  // Trigger successful payment handling
+  
+    // Prevent going back to the previous page
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function(event) {
+      window.history.pushState(null, null, window.location.href);
+    });
   };
+  
 
   const downloadQRCode = () => {
     const link = document.createElement('a');
