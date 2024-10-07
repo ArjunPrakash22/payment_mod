@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'swetha15',
     database: 'payment_db'
 });
 
@@ -368,15 +368,16 @@ const login=async (req, res) => {
         amount,
         no_of_subjects,
         transaction_id,
+        transaction_date,
         transaction_time
     } = req.body;
 
     const query = `INSERT INTO examfee (
-        name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_time
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date,transaction_time
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
 
     db.query(query, [
-        name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_time
+        name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date,transaction_time
     ], (err, result) => {
         if (err) {
             console.error('Error storing exam fee record:', err);
@@ -438,6 +439,100 @@ const UpdateAdminPanel= async (req, res) => {
   });
 };
 
+const StoreInExamFeeRequest = async (req, res) => {
+  const {
+      name,
+      regno,
+      email,
+      type,
+      mode,
+      amount,
+      no_of_subjects,
+      transaction_id,
+      transaction_date,
+      transaction_time
+  } = req.body;
+
+  const query = `INSERT INTO examfee_request (
+      name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date, transaction_time
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  db.query(query, [
+      name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date, transaction_time
+  ], (err, result) => {
+      if (err) {
+          console.error('Error storing exam fee request:', err);
+          return res.status(500).json({ error: 'Failed to store exam fee request' });
+      }
+      res.status(201).json({ message: 'Exam fee request added' });
+  });
+};
+
+const DisplayExamFeeRequests = async (req, res) => {
+  try {
+    const query = 'SELECT * FROM examfee_request';
+
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error('Error fetching exam fee requests:', err);
+        
+        return res.status(500).json({ error: 'Database error' });
+      }
+
+      // If no results are found, you can choose to handle it as well
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'No exam fee requests found' });
+      }
+      console.log("vanduthen");
+      res.status(200).json(results);
+    });
+  } catch (error) {
+    console.error('Unexpected error fetching exam fee requests:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
+// Function to update payment request status
+const updateExamFeeRequestStatus = (req, res) => {
+    const { transaction_id } = req.params;
+    const { status } = req.body;
+
+    const query = `UPDATE examfee_request SET status = ? WHERE transaction_id = ?`;
+    
+    db.query(query, [status, transaction_id], (err, result) => {
+        if (err) {
+            console.error('Error updating payment request status:', err);
+            return res.status(500).json({ error: 'Failed to update payment request status' });
+        }
+        res.status(200).json({ message: `Payment request status updated to ${status}` });
+    });
+};
+
+
+
+// Function to handle verifying and rejecting
+const handleExamFeeTransaction = async (req, res) => {
+    const { transaction_id, action } = req.body; // action can be 'verify' or 'reject'
+    
+    if (action === 'verify') {
+        const paymentRequestQuery = `SELECT * FROM examfee_request WHERE transaction_id = ?`;
+        db.query(paymentRequestQuery, [transaction_id], (err, results) => {
+            if (err || results.length === 0) {
+                return res.status(404).json({ error: 'Payment request not found' });
+            }
+            const request = results[0];
+            StoreInExamFee({ body: request }, res); // Call the function to store in exam fee
+            updateExamFeeRequestStatus(req, res); // Update the status to verified
+        });
+    } else if (action === 'reject') {
+        updateExamFeeRequestStatus(req, res); // Update the status to rejected
+    } else {
+        res.status(400).json({ error: 'Invalid action' });
+    }
+};
+
+
 module.exports = {
     login,
     registration,
@@ -453,5 +548,9 @@ module.exports = {
     StoreInPaymentRequest,
     DisplayPaymentRequest,
     UpdateAdminPanel,
+    StoreInExamFeeRequest,
+    DisplayExamFeeRequests,
+    handleExamFeeTransaction,
+    updateExamFeeRequestStatus,
     db
 };

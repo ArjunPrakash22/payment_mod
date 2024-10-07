@@ -13,6 +13,8 @@ function ArrearsPage() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [paymentMode, setPaymentMode] = useState('offline');
     const [transactionId, setTransactionId] = useState('');
+    const [transactionDate, setTransactionDate] = useState('');
+    const [transactionTime, setTransactionTime] = useState('');
     const [error, setError] = useState(''); // For error messages
     const navigate = useNavigate();
 
@@ -70,13 +72,20 @@ function ArrearsPage() {
         setTransactionId(event.target.value);
     };
 
+    const handleTransactionDateChange = (event) => {
+        setTransactionDate(event.target.value);
+    };
+
+    const handleTransactionTimeChange = (event) => {
+        setTransactionTime(event.target.value);
+    };
+
     const subjectOptions = allSubjects.map(subject => ({
         value: subject.subject_code,
         label: `${subject.subject_code} - ₹${subject.fee_amount.toFixed(2)}`
     }));
 
     const storeExamFeeTransactions = async () => {
-        const paymentDate = new Date().toISOString().slice(0, 10); 
         try {
             await axios.post(`http://localhost:5003/api/examfee/record`, {
                 name: students.name,
@@ -87,7 +96,8 @@ function ArrearsPage() {
                 amount: totalAmount,
                 no_of_subjects: arrearSubjects.length,
                 transaction_id: paymentMode === 'online' ? transactionId : 'cash',
-                transaction_time: paymentDate
+                transaction_date: transactionDate,
+                transaction_time: transactionTime
             });
             console.log('Payment details stored successfully');
         } catch (error) {
@@ -106,6 +116,16 @@ function ArrearsPage() {
 
         if (paymentMode === 'online' && !transactionId) {
             setError('Please enter Transaction ID for online payments.');
+            return;
+        }
+
+        if (!transactionDate) {
+            setError('Please enter a transaction date.');
+            return;
+        }
+
+        if (!transactionTime) {
+            setError('Please enter a transaction time.');
             return;
         }
 
@@ -182,8 +202,28 @@ function ArrearsPage() {
                         />
                     </div>
                 )}
+                <div className="transaction-date-container">
+                    <label htmlFor="transaction-date" className="transaction-date-label">Enter Transaction Date:</label>
+                    <input
+                        type="date"
+                        id="transaction-date"
+                        value={transactionDate}
+                        onChange={handleTransactionDateChange}
+                        className="transaction-date-input"
+                    />
+                </div>
+                <div className="transaction-time-container">
+                    <label htmlFor="transaction-time" className="transaction-time-label">Enter Transaction Time:</label>
+                    <input
+                        type="time"
+                        id="transaction-time"
+                        value={transactionTime}
+                        onChange={handleTransactionTimeChange}
+                        className="transaction-time-input"
+                    />
+                </div>
                 {error && <p className="error-message">{error}</p>} {/* Display error message */}
-                <button type="submit" className="arrears-button" >
+                <button type="submit" className="arrears-button">
                     Proceed to Payment
                 </button>
             </form>

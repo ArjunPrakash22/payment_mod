@@ -17,3 +17,4 @@ export {default as ExamFeeTransactions} from './AdminPanel/ExamFees/ExamFeeTrans
 export {default as OnlinePayment} from './OnlinePayment/OnlinePayment'
 export {default as ProvisionalExamFeesOnline} from './OnlinePayment/ProvisonalExamFeesOnline'
 export {default as ArrearExamFeesOnline} from './OnlinePayment/ArrearExamFeesOnline'
+export {default as ExamFeeRequests} from './AdminPanel/Request/ExamFeeRequests'

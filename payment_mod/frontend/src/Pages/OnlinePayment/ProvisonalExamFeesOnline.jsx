@@ -6,7 +6,7 @@ import './ProvisionalExamFeesOnline.css';
 
 function ProvisionalExamFeesOnline() {
     const location = useLocation();
-    const students = location.state?.students || {};
+    const students = location.state?.student || {};
     const [provisionalStatus, setProvisionalStatus] = useState('first');
     const [subjects, setSubjects] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -51,7 +51,7 @@ function ProvisionalExamFeesOnline() {
         setIsPaymentInitiated(true); 
     };
 
-    const handleSubmitPayment = () => {
+    const handleSubmitPayment = async() => {
         setError(''); 
         if (!transactionId) {
             setError('Please enter Transaction ID for online payments.');
@@ -69,7 +69,29 @@ function ProvisionalExamFeesOnline() {
             return;
         }
 
-        alert('Payment submitted, verification in progress');
+        try {
+            const response = await axios.post('http://localhost:5003/api/examfee-request', {
+                name :students.name,
+                regno :students.regno,
+                email :students.email,
+                type :"regular",
+                mode :"online",
+                transaction_id :transactionId,
+                transaction_date: date,         // Use date directly
+                transaction_time: time,         // Use time directly
+                amount: amountToPay,
+                no_of_subjects: subjects.length,
+                status: 'pending',               // Set status as 'pending'
+            });
+    
+            alert('Payment submitted successfully');
+            // Optionally reset the form or redirect the user
+            // navigate('/');
+        } catch (error) {
+            setError('Error submitting payment: ' + (error.response?.data.message || error.message));
+        }
+
+     
     };
 
     const downloadQRCode = () => {

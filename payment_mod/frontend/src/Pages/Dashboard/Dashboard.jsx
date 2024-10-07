@@ -134,8 +134,8 @@ const Dashboard = () => {
         </div>
         <div className="card">
           <p><strong>Exam Fees:</strong> {student.exam_fees}</p>
-          <button onClick={() => navigate('/online-payment-exam-provisional')}>Pay Provisional Exam Fees</button>
-          <button onClick={() => navigate('/online-payment-exam-arrear')}>Pay Arrear Exam Fees</button>
+          <button onClick={() => navigate('/online-payment-exam-provisional',{ state: { student } })}>Pay Provisional Exam Fees</button>
+          <button onClick={() => navigate('/online-payment-exam-arrear',{ state: { student } })}>Pay Arrear Exam Fees</button>
         </div>
         <div className="card">
           <p><strong>Registration Fees:</strong> {student.reg_fees}</p>

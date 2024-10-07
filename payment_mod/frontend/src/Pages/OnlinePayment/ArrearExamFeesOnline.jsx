@@ -8,7 +8,7 @@ import './ArrearExamFeesOnline.css';
 
 function ArrearExamFeesOnline() {
     const location = useLocation();
-    const students = location.state?.students || {};
+    const students = location.state?.student || {};
     const [allSubjects, setAllSubjects] = useState([]);
     const [arrearSubjects, setArrearSubjects] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
@@ -58,6 +58,8 @@ function ArrearExamFeesOnline() {
         setError(''); 
     };
 
+
+
     const handleRemoveArrear = (subjectCode) => {
         setArrearSubjects(prev => prev.filter(sub => sub.value !== subjectCode));
     };
@@ -101,10 +103,34 @@ function ArrearExamFeesOnline() {
                 setError('Please ensure the date and time are correctly entered.');
                 return;
             }
-            alert('Payment submitted, verification in progress');
+           
+            
+            try {
+                const response = await axios.post('http://localhost:5003/api/examfee-request', {
+                    name :students.name,
+                    regno :students.regno,
+                    email :students.email,
+                    type :"arrear",
+                    mode :"online",
+                    transaction_id :transactionId,
+                    transaction_date: date,         // Use date directly
+                    transaction_time: time,         // Use time directly
+                    amount: totalAmount,
+                    no_of_subjects: arrearSubjects.length,
+                    status: 'pending',               // Set status as 'pending'
+                });
+        
+                alert('Payment submitted successfully ');
+                
+            } catch (error) {
+                setError('Error submitting payment: ' + (error.response?.data.message || error.message));
+            }
+    
 
         
     };
+
+    
 
     const downloadQRCode = () => {
         const link = document.createElement('a');

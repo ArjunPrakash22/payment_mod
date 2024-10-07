@@ -47,6 +47,10 @@ const AdminPanel = () => {
     navigate('/payment-request');
   };
 
+  const handleExamFeeRequestHistoryClick = () => {
+    navigate('/exam-fee-request');
+  };
+
   const handleExamFeesPayNowClick = (students) => {
     navigate('/exam-fees', { state: { students } });
   };
@@ -171,6 +175,7 @@ const handlePaymentCompletion = (feeType, student) => {
         <button className="history-button" onClick={handlePaymentHistoryClick}>Payment History</button>
         <button className="history-button" onClick={handleExamFeesHistoryClick}>Exam Fees History</button>
         <button className="history-button" onClick={handlePaymentRequestHistoryClick}>Payment Request History</button>
+        <button className="history-button" onClick={handleExamFeeRequestHistoryClick}>Exam Fee Request History</button>
       </div>
     
       <input
