@@ -6,8 +6,6 @@ import qrCodeImage from '../../Assets/pictures/qr.png';
 
 const OnlinePayment = () => {
   const location = useLocation();
-  
-  // Safely access state with nullish coalescing to avoid undefined errors
   const students = location?.state?.students || {};
   const { studentName, admissionNo, feeType, amount,email } = location.state || {};
 
@@ -47,13 +45,42 @@ const OnlinePayment = () => {
     };
 
     try {
-      await axios.post('/api/payment-verification', paymentData);
+      await axios.post('/api/verify-payment', paymentData);
       alert('Payment submitted successfully!');
+      await Download_Receipt();
+
     } catch (error) {
       console.error('Error submitting payment:', error);
       setError('Failed to submit payment. Please try again.');
     }
   };
+  const StorePaymentRequestDetails = async () => {
+    try {
+      var bill_no=1;
+      await axios.post('http://localhost:5003/api/storepaymentrequest', {
+        bill_no: bill_no++, 
+        name: students.name,
+        email: students.email,
+        admission_no: students.admission_no,
+        regno: students.regno,
+        phone_no: students.phone_no,
+        cash_mode: paymentMode, 
+        transactionId,
+        transactionDate: `${transactionDate} ${transactionTime}`,
+        feeType,
+        feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
+        status: 'pending', 
+      });
+      console.log('Payment details stored successfully');
+      await handlePaymentSubmission();
+    alert('Payment submitted, verification in progress');
+    } catch (error) {
+      console.error('Error storing payment details:', error);
+      setError('Failed to store payment details.');
+    }
+  
+  };
+  
 
   const storePaymentDetails = async () => {
     try {
@@ -78,11 +105,9 @@ const OnlinePayment = () => {
 
   const handlePaymentSuccess = async () => {
     await storePaymentDetails();
-    const studentId = students.regno;
+    const studentId = students.admission_nono;
 
     try {
-      await axios.put(`http://localhost:3001/payment-request/${studentId}`, { status: 'paid' });
-      alert('Payment successful!');
       
       await axios.put(`http://localhost:3001/update-fee/${studentId}`, { fee_type: feeType });
       console.log('Fee updated in admin panel.');
@@ -147,9 +172,10 @@ const OnlinePayment = () => {
     }
 
     try {
-      await handlePaymentSubmission();  // Submit payment details
-      alert('Payment submitted, verification in progress');
-      await Download_Receipt();  // Download the receipt after submission
+      
+        // Submit payment details
+      
+      await StorePaymentRequestDetails();  // Download the receipt after submission
       await handlePaymentSuccess();  // Trigger successful payment handling
     } catch (error) {
       console.error('Error during payment submission:', error);

@@ -8,6 +8,7 @@ const db = mysql.createConnection({
     database: 'payment_db'
 });
 
+
 db.connect(err => {
     if (err) {
         console.log('Error connecting to the database:', err);
@@ -23,7 +24,7 @@ const { hashPassword } = require("./hashing");
 const upload = multer(); // Add multer for handling file uploads
 
 
-const getStudents = (req, res) => {
+const getStudents = (_req, res) => {
   console.log(1);
   db.query(`SELECT * FROM students`, (error, results) => {
     if (error) {
@@ -34,6 +35,8 @@ const getStudents = (req, res) => {
     }
   });
 };
+
+
 
 const FeeUpdate = (req, res) => {
   console.log("vantaen");
@@ -101,7 +104,7 @@ const updateStudent = (req, res) => {
 };
 
 
-const DisplayPayment = (req, res) => {
+const DisplayPayment = (_req, res) => {
   const query = 'SELECT * FROM payment';
   db.query(query, (err, results) => {
       if (err) {
@@ -140,7 +143,7 @@ const StoreInPayment = (req, res) => {
     receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
     transaction_id, date, feeType,amount
       
-  ], (err, result) => {
+  ], (err, _result) => {
       if (err) {
           return res.status(500).json({ error: 'Database error' });
       }
@@ -226,7 +229,7 @@ const registration = async (req, res) => {
         batch_year,
         quota
       ],
-      (err, result) => {
+      (err, _result) => {
         if (err) {
           console.error('Error inserting data into students:', err);
           return res.status(500).json({ message: 'Registration failed', error: err.message });
@@ -236,7 +239,7 @@ const registration = async (req, res) => {
         db.query(
           `INSERT INTO users (email, password) VALUES (?, ?)`,
           [email_id, hashedPassword],
-          (err, result) => {
+          (err, _result) => {
             if (err) {
               console.error('Error inserting data into users:', err);
               return res.status(500).json({ message: 'Registration failed', error: err.message });
@@ -348,7 +351,7 @@ const login=async (req, res) => {
     }
   };
   
-  const DisplayExamFeeTransactions = (req, res) => {
+  const DisplayExamFeeTransactions = (_req, res) => {
     const query = 'SELECT * FROM examfee';
     db.query(query, (err, results) => {
         if (err) {
@@ -377,7 +380,7 @@ const login=async (req, res) => {
 
     db.query(query, [
         name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_time
-    ], (err, result) => {
+    ], (err, _result) => {
         if (err) {
             console.error('Error storing exam fee record:', err);
             return res.status(500).json({ error: 'Failed to store exam fee record' });
@@ -387,42 +390,43 @@ const login=async (req, res) => {
 
 };
 const StoreInPaymentRequest = async (req, res) => {
-  const { admission_number, name, regno, fee_type, amount, email, phone_no } = req.body;
-  
+  const { bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transactionId, transactionDate } = req.body;
+
   try {
     console.log("Received data:", req.body);  // Logging received data
 
-    const query = `INSERT INTO payment_request (admission_number, name, regno, fee_type, amount, email, phone_no, status)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`;
-    
+    const query = `INSERT INTO payment_request (
+      bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transaction_id, transaction_date, status
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
+
     // Logging query execution step
     console.log("Executing query...");
-    await db.query(query, [admission_number, name, regno, fee_type, amount, email, phone_no]);
-    
+    db.query(query, [
+      bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transactionId, transactionDate
+    ]);
+
     res.status(200).json({ message: 'Payment request created successfully.' });
   } catch (error) {
     console.error('Error details:', error.message); // Logging error message
-    console.error('Error stack:', error.stack);     // Logging stack trace
+  // Logging stack trace
     res.status(500).json({ message: 'Server error. Could not create payment request.', error: error.message });
   }
 };
 
-const DisplayPaymentRequest = async (req, res) => {
-  try {
-    const query = `SELECT admission_no, regno, name, email, phone_no, cash_mode, fee_type, amount, status, created_at FROM payment_request`;
 
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error('Error fetching payment requests:', err);
-        return res.status(500).json({ error: 'Database error' });
-      }
+const getPaymentRequest = (_req, res) => {
+  console.log(1);
+  db.query(`SELECT * FROM payment_request`, (error, results) => {
+    if (error) {
+      console.error("Error fetching data:", error);
+      return res.status(500).json({ error: error.message });
+    } else {
       res.json(results);
-    });
-  } catch (error) {
-    console.error('Error fetching payment requests:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+    }
+  });
 };
+
+
 
 const UpdateAdminPanel= async (req, res) => {
   const { reg_no } = req.params;
@@ -430,13 +434,47 @@ const UpdateAdminPanel= async (req, res) => {
 
   const query = `UPDATE student SET ${fee_type} = 0 WHERE regNo = ?`;
 
-  db.query(query, [reg_no], (err, result) => {
+  db.query(query, [reg_no], (err, _result) => {
       if (err) {
           return res.status(500).send(err);
       }
       res.send('Fee updated to 0');
   });
 };
+const paymentRequestUpdate=async(req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const query = 'UPDATE payment_request SET status = ? WHERE id = ?';
+  db.query(query, [status, id], (error, _results) => {
+      if (error) {
+          console.error('Error updating payment request:', error);
+          return res.status(500).json({ error: 'Database error' });
+      }
+      res.json({ message: 'Payment request updated successfully!' });
+  });
+};
+const verifyPayment = async (req, res) => {
+  const { id } = req.params; 
+  const query = 'SELECT status FROM payment_request WHERE id = ?';
+
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.error('Error verifying payment status:', error);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Payment request not found' });
+    }
+    const paymentStatus = results[0].status;
+    if (paymentStatus === 'Paid') {
+      return res.json({ message: 'Payment is verified.' });
+    } else {
+      return res.json({ message: 'Payment is not verified yet. Status: ' + paymentStatus });
+    }
+  });
+};
+
 
 module.exports = {
     login,
@@ -451,7 +489,9 @@ module.exports = {
     StoreInPayment,
     displaySubject,
     StoreInPaymentRequest,
-    DisplayPaymentRequest,
+    getPaymentRequest,
     UpdateAdminPanel,
+    paymentRequestUpdate,
+    verifyPayment,
     db
 };
