@@ -32,7 +32,7 @@ const Dashboard = () => {
     fetchData();
   }, [key]);
 
-  const handlePayNow = async (feeType, amount) => {
+  /*const handlePayNow = async (feeType, amount) => {
     try {
      await axios.post('http://localhost:5003/api/storepaymentrequest', {
       admission_number: student.admission_number,
@@ -57,7 +57,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error sending payment request:', error);
     }
-  };
+  };*/
 
   return (
     <div className="dashboard">
@@ -114,23 +114,65 @@ const Dashboard = () => {
         </div>
         <div className="card">
           <p><strong>Hostel Fees:</strong> {student.hostel_fees}</p>
-          <button onClick={() => handlePayNow('Hostel Fees', student.hostel_fees)}>Pay Hostel Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,          // Passing student name               // Passing registration number
+      admissionNo: student.admission_no,   // Passing admission number
+      feeType: 'Hostel Fees',             // Fee type
+      amount: student.hostel_fees, 
+      email: student.email        // Fee amount
+    }
+  })}>Pay Hostel Fees</button>
+
         </div>
         <div className="card">
           <p><strong>Tuition Fees:</strong> {student.tuition_fees}</p>
-          <button onClick={() => handlePayNow('Tuition Fees', student.tuition_fees)}>Pay Tuition Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Tuition Fees',
+      amount: student.tuition_fees,
+      email: student.email  
+    }
+  })}>Pay Tuition Fees</button>
         </div>
         <div className="card">
           <p><strong>Transport Fees:</strong> {student.transport_fees}</p>
-          <button onClick={() => handlePayNow('Transport Fees', student.transport_fees)}>Pay Transport Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Transport Fees',
+      amount: student.transport_fees,
+      email: student.email  
+    }
+  })}>Pay Transport Fees</button>
         </div>
         <div className="card">
           <p><strong>Caution Deposit:</strong> {student.caution_deposit}</p>
-          <button onClick={() => handlePayNow('Caution Deposit', student.caution_deposit)}>Pay Caution Deposit</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Caution Deposit',
+      amount: student.caution_deposit,
+      email: student.email  
+    }
+  })}>Pay Caution Deposit</button>
+
         </div>
         <div className="card">
           <p><strong>College Fees:</strong> {student.clg_fees}</p>
-          <button onClick={() => handlePayNow('College Fees', student.clg_fees)}>Pay College Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'College Fees',
+      amount: student.clg_fees,
+      email: student.email  
+    }
+  })}>Pay College Fees</button>
         </div>
         <div className="card">
           <p><strong>Exam Fees:</strong> {student.exam_fees}</p>
@@ -139,11 +181,27 @@ const Dashboard = () => {
         </div>
         <div className="card">
           <p><strong>Registration Fees:</strong> {student.reg_fees}</p>
-          <button onClick={() => handlePayNow('Registration Fees', student.reg_fees)}>Pay Registration Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Transport Fees',
+      amount: student.reg_fees,
+      email: student.email  
+    }
+  })}>Pay Registration Fees</button>
         </div>
         <div className="card">
           <p><strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}</p>
-          <button onClick={() => handlePayNow('Miscellaneous Fees', student.reg_fees)}>Pay Miscellaneous Fees</button>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Other Fees',
+      amount: student.reg_fees,
+      email: student.email  
+    }
+  })}>Pay Other Fees</button>
         </div>
       </div>
 
