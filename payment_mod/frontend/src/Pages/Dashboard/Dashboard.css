@@ -1,7 +1,12 @@
 /* Dashboard container */
 .dashboard {
-  width: 80%;
-  margin: 0 auto;
+  background-color: #f8f9fa;
+  padding: 30px;
+  max-width: 90%; /* Full width */
+  border-radius: 8px;
+  margin: 0 auto; /* Center the container */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #d1d5db;
 }
 
 /* Section titles (Personal Details, College Details, etc.) */
