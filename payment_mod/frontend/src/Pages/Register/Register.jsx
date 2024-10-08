@@ -6,9 +6,20 @@ import clglogo from "../../Assets/pictures/logo.png";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
-  const [showPassword,setShowPassword]=useState(false);
-  const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [isEmailChecking, setIsEmailChecking] = useState(false);
+  const [isEmailUnique, setIsEmailUnique] = useState(true);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailStatus, setEmailStatus] = useState("");
+  const [error, setError] = useState("");
+  const [aadharStatus, setAadharStatus] = useState("");
+  const [IsAadharUnique, setIsAadharUnique] = useState(true);
+  const [IsAadharChecking, setIsAadharChecking] = useState(false);
+
+
+
   const studentNameRef = useRef(null);
   const regnoRef = useRef(null);
   const genderRef = useRef(null);
@@ -23,6 +34,10 @@ const Register = () => {
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
   const hostellerRef = useRef(null);
+  const [showPassword,setShowPassword]=useState(false);
+  const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  
 
   const togglePasswordVisibility=()=>{
     setShowPassword(!showPassword);
@@ -61,12 +76,30 @@ const Register = () => {
     if (!confirmPassword)
       validationErrors.confirmPassword = "Confirm your password";
 
+    //valid Registration Number
+    const Reg = /^[a-zA-Z0-9]$/;
+
+    if (Reg.test(regno)) {
+      console.log("Valid registration number.");
+    } else {
+      console.log("Invalid registration number. Only letters and numbers are allowed.");
+    }
+    //
+    // Validate phone number
+    const phonePattern = /^[6-9]\d{9}$/;
+    if (phoneNumber && !phonePattern.test(phoneNumber)) {
+      validationErrors.phoneNumber = "Invalid phone number";
+    }
     // Validate email
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailPattern.test(email)) {
       validationErrors.email = "Invalid email format";
     }
-
+    // Validate Aadhar number
+    const aadharPattern = /^\d{12}$/;
+    if (aadharNo && !aadharPattern.test(aadharNo)) {
+      validationErrors.aadharNo = "Invalid Aadhar number";
+    }
     // Validate password strength
     const passwordPattern =
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/;
@@ -74,7 +107,6 @@ const Register = () => {
       validationErrors.password =
         "Password must be at least 8 characters long and contain letters, numbers, and special characters";
     }
-
     // Validate password confirmation
     if (password !== confirmPassword) {
       validationErrors.confirmPassword = "Passwords do not match";
@@ -83,13 +115,109 @@ const Register = () => {
     return validationErrors;
   };
 
+  const checkEmailUnique = async () => {
+    const email = emailRef.current.value;
+    console.log(email);
+
+    if (!email) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Email is required",
+      }));
+      return;
+    }
+
+    setIsEmailChecking(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/check-email/",
+        { mailid: email }
+      );
+
+      if (response.data.message) {
+        setIsEmailChecking(true);
+        setEmailStatus(response.data.message);
+      }
+    } catch (err) {
+      if (err.response && err.response.data.error) {
+        setIsEmailChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Email already exists",
+        }));
+      } else {
+        setIsEmailChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Error in Validation",
+        }));
+      }
+    } finally {
+      setIsEmailChecking(false);
+    }
+  };
+  //aadhar checking 
+  const checkAadharUnique = async () => {
+    const Aadhar = aadharNoRef.current.value;
+    console.log(Aadhar);
+
+    if (!Aadhar) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Aadhar Number is required",
+      }));
+      return;
+    }
+
+    setIsAadharChecking(true);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5003/api/check-aadhar/",
+        { aadharno : Aadhar}
+      );
+      console.log(response.data);
+
+      if (response.data.message) {
+        setIsAadharChecking(true);
+        setAadharStatus(response.data.message);
+      }
+    } catch (err) {
+      if (err.response && err.response.data.error) {
+        setIsAadharChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          aadharno : "Aadhar Number already exists",
+        }));
+      } else {
+        setIsAadharChecking(false);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          aadharno : "Error in Aadhar Number Validation",
+        }));
+      }
+    } finally {
+      setIsAadharChecking(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
+    } 
+    else {
+      if (!isEmailUnique) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          email: "Email already exists",
+        }));
+        return;
+      }
+
       // Clear errors
       setErrors({});
 
@@ -122,6 +250,24 @@ const Register = () => {
 
         if (response.status === 200) {
           alert(response.data.message || "Registration successful!");
+          regnoRef.current.value = "";
+          studentNameRef.current.value = "";
+          genderRef.current.value = "";
+          dateOfBirthRef.current.value = "";
+          emailRef.current.value = "";
+          phoneNumberRef.current.value = "";
+          aadharNoRef.current.value = "";
+          govtSchoolRef.current.value = "";
+          hostellerRef.current.value = "";
+          courseNameRef.current.value = "";
+          batchYearRef.current.value = "";
+          quotaRef.current.value = "";
+          passwordRef.current.value = "";
+          confirmPasswordRef.current.value = "";
+
+          // Reset errors and states
+          setErrors({});
+          setIsEmailUnique(true);
           navigate("/", { replace: true });
           window.history.pushState(null, null, window.location.href);
           window.addEventListener("popstate", function (event) {
@@ -136,13 +282,20 @@ const Register = () => {
       }
     }
   };
+  const handleFocus = (field) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: null,
+    }));
+  };
 
-  return (
-    <div className="form-container">
-      <div className="logo text-center">
-        <img className="clg-logo" src={clglogo} alt="clg-logo" />
-        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
-        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District - 629153</p>
+    return (
+        <div className="form-container">
+            <div className="logo text-center">
+        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+        <h2 className="headingh2">SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
+        629153</p>
       </div>
       <form onSubmit={handleSubmit} className="register-form">
         <h1 className="h1">REGISTER HERE</h1>
@@ -154,6 +307,8 @@ const Register = () => {
             ref={regnoRef}
             placeholder="Enter registration number"
           />
+          <span className="lighting"></span>
+
         </div>
 
         <div className="input-group-div">
@@ -177,9 +332,18 @@ const Register = () => {
         </div>
 
         <div className="input-group-div">
-          <input className="register-input" type="date" ref={dateOfBirthRef} />
-          {errors.dateOfBirth && <p className="error">{errors.dateOfBirth}</p>}
-        </div>
+  <input
+    className="register-input"
+    id="Date"
+    placeholder="Date of Birth"
+    type="text"
+    onFocus={(e) => e.target.type = 'date'}
+    onBlur={(e) => !e.target.value && (e.target.type = 'text')}
+    ref={dateOfBirthRef}
+  />
+  
+  {errors.dateOfBirth && <p className="error">{errors.dateOfBirth}</p>}
+</div>
 
         <div className="input-group-div">
           <input
@@ -187,6 +351,8 @@ const Register = () => {
             type="email"
             ref={emailRef}
             placeholder="Enter your email"
+            onBlur={checkEmailUnique}
+            onFocus={() => handleFocus("email")}
           />
           {errors.email && <p className="error">{errors.email}</p>}
         </div>
@@ -196,7 +362,8 @@ const Register = () => {
             className="register-input"
             type="text"
             ref={phoneNumberRef}
-            placeholder="Enter your phone number"
+            placeholder = "Enter phone number"
+            onFocus={() => handleFocus("phoneNumber")}
           />
           {errors.phoneNumber && <p className="error">{errors.phoneNumber}</p>}
         </div>
@@ -207,8 +374,10 @@ const Register = () => {
             type="text"
             ref={aadharNoRef}
             placeholder="Enter Aadhar number"
+            onBlur={checkAadharUnique}
+            onFocus={() => handleFocus("aadharNo")}
           />
-          {errors.aadharNo && <p className="error">{errors.aadharNo}</p>}
+          {errors.aadharno && <p className="error">{errors.aadharno}</p>}
         </div>
 
         <div className="input-group-div">
@@ -217,14 +386,18 @@ const Register = () => {
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
+          {errors.batchYear && <p className="error">{errors.govtSchool}</p>}
+
         </div>
 
         <div className="input-group-div">
           <select className="register-select" ref={hostellerRef}>
-            <option value="">Hosteller?</option>
+            <option value="">Hosteller</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>
+          {errors.hosteller && <p className="error">{errors.hosteller}</p>}
+          
         </div>
 
         <div className="input-group-div">
@@ -232,6 +405,7 @@ const Register = () => {
             <option value="">Select Course</option>
             <option value="B.S.M.S">B.S.M.S</option>
           </select>
+          {errors.courseName && <p className="error">{errors.courseName}</p>}
         </div>
 
         <div className="input-group-div">
@@ -240,7 +414,9 @@ const Register = () => {
             type="text"
             ref={batchYearRef}
             placeholder="Enter batch year"
+            onFocus={() => handleFocus("batchYear")}
           />
+          {errors.batchYear && <p className="error">{errors.batchYear}</p>}
         </div>
 
         <div className="input-group-div">
@@ -249,21 +425,25 @@ const Register = () => {
             <option value="Govt">Govt</option>
             <option value="Management">Management</option>
           </select>
+          {errors.quota && <p className="error">{errors.quota}</p>}
+
+
         </div>
 
         <div className="input-group-div">
           <input
             className="register-input"
-            type={showPassword?'text':'password'}
+            type={passwordVisible ? "text" : "password"}
             ref={passwordRef}
             placeholder="Enter your password"
+            onFocus={() => handleFocus("password")}
           />
-          <span
-                onClick={togglePasswordVisibility}
-                className="eye-icon"
-              >
-                {showPassword?<FaEyeSlash/>:<FaEye/>}
-              </span>
+          <i
+            className={`fas ${
+              passwordVisible ? "fa-eye-slash" : "fa-eye"
+            } password-toggle-icon`}
+            onClick={() => setPasswordVisible(!passwordVisible)}
+          />
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
 

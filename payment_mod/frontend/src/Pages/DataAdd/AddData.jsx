@@ -46,7 +46,7 @@ const AddData = () => {
 
   return (
     <div className="container">
-      <h1>Add Data to Database</h1>
+      <h1 className='h1'>Add Data to Database</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Subject Name:</label>

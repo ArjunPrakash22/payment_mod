@@ -19,8 +19,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    // jQuery script to handle form interaction and validation
-    $('.placeholder').click(function () {
+   
+    $('.placeholder').click(function() {
       $(this).siblings('input').focus();
     });
 
