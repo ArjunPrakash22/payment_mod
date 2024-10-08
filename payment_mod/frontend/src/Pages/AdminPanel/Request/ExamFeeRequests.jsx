@@ -22,9 +22,10 @@ const ExamFeeRequests = () => {
         fetchRequests();
     }, []);
 
+    
     const handleTransactionUpdate = async (request, action) => {
         try {
-            const { name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date, transaction_time, billno } = request;
+            const { name, regno, email, type, mode, amount, no_of_subjects, transaction_id, transaction_date, transaction_time } = request;
 
             // If action is "add", add to exam fee
             if (action === 'add') {
@@ -40,6 +41,7 @@ const ExamFeeRequests = () => {
                     transaction_date,
                     transaction_time
                 });
+                 // Pass email to the update function
                 alert('Exam fee record added!');
             }
 
@@ -49,10 +51,16 @@ const ExamFeeRequests = () => {
 
             alert(`Payment request status updated to ${status}!`);
 
-            // Refresh requests after the update
+            await axios.post('http://localhost:5003/api/update-admin-panel', {
+                email,
+                fee_type: "exam_fees"
+            });
+
+            alert('Admin panel updated!');
+
+         
             const response = await axios.get('http://localhost:5003/api/display-examfee-requests');
             setRequests(response.data);
-
         } catch (err) {
             alert('Error updating payment request: ' + (err.response?.data?.error || err.message));
         }
@@ -108,7 +116,7 @@ const ExamFeeRequests = () => {
                         </tr>
                     ))}
                 </tbody>
-            </table>
+            </table> 
         </div>
     );
 };

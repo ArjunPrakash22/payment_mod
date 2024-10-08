@@ -105,7 +105,7 @@ const OnlinePayment = () => {
 
   const handlePaymentSuccess = async () => {
     await storePaymentDetails();
-    const studentId = students.admission_nono;
+    const studentId = students.admission_no;
 
     try {
       

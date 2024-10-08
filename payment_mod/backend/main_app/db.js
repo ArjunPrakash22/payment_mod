@@ -430,18 +430,44 @@ const getPaymentRequest = (_req, res) => {
 
 
 const UpdateAdminPanel= async (req, res) => {
-  const { reg_no } = req.params;
+  const { admission_no } = req.params;
   const { fee_type } = req.body;
 
-  const query = `UPDATE student SET ${fee_type} = 0 WHERE regNo = ?`;
+  const query = `UPDATE student SET ${fee_type} = 0 WHERE admission_no = ?`;
 
-  db.query(query, [reg_no], (err, _result) => {
+  db.query(query, [admission_no], (err, _result) => {
       if (err) {
           return res.status(500).send(err);
       }
       res.send('Fee updated to 0');
   });
 };
+
+const UpdateAdminPanelFromRequest = async (req, res) => {
+  const { email, fee_type } = req.body;
+
+  if (!email || !fee_type) {
+    return res.status(400).json({ error: 'Email and fee_type are required' });
+  }
+
+  console.log("swetha");
+
+  // Create a dynamic query using a template literal
+  const query = `UPDATE students SET ?? = ? WHERE email = ?`;
+  const values = [fee_type, 0, email];
+  
+  db.query(query, values, (err, _result) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    res.send('Fee updated to 0');
+  });
+};
+
+
+
+
 const paymentRequestUpdate=async(req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -455,6 +481,7 @@ const paymentRequestUpdate=async(req, res) => {
       res.json({ message: 'Payment request updated successfully!' });
   });
 };
+
 const verifyPayment = async (req, res) => {
   const { id } = req.params; 
   const query = 'SELECT status FROM payment_request WHERE id = ?';
@@ -517,11 +544,10 @@ const DisplayExamFeeRequests = async (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      // If no results are found, you can choose to handle it as well
       if (results.length === 0) {
         return res.status(404).json({ message: 'No exam fee requests found' });
       }
-      console.log("vanduthen");
+      
       res.status(200).json(results);
     });
   } catch (error) {
@@ -531,7 +557,6 @@ const DisplayExamFeeRequests = async (req, res) => {
 };
 
 
-// Function to update payment request status
 const updateExamFeeRequestStatus = (req, res) => {
     const { transaction_id } = req.params;
     const { status } = req.body;
@@ -549,9 +574,9 @@ const updateExamFeeRequestStatus = (req, res) => {
 
 
 
-// Function to handle verifying and rejecting
+
 const handleExamFeeTransaction = async (req, res) => {
-    const { transaction_id, action } = req.body; // action can be 'verify' or 'reject'
+    const { transaction_id, action } = req.body; 
     
     if (action === 'verify') {
         const paymentRequestQuery = `SELECT * FROM examfee_request WHERE transaction_id = ?`;
@@ -560,11 +585,11 @@ const handleExamFeeTransaction = async (req, res) => {
                 return res.status(404).json({ error: 'Payment request not found' });
             }
             const request = results[0];
-            StoreInExamFee({ body: request }, res); // Call the function to store in exam fee
-            updateExamFeeRequestStatus(req, res); // Update the status to verified
+            StoreInExamFee({ body: request }, res);
+            updateExamFeeRequestStatus(req, res);
         });
     } else if (action === 'reject') {
-        updateExamFeeRequestStatus(req, res); // Update the status to rejected
+        updateExamFeeRequestStatus(req, res); 
     } else {
         res.status(400).json({ error: 'Invalid action' });
     }
@@ -590,5 +615,8 @@ module.exports = {
     DisplayExamFeeRequests,
     handleExamFeeTransaction,
     updateExamFeeRequestStatus,
+    verifyPayment,
+    paymentRequestUpdate,
+    UpdateAdminPanelFromRequest,
     db
 };
