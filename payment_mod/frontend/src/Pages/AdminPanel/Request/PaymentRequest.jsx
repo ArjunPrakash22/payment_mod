@@ -20,12 +20,12 @@ const RequestTable = () => {
     }, []);
     const handlePaymentStatusUpdate = async (request) => {
         try {
-            await axios.put(`http://localhost:5003/api/updatepaymentrequestaspaid`, {
+            await axios.post(`http://localhost:5003/api/updatepaymentrequestaspaid`, {
                 status: 'paid',
             });
             setRequestList((prevList) =>
                 prevList.map((item) =>
-                    item.admission_number === request.admission_number
+                    item.admission_no === request.admission_no
                         ? { ...item, status: 'paid' }
                         : item
                 )

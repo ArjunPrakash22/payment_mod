@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import "./App.css";
+// import "./App.css";
 import {
   Login,
   Register,
@@ -25,7 +25,7 @@ import {
 } from './Pages';
 import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
 import ExamFeeRequests from "./Pages/AdminPanel/Request/ExamFeeRequests"
-import Footer from "./Components/Footer/Footer";
+// import Footer from "./Components/Footer/Footer";
 import OnlinePayment from "./Pages/OnlinePayment/OnlinePayment";
 
 import {Footer} from './Components';

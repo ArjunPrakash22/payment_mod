@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'swetha15',
+    password: 'root',
     database: 'payment_db'
 });
 
@@ -104,57 +104,57 @@ const updateStudent = (req, res) => {
 };
 
 
-const DisplayPayment = (_req, res) => {
-  const query = 'SELECT * FROM payment';
-  db.query(query, (err, results) => {
-      if (err) {
-          return res.status(500).json({ error: 'Database error' });
-      }
-      res.json(results);
-});
-};
+// const DisplayPayment = (_req, res) => {
+//   const query = 'SELECT * FROM payment';
+//   db.query(query, (err, results) => {
+//       if (err) {
+//           return res.status(500).json({ error: 'Database error' });
+//       }
+//       res.json(results);
+// });
+// };
   
 
 
-const StoreInPayment = (req, res) => {
-  const receipt_no = generateReceiptNumber(); 
-  const {
+// const StoreInPayment = (req, res) => {
+//   const receipt_no = generateReceiptNumber(); 
+//   const {
 
-      admission_no,
-      regno,
-      name,
-      email,
-      phone_no,
-      payment_mode,  
-      transaction_id,
-      date,         
-      feeType,
-      amount        
-  } = req.body;
+//       admission_no,
+//       regno,
+//       name,
+//       email,
+//       phone_no,
+//       payment_mode,  
+//       transaction_id,
+//       date,         
+//       feeType,
+//       amount        
+//   } = req.body;
 
 
-  const query = `INSERT INTO payment (
-      receipt_no,admission_number, regno, name, email, phone_no,payment_mode,
-      transaction_id, payment_date, fee_type,amount_paid
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+//   const query = `INSERT INTO payment (
+//       receipt_no,admission_number, regno, name, email, phone_no,payment_mode,
+//       transaction_id, payment_date, fee_type,amount_paid
+//   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
  
-  db.query(query, [
-    receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
-    transaction_id, date, feeType,amount
+//   db.query(query, [
+//     receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
+//     transaction_id, date, feeType,amount
       
-  ], (err, _result) => {
-      if (err) {
-          return res.status(500).json({ error: 'Database error' });
-      }
-      res.status(201).json({ message: 'Payment history added' });
-  });
-};
+//   ], (err, _result) => {
+//       if (err) {
+//           return res.status(500).json({ error: 'Database error' });
+//       }
+//       res.status(201).json({ message: 'Payment history added' });
+//   });
+// };
 
 // Helper function to generate a receipt number (example implementation)
-const generateReceiptNumber = () => {
-  return 'REC' + Math.floor(Math.random() * 1000000); // Generates a random receipt number
-};
+// const generateReceiptNumber = () => {
+//   return 'REC' + Math.floor(Math.random() * 1000000); // Generates a random receipt number
+// };
 
 
 const DisplayPayment = (_req, res) => {
@@ -168,40 +168,40 @@ const DisplayPayment = (_req, res) => {
 };
 
 
-const emailcheck=(req,res)=>{
-  const email=req.body.mailid;
-  // console.log(email);
-  db.query(
-    `select count(*) as count from students where email=?`,[email],(err,result)=>{
-      if(err){
-        return res.status(500).send({error:"Database error"});
-      }
-      if(result[0].count>=1){
-        return res.status(409).send({error:"email already exist"});
-      }
-      return res.status(200).send({message:"Available"});
-    }
-  )
+// const emailcheck=(req,res)=>{
+//   const email=req.body.mailid;
+//   // console.log(email);
+//   db.query(
+//     `select count(*) as count from students where email=?`,[email],(err,result)=>{
+//       if(err){
+//         return res.status(500).send({error:"Database error"});
+//       }
+//       if(result[0].count>=1){
+//         return res.status(409).send({error:"email already exist"});
+//       }
+//       return res.status(200).send({message:"Available"});
+//     }
+//   )
 
-};
+// };
 
-//Aadhar Check 
-const Aadharcheck=(req,res)=>{
-  const Aadhar =req.body.aadharno ;
-  console.log(Aadhar);
-  db.query(
-    `select count(*) as count from students where aadhar_no=?`,[Aadhar],(err,result)=>{
-      if(err){
-        return res.status(500).send({error:"Database error"});
-      }
-      if(result[0].count>=1){
-        return res.status(409).send({error:"Aadhar already exist"});
-      }
-      return res.status(200).send({message:"Available"});
-    }
-  )
+// //Aadhar Check 
+// const Aadharcheck=(req,res)=>{
+//   const Aadhar =req.body.aadharno ;
+//   console.log(Aadhar);
+//   db.query(
+//     `select count(*) as count from students where aadhar_no=?`,[Aadhar],(err,result)=>{
+//       if(err){
+//         return res.status(500).send({error:"Database error"});
+//       }
+//       if(result[0].count>=1){
+//         return res.status(409).send({error:"Aadhar already exist"});
+//       }
+//       return res.status(200).send({message:"Available"});
+//     }
+//   )
 
-}
+// }
   
 
 
@@ -515,29 +515,33 @@ const login=async (req, res) => {
     });
 
 };
-const StoreInPaymentRequest = async (req, res) => {
-  const { bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transactionId, transactionDate } = req.body;
+const StoreInPaymentRequest = (req, res) => {
+  const { bill_no, admission_no, name, regno, feeType, amount, email, phone_no, cash_mode, transactionId, transactionDate } = req.body;
 
-  try {
-    console.log("Received data:", req.body);  // Logging received data
+  console.log("Received data:", req.body); // Logging received data
 
-    const query = `INSERT INTO payment_request (
-      bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transaction_id, transaction_date, status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
+  const query = `INSERT INTO payment_request (
+    bill_no, admission_no, regno, name, email, phone_no, cash_mode, transaction_id, transaction_date, fee_type, amount, status
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
 
-    // Logging query execution step
-    console.log("Executing query...");
-    db.query(query, [
-      bill_no, admission_no, name, regno, fee_type, amount, email, phone_no, cash_mode, transactionId, transactionDate
-    ]);
+  console.log("Executing query...");
 
-    res.status(200).json({ message: 'Payment request created successfully.' });
-  } catch (error) {
-    console.error('Error details:', error.message); // Logging error message
-  // Logging stack trace
-    res.status(500).json({ message: 'Server error. Could not create payment request.', error: error.message });
-  }
+  // Execute the query with a callback
+  db.query(query, [
+    bill_no, admission_no, regno, name, email, phone_no, cash_mode, transactionId, transactionDate, feeType, amount
+  ], (error, results) => {
+    if (error) {
+      console.error('Error details:', error.message); // Logging error message
+      console.error('Stack trace:', error.stack); // Logging stack trace
+      return res.status(500).json({ message: 'Server error. Could not create payment request.', error: error.message });
+    }
+
+    console.log("Query results:", results); // Logging successful query results
+    res.status(200).json({ message: 'Payment request created successfully.', results });
+  });
 };
+
+
 
 
 const getPaymentRequest = (_req, res) => {
@@ -744,5 +748,7 @@ module.exports = {
     insertData,
     emailcheck,
     Aadharcheck,
+    verifyPayment,
+    paymentRequestUpdate,
     db,
 };

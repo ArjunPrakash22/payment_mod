@@ -44,10 +44,13 @@ router.post('/api/updatepaymentrequestaspaid',paymentRequestUpdate);
 router.post('/api/verify-payment',verifyPayment)
 router.post('/api/examfee-request', StoreInExamFeeRequest);
 router.get('/api/display-examfee-requests', DisplayExamFeeRequests);
-router.put('/api/payment-request/:transaction_id', updateExamFeeRequestStatus);
+router.post('/api/payment-request/:transaction_id', updateExamFeeRequestStatus);
 router.post('/api/payment-request/action', handleExamFeeTransaction);
 router.post('/api/add-data',insertData);
 router.post('/api/check-aadhar/',Aadharcheck);
+
+
+
 
 
 module.exports = router;
