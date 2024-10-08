@@ -19,8 +19,8 @@ const Login = () => {
   };
 
   useEffect(() => {
-    // jQuery script to handle form interaction and validation
-    $('.placeholder').click(function () {
+   
+    $('.placeholder').click(function() {
       $(this).siblings('input').focus();
     });
 
@@ -71,13 +71,13 @@ const Login = () => {
         password,
       });
 
-      if(username==='SsSaDmin153@gmail.com' || response.data.success){
-        // console.log("admin pass matched");
+      if(username==='SsSaDmin153@gmail.com' && response.data.success){
+       
         navigate("/admin",{state:{key:username}});
       }
 
       else if (response.data.success) {
-        // Redirect to the dashboard on successful login
+        
         navigate('/dashboard',{state:{key:username
 
         }});

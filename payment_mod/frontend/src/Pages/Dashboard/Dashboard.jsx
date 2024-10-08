@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation,useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import clglogo from '../../Assets/pictures/logo.png';
 import axios from 'axios';
@@ -8,28 +8,21 @@ import {Logout} from '../../Widgets';
 const Dashboard = () => {
   const [student, setStudent] = useState({});
   const location = useLocation();
-  const navigate=useNavigate();
-  const { key } = location.state || {}; // Extract 'key' from location.state
+  const navigate = useNavigate();
+  const { key } = location.state || {}; 
 
   useEffect(() => {
-
     if (!location.state || !location.state.key) {
-      // If the key is missing, redirect to the login page
       navigate('/');
     }
-  ;
+
     async function fetchData() {
       try {
         if (key) {
-          // Fetch student details using the key (assuming the key is email)
-          const response = await axios.post('http://localhost:5003/api/dashboard/', {
+          const response = await axios.post(`http://localhost:5003/api/dashboard/`, {
             studentEmail: key,
           });
-
-          console.log('Student data fetched:', response.data);
           setStudent(response.data);
-        } else {
-          console.warn('No key provided in location.state');
         }
       } catch (error) {
         console.error('Error fetching student data:', error);
@@ -39,40 +32,184 @@ const Dashboard = () => {
     fetchData();
   }, [key]);
 
+  /*const handlePayNow = async (feeType, amount) => {
+    try {
+     await axios.post('http://localhost:5003/api/storepaymentrequest', {
+      admission_number: student.admission_number,
+      name: student.name,
+      regno: student.regno,
+      email: student.email,
+      phone_no: student.phone_no,
+      fee_type: feeType,
+      amount: amount,
+      });
+      navigate('/online-payment', {
+         state: { 
+          students:{
+          name: student.name,
+          regno: student.regno,
+          email: student.email,
+          phone_no: student.phone_no,
+         },feeType,
+         amount,
+        },
+      });
+    } catch (error) {
+      console.error('Error sending payment request:', error);
+    }
+  };*/
+
   return (
     <div className="dashboard">
-      <div className="logo text-center">
-        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
-        <h2 className='h2'>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
-        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
-        629153</p>
+      <div className="header text-center">
+        <img className="clg-logo" src={clglogo} alt="College Logo" />
+        <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District - 629153</p>
       </div>
       <h2>Student Dashboard</h2>
-      <div className="student-info"><br/>
-      <h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>Personal Details</h1><br/>
 
-        <p><strong>Admission No:</strong> {student.admission_no}</p>
-        <p><strong>Registration No:</strong> {student.regno}</p>
-        <p><strong>Name:</strong> {student.name}</p>
-        <p><strong>Gender:</strong> {student.gender}</p>
-        <p><strong>Email:</strong> {student.email}</p>
-        <p><strong>Phone No:</strong> {student.phone_no}</p>
-        <p><strong>Aadhar No:</strong> {student.aadhar_no}</p>
-        <p><strong>DOB:</strong> {student.dob}</p>
-        <p><strong>Batch Year:</strong> {student.batchyr}</p>
-        <br/>
-        <div><h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>College Details</h1><br/></div><br/>
+  
+      <h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>Personal Details</h1>
+      <div className="cards-container">
+        <div className="card">
+          <p><strong>Admission No:</strong> {student.admission_no}</p>
+        </div>
+        <div className="card">
+          <p><strong>Registration No:</strong> {student.regno}</p>
+        </div>
+        <div className="card">
+          <p><strong>Name:</strong> {student.name}</p>
+        </div>
+        <div className="card">
+          <p><strong>Gender:</strong> {student.gender}</p>
+        </div>
+        <div className="card">
+          <p><strong>Email:</strong> {student.email}</p>
+        </div>
+        <div className="card">
+          <p><strong>Phone No:</strong> {student.phone_no}</p>
+        </div>
+        <div className="card">
+          <p><strong>Aadhar No:</strong> {student.aadhar_no}</p>
+        </div>
+        <div className="card">
+          <p><strong>DOB:</strong> {student.dob}</p>
+        </div>
+        <div className="card">
+          <p><strong>Batch Year:</strong> {student.batchyr}</p>
+        </div>
+      </div>
 
-        <p><strong>Course Name:</strong> {student.course_name}</p>
-      
-        <p><strong>College Fees:</strong> {student.clg_fees}</p>
-        <p><strong>Hosteller:</strong> {student.hosteller}</p>
-        <p><strong>Hostel Fees:</strong> {student.hostel_fees}</p>
-        <p><strong>Tuition Fees:</strong> {student.tuition_fees}</p>
-        <p><strong>Transport Fees:</strong> {student.transport_fees}</p>
-        <p><strong>Exam Fees:</strong> {student.exam_fees}</p>
-        <p><strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}</p>
-        <p><strong>Reason:</strong> {student.reason}</p>
+     
+      <div className="section-gap"></div>
+
+    
+      <h1 style={{ color: '#17a462', display: 'block', marginBottom: '20px' }}>College Details</h1>
+      <div className="cards-container">
+        <div className="card">
+          <p><strong>Course Name:</strong> {student.course_name}</p>
+        </div>
+        <div className="card">
+          <p><strong>Hosteller:</strong> {student.hosteller}</p>
+        </div>
+        <div className="card">
+          <p><strong>Hostel Fees:</strong> {student.hostel_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,          // Passing student name               // Passing registration number
+      admissionNo: student.admission_no,   // Passing admission number
+      feeType: 'Hostel Fees',             // Fee type
+      amount: student.hostel_fees, 
+      email: student.email        // Fee amount
+    }
+  })}>Pay Hostel Fees</button>
+
+        </div>
+        <div className="card">
+          <p><strong>Tuition Fees:</strong> {student.tuition_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Tuition Fees',
+      amount: student.tuition_fees,
+      email: student.email  
+    }
+  })}>Pay Tuition Fees</button>
+        </div>
+        <div className="card">
+          <p><strong>Transport Fees:</strong> {student.transport_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Transport Fees',
+      amount: student.transport_fees,
+      email: student.email  
+    }
+  })}>Pay Transport Fees</button>
+        </div>
+        <div className="card">
+          <p><strong>Caution Deposit:</strong> {student.caution_deposit}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Caution Deposit',
+      amount: student.caution_deposit,
+      email: student.email  
+    }
+  })}>Pay Caution Deposit</button>
+
+        </div>
+        <div className="card">
+          <p><strong>College Fees:</strong> {student.clg_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'College Fees',
+      amount: student.clg_fees,
+      email: student.email  
+    }
+  })}>Pay College Fees</button>
+        </div>
+        <div className="card">
+          <p><strong>Exam Fees:</strong> {student.exam_fees}</p>
+          <button onClick={() => navigate('/online-payment-exam-provisional',{ state: { student } })}>Pay Provisional Exam Fees</button>
+          <button onClick={() => navigate('/online-payment-exam-arrear',{ state: { student } })}>Pay Arrear Exam Fees</button>
+        </div>
+        <div className="card">
+          <p><strong>Registration Fees:</strong> {student.reg_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Transport Fees',
+      amount: student.reg_fees,
+      email: student.email  
+    }
+  })}>Pay Registration Fees</button>
+        </div>
+        <div className="card">
+          <p><strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}</p>
+          <button onClick={() => navigate('/online-payment', {
+    state: {
+      studentName: student.name,
+      admissionNo: student.admission_no,
+      feeType: 'Other Fees',
+      amount: student.reg_fees,
+      email: student.email  
+    }
+  })}>Pay Other Fees</button>
+        </div>
+      </div>
+
+   
+      <div className="cards-container">
+        <div className="card">
+          <p><strong>Reason:</strong> {student.reason}</p>
+        </div>
       </div>
       <div>
         <Logout/>

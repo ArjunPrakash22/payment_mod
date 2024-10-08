@@ -11,15 +11,20 @@ const TuitionFeesPage = () => {
   const [paymentType, setPaymentType] = useState('full');
   const [paymentMode, setPaymentMode] = useState('Cash');
   const [amountToPay, setAmountToPay] = useState(students.tuition_fees);
+  const [originalTuitionFee] = useState(students.tuition_fees); 
+  const [hasHalved, setHasHalved] = useState(false); 
+  const [paymentAccruedTimes, setPaymentAccruedTimes] = useState(students.paymentAccruedTimes || 0); 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (paymentType === 'half') {
-      setAmountToPay(students.tuition_fees / 2);
-    } else {
-      setAmountToPay(students.tuition_fees);
+    if (paymentType === 'half' && !hasHalved) {
+      setAmountToPay(originalTuitionFee / 2); // Halve it only once
+      setHasHalved(true); // Mark that it's been halved
+    } else if (paymentType === 'full') {
+      setAmountToPay(originalTuitionFee); // Reset to full payment
+      setHasHalved(false); // Reset the halving flag when full is selected
     }
-  }, [paymentType, students.tuition_fees]);
+  }, [paymentType, originalTuitionFee, hasHalved]);
 
   const handlePaymentTypeChange = (e) => {
     setPaymentType(e.target.value);
@@ -56,18 +61,53 @@ const TuitionFeesPage = () => {
       console.error('Error downloading the PDF:', error);
     }
   };
+  const handleCancel = () => {
+    // Redirect back to the admin panel
+    navigate('/admin');
+  };
+
+  const storePaymentDetails = async () => {
+    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+    const paymentDate = new Date().toISOString().slice(0, 10); 
+    try {
+      await axios.post(`http://localhost:5003/api/storePaymentDetails`, {
+        name: students.name,
+        email: students.email,
+        admission_no: students.admission_no,
+        regno: students.regno,
+        amount: amountToPay,
+        phone_no: students.phone_no, // Ensure this field exists in students object
+        payment_mode: paymentMode,
+        transaction_id: transactionId,
+        feeType: 'Tuition',
+        date: paymentDate
+      });
+      
+      console.log('Payment details stored successfully');
+    } catch (error) {
+      console.error('Error storing payment details:', error);
+    }
+  };
+
+  const generateTransactionId = () => {
+    return 'TXN' + Math.floor(Math.random() * 1000000000);
+  };
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
 
     try {
+
+      await storePaymentDetails();
       await axios.post(`http://localhost:5003/api/studentfee`, {
         email: students.email,
         ...students,
-        tuition_fees: paymentType === 'half' ? students.tuition_fees / 2 : 0,
+        tuition_fees: paymentType === 'half' ? originalTuitionFee / 2 : 0, // Update fee after payment
+        paymentAccruedTimes: paymentAccruedTimes + 1
       });
 
       console.log(`Payment processed for ${students.name}: ₹${amountToPay} (${paymentType} payment)`);
+      setPaymentAccruedTimes(paymentAccruedTimes + 1);
       await Download_tuition();
       navigate('/admin', {
         state: { key: "SsSaDmin153@gmail.com" },
@@ -115,7 +155,7 @@ const TuitionFeesPage = () => {
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>
         <button type="submit" className="pay-button">Generate Payment Receipt</button>
-        <button type="button" className="cancel-button">Cancel</button>
+        <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
       </form>
     </div>
   

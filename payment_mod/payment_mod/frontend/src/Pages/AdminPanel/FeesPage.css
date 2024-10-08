@@ -1,0 +1,145 @@
+.payment-container {
+  max-width: 600px; 
+  width: 100%; 
+  margin: 40px auto; /* Vertical margin */
+  padding: 40px; /* Increased padding for more space inside the container */
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.payment-container h2 {
+  font-size: 42px; /* Increased font size */
+  font-weight: bold; /* Make the font bold */
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.payment-container label {
+  display: block;
+  font-size: 30px; /* Increased font size */
+  font-weight: bold; /* Make the font bold */
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.payment-container input[type="text"],
+.payment-container input[type="number"] {
+  width: calc(100% - 20px);
+  padding: 15px; /* Increased padding */
+  margin-bottom: 20px;
+  border: 2px solid #ccc; /* Increased border size */
+  border-radius: 4px;
+  font-size: 28px; /* Increased font size */
+  font-weight: bold; /* Make the text bold */
+  color: #333;
+}
+
+.payment-container .radio-group {
+  margin-bottom: 30px;
+  font-size: 28px; /* Increased font size */
+  font-weight: bold; /* Make the font bold */
+}
+
+.payment-container .radio-group input[type="radio"] {
+  margin-right: 10px;
+}
+
+.payment-container .radio-group label {
+  font-size: 28px; /* Match the radio label size to the input fields */
+  font-weight: bold; /* Make the font bold */
+  margin-right: 20px;
+}
+
+.payment-container .amount-due {
+  font-size: 34px; /* Increased font size */
+  font-weight: bold; /* Make the text bold */
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+/* Centering the buttons and adding spacing between them */
+.payment-form {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center; /* Center buttons horizontally */
+}
+
+.payment-form .form-group {
+  display: flex;
+  justify-content: space-between; /* Ensure label and select are spaced out */
+  align-items: center; /* Center the items vertically */
+  width: 100%; /* Take full width */
+  margin-bottom: 20px; /* Space between form groups */
+}
+
+.payment-form label {
+  font-size: 28px; /* Increase font size */
+  font-weight: bold; /* Bold label */
+  width: 40%; /* Set label width */
+}
+.student-details{
+  text-align: left;
+  margin-left: 200px;
+}
+
+.payment-form select {
+  width: 55%; /* Set select width to align with label */
+  padding: 10px; /* Adjust padding */
+  font-size: 28px; /* Match the font size of input fields */
+  font-weight: bold; /* Make the text bold */
+  border: 2px solid #ccc; /* Border similar to inputs */
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+}
+.pay-button,.cancel-button{
+   width: 80%; 
+  /* padding: 30px; 
+  font-size: 28px; 
+  font-weight: bold; 
+  border-radius: 8px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
+  text-align: center;  */
+  margin-bottom: 10px; 
+  margin-top: 10px; 
+  margin-right: 10px; 
+  margin-left: 10px; 
+
+
+}
+.payment-form ,
+.payment-form  {
+  width: 80%; 
+  padding: 30px; 
+  font-size: 28px; 
+  font-weight: bold; 
+  border-radius: 8px; 
+  margin: auto;
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
+  text-align: center; 
+  margin-bottom: 10px; 
+}
+
+.payment-form .pay-button {
+  background-color: #3498db; /* Primary color */
+  color: #fff; /* White text color */
+  margin: 20px;
+}
+
+.payment-form .pay-button:hover {
+  background-color: #2980b9; /* Darker shade on hover */
+}
+
+.payment-form .cancel-button {
+  background-color: #e74c3c; /* Secondary color */
+  color: #fff; /* White text color */
+  margin-top: 0; /* Ensure no extra margin on top */
+}
+
+.payment-form .cancel-button:hover {
+  background-color: #c0392b; /* Darker shade on hover */
+}
