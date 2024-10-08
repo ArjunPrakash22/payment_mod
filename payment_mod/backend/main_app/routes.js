@@ -6,6 +6,7 @@ const {registration, FeeUpdate,getStudents,updateStudent} = require('./db');
 const {login} = require('./db');
 const {displayDashboard}=require('./db');
 const {OtpFunc,VerifyOtp,ResetPassword}=require('./forgotpassword');
+const verifyToken = require('./authMiddleware');
 
 
 const {insertData}=require('./db');

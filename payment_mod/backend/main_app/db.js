@@ -290,7 +290,7 @@ const login=async (req, res) => {
           return res.status(500).json({ error: "Database error" });
         }
   
-        res.status(200).json({ message: "Data successfully inserted" });
+        res.status(200).json({ message:"Data successfully inserted" });
       }
     );
   };

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import 'jquery-validation';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './Login.css';
-import clglogo from '../../Assets/pictures/logo.png';
+import clglogo from '../../Assets/pictures/logo.png'; 
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
@@ -71,16 +71,15 @@ const Login = () => {
         password,
       });
 
-      if(username==='SsSaDmin153@gmail.com' || response.data.success){
-        // console.log("admin pass matched");
-        navigate("/admin",{state:{key:username}});
-      }
-
-      else if (response.data.success) {
-        // Redirect to the dashboard on successful login
-        navigate('/dashboard',{state:{key:username
-
-        }});
+      if (response.data.success) {
+        const token = response.data.token; // Get the token from the server response
+        localStorage.setItem('token', token); // Store the token in localStorage
+        
+        if(username==='SsSaDmin153@gmail.com'){
+          navigate("/admin",{state:{key:username}});
+        } else {
+          navigate('/dashboard', { state: { key: username } });
+        }
       } else {
         setErrorMessage('Invalid username or password');
       }
@@ -88,6 +87,12 @@ const Login = () => {
       console.error('Error logging in:', error);
       setErrorMessage('An error occurred. Please try again.');
     }
+  };
+
+  // Logout function to clear the token
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/login'); // Redirect to login page
   };
 
   return (
@@ -132,7 +137,7 @@ const Login = () => {
               <span className="lighting"></span>
             </div>
 
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errorMessage && <p className="error-message          ">{errorMessage}</p>}
 
             <button className='button-login' type="submit" id="login">Login</button>
             <div className="clearfix supporter">
@@ -140,8 +145,7 @@ const Login = () => {
                 <input id="rememberMe" type="checkbox" />
                 <label htmlFor="rememberMe">Remember Me</label>
               </div>
-              {<a className="forgot pull-right" href="/forgot-password">Forgot Password?</a>
- }
+              {<a className="forgot pull-right" href="/forgot-password">Forgot Password?</a>}
             </div>
           </form>
         </div>
