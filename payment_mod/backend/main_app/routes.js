@@ -24,7 +24,7 @@ router.post('/api/dashboard/', displayDashboard);;
 router.post('/api/verify-otp', VerifyOtp);
 router.post('/api/forgot-password', OtpFunc);
 router.post('/api/reset-password', ResetPassword);
-
+// router.post('/api/updateExamFee', updateExamFee);
 
 
 

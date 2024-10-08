@@ -54,6 +54,10 @@ const AdminPanel = () => {
   const handleExamFeesPayNowClick = (students) => {
     navigate('/exam-fees', { state: { students } });
   };
+  const handleEditRequest = (students) => {
+    navigate('/exam-fees-edit', { state: { students } });
+  };
+
  // Centralized function for payment request logic
  const handlePaymentRequest = (feeType, student) => {
   const paymentDetails = {
@@ -127,6 +131,38 @@ const handlePaymentCompletion = (feeType, student) => {
     }, 0); 
     setFormData({ ...students });
   };
+  const handleEditRequestClick = (students) => {
+    // Prepare the updated data
+    const updatedData = {
+      ...students,
+      // You can add or modify any fields here that the admin is allowed to update
+      name: formData.name,
+      phone_no: formData.phone_no,
+      email: formData.email,
+      // Add other fields from the formData object as needed
+    };
+  
+    // Send the update request to the backend
+    axios.post(`http://localhost:5003/api/students/update/${students.admission_no}`, updatedData)
+      .then(response => {
+        // Success message or confirmation
+        alert('Student data updated successfully!');
+  
+        // Optionally, refresh the list of students after update
+        axios.get('http://localhost:5003/api/students_details')
+          .then(response => {
+            setStudents(response.data);
+            setEditStudent(null);  // Reset the edit state
+          })
+          .catch(error => {
+            console.error("Error fetching updated students data:", error);
+          });
+      })
+      .catch(error => {
+        console.error("There was an error updating the student data:", error);
+      });
+  };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -176,6 +212,8 @@ const handlePaymentCompletion = (feeType, student) => {
         <button className="history-button" onClick={handleExamFeesHistoryClick}>Exam Fees History</button>
         <button className="history-button" onClick={handlePaymentRequestHistoryClick}>Payment Request History</button>
         <button className="history-button" onClick={handleExamFeeRequestHistoryClick}>Exam Fee Request History</button>
+        <button className="history-button" onClick={handleEditRequest}>Exam Fee Edit</button>
+
       </div>
     
       <input
@@ -314,6 +352,7 @@ const handlePaymentCompletion = (feeType, student) => {
                       <button className="button" onClick={() => handleEditClick(students)}>Edit</button>
                     </td>
                   </tr>
+
                 ))
               ) : (
                 <tr className="tr">

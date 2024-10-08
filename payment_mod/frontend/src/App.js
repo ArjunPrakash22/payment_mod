@@ -21,10 +21,8 @@ import {
   ProvisionalExamFeesOnline,
   ForgotPassword,
   AddData,
-  ArrearExamFeesOnline
+  ArrearExamFeesOnline,
 } from './Pages';
-import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
-import ExamFeeRequests from "./Pages/AdminPanel/Request/ExamFeeRequests"
 // import Footer from "./Components/Footer/Footer";
 import OnlinePayment from "./Pages/OnlinePayment/OnlinePayment";
 
@@ -57,12 +55,13 @@ function App() {
         <Route path="/exam-fees/Provisional" element={<ProvisionalPage />} />
         <Route path="/exam-fees/Arrears" element={<ArrearsPage/>} />
         <Route path="/exam-fees-transactions" element={<ExamFeeTransactions/>} />
-        <Route path="/payment-request" element={<PaymentRequest />} />
+        {/* <Route path="/payment-request" element={<PaymentRequest />} /> */}
         <Route path="/online-payment" element={<OnlinePayment/>}/>
         <Route path="/online-payment-exam-provisional" element={<ProvisionalExamFeesOnline/>}/>
         <Route path="/online-payment-exam-arrear" element={<ArrearExamFeesOnline/>}/>
-        <Route path="/exam-fee-request" element={<ExamFeeRequests/>}/>
+        {/* <Route path="/exam-fee-request" element={<ExamFeeRequests/>}/> */}
         <Route path="/add-data" element={<AddData />} />
+
       </Routes>
       <Footer />
     </div>

@@ -661,20 +661,28 @@ const DisplayExamFeeRequests = async (req, res) => {
 
 
 // Function to update payment request status
-const updateExamFeeRequestStatus = (req, res) => {
-    const { transaction_id } = req.params;
-    const { status } = req.body;
+async function updateExamFee(req, res) {
+  try {
+      const { transaction_id, new_exam_fee } = req.body;
 
-    const query = `UPDATE examfee_request SET status = ? WHERE transaction_id = ?`;
-    
-    db.query(query, [status, transaction_id], (err, result) => {
-        if (err) {
-            console.error('Error updating payment request status:', err);
-            return res.status(500).json({ error: 'Failed to update payment request status' });
-        }
-        res.status(200).json({ message: `Payment request status updated to ${status}` });
-    });
-};
+      if (!transaction_id || !new_exam_fee) {
+          return res.status(400).json({ message: 'Transaction ID and new exam fee are required' });
+      }
+
+      // Your logic to update the exam fee in the database
+      const result = await db.query('UPDATE exam_fees SET fee_amount = ? WHERE transaction_id = ?', [new_exam_fee, transaction_id]);
+
+      if (result.affectedRows > 0) {
+          res.status(200).json({ message: 'Exam fee updated successfully' });
+      } else {
+          res.status(404).json({ message: 'Transaction not found' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 
 
 
@@ -724,7 +732,47 @@ const handleExamFeeTransaction = async (req, res) => {
   };
   
   
-  
+  app.get('/fees/:quota', (req, res) => {
+    const { quota } = req.params;
+    const studentId = req.query.student_id;
+    let column = '';
+
+    if (quota === 'govt') {
+        column = 'government_quota_tuition_fee';
+    } else if (quota === 'management') {
+        column = 'management_quota_tuition_fee';
+    }
+
+    const query = `SELECT id, ${column} AS fee FROM exam_fees WHERE student_id = ?`;
+
+    db.query(query, [studentId], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error fetching fees' });
+        }
+        res.json(result[0]);  // Sending the first result
+    });
+});
+
+// API to update tuition fee
+app.put('/fees/update', (req, res) => {
+    const { quota, fee, student_id } = req.body;
+    let column = '';
+
+    if (quota === 'govt') {
+        column = 'government_quota_tuition_fee';
+    } else if (quota === 'management') {
+        column = 'management_quota_tuition_fee';
+    }
+
+    const query = `UPDATE exam_fees SET ${column} = ? WHERE student_id = ?`;
+
+    db.query(query, [fee, student_id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Error updating fee' });
+        }
+        res.json({ message: 'Fee updated successfully' });
+    });
+});
 
 module.exports = {
     login,
