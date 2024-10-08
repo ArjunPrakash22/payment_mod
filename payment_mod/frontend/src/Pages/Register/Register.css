@@ -56,15 +56,16 @@
 .register-input:focus,
 .register-select:focus {
   background: rgba(216, 211, 211, 0.9);
-  border-color: #999; /* Highlight border on focus */
+  border-color: #999; 
+  top: -8px;
 }
+
 
 .register-button {
   width: 50%;
   padding: 10px;
   margin-top: 15px;
-  /* border-radius: 5px; */
-  background-color: #078a4d;
+  background-color: #17a462;
   font-weight: bold;
   color: white;
   cursor: pointer;
@@ -80,11 +81,8 @@
 }
 .login-a{
   text-decoration: none;
-  /*  */
 }
 
-
-/* Media query for tablets and small laptops */
 @media (max-width: 1024px) {
   .register-form {
     padding: 10px;
@@ -109,6 +107,7 @@
     min-width: 0; /* Allow flexibility in width */
   }
 }
+
 
 @media (max-width:360px){
   .input-group-div {

@@ -20,19 +20,25 @@ const CollegeFeesPage = () => {
     setPaymentMode(e.target.value);
   };
 
-  const Download_College = async () => {
+
+
+
+
+  const Download_College= async () => {
     try {
       const response = await axios.post(
         "http://localhost:5003/api/download_receipt",
         { 
           email: students.email,
-          amount: amountToPay,
+          amount: students.clg_fees,
           feestype: 'College',
-          paymentMode: paymentMode,
-          name: students.name,
-          admission_no: students.admission_no,
-        },
-        { responseType: "blob" }
+          paymentMode:paymentMode,
+          admission_no:students.admission_no,
+
+         }, // Send student email to identify receipt
+        {
+          responseType: "blob",
+        }
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -49,12 +55,42 @@ const CollegeFeesPage = () => {
     }
   };
 
+  const storePaymentDetails = async () => {
+    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+    const paymentDate = new Date().toISOString().slice(0, 10); 
+    try {
+      await axios.post(`http://localhost:5003/api/storePaymentDetails`, {
+        name: students.name,
+        email: students.email,
+        admission_no: students.admission_no,
+        regno: students.regno,
+        amount: amountToPay,
+        phone_no: students.phone_no, // Ensure this field exists in students object
+        payment_mode: paymentMode,
+        transaction_id: transactionId,
+        feeType: 'College Fee',
+        date: paymentDate
+      });
+      
+      console.log('Payment details stored successfully');
+    } catch (error) {
+      console.error('Error storing payment details:', error);
+    }
+  };
+
+  const generateTransactionId = () => {
+    return 'TXN' + Math.floor(Math.random() * 1000000000);
+  };
+
+
+
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
   
     try {
-      await axios.post(`http://localhost:5003/api/studentfee`, {
-        email: students.email,
+
+      await storePaymentDetails();
+      await axios.post(`http://localhost:5003/api/studentfee`, {email:students.email,
         ...students,
         clg_fees: 0, 
       });
@@ -77,7 +113,13 @@ const CollegeFeesPage = () => {
         console.error('Server responded with:', error.response.data);
       }
     }
-  };
+};
+
+const handleCancel = () => {
+  // Redirect back to the admin panel
+  navigate('/admin');
+};
+  
 
   return (
     <div className="payment-container">
@@ -98,8 +140,9 @@ const CollegeFeesPage = () => {
         <div className="amount-due">
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>
-        <button type="submit" className="pay-button">Generate Payment Receipt</button>
-        <button type="button" className="cancel-button">Cancel</button>
+          <button type="submit" className="pay-button">Generate Payment Receipt</button>
+          <button type="button" className="cancel-button" onClick={handleCancel}>Cancel</button>
+
       </form>
     </div>
   );
