@@ -4,14 +4,19 @@ import $ from 'jquery';
 import 'jquery-validation';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './Login.css';
-import clglogo from '../../Assets/pictures/logo.png'
-
+import clglogo from '../../Assets/pictures/logo.png'; 
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); 
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   useEffect(() => {
    
@@ -19,11 +24,11 @@ const Login = () => {
       $(this).siblings('input').focus();
     });
 
-    $('.form-control').focus(function() {
+    $('.form-control').focus(function () {
       $(this).parent().addClass('focused');
     });
 
-    $('.form-control').blur(function() {
+    $('.form-control').blur(function () {
       const $this = $(this);
       if ($this.val().length === 0) $(this).parent().removeClass('focused');
     });
@@ -66,16 +71,15 @@ const Login = () => {
         password,
       });
 
-      if(username==='SsSaDmin153@gmail.com' && response.data.success){
-       
-        navigate("/admin",{state:{key:username}});
-      }
-
-      else if (response.data.success) {
+      if (response.data.success) {
+        const token = response.data.token; // Get the token from the server response
+        localStorage.setItem('token', token); // Store the token in localStorage
         
-        navigate('/dashboard',{state:{key:username
-
-        }});
+        if(username==='SsSaDmin153@gmail.com'){
+          navigate("/admin",{state:{key:username}});
+        } else {
+          navigate('/dashboard', { state: { key: username } });
+        }
       } else {
         setErrorMessage('Invalid username or password');
       }
@@ -85,19 +89,24 @@ const Login = () => {
     }
   };
 
+  // Logout function to clear the token
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove token from localStorage
+    navigate('/login'); // Redirect to login page
+  };
+
   return (
     <div className="login-div">
       <div className="logo text-center">
-        <img className='clg-logo' src={clglogo} alt='clg-logo'/>
+        <img className='clg-logo' src={clglogo} alt='clg-logo' />
         <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
-        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District -
-        629153</p>
+        <p>Meecode, Kaliyakkavilai Post, Kanyakumari District - 629153</p>
       </div>
       <div className="wrapper">
         <div className="inner-wrapper text-center">
           <h2 className="title  h1">WELCOME</h2>
           <form id="formvalidate" onSubmit={handleSubmit}>
-            <div className="input-group">
+            <div className="input-group" style={{ position: 'relative' }}>
               <label className="placeholder" htmlFor="userName">User Name</label>
               <input
                 className="form-control"
@@ -109,20 +118,26 @@ const Login = () => {
               />
               <span className="lighting"></span>
             </div>
-            <div className="input-group">
+            <div className="input-group" style={{ position: 'relative' }}>
               <label className="placeholder" htmlFor="userPassword">Password</label>
               <input
                 className="form-control"
                 name="userPassword"
                 id="userPassword"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <span
+                onClick={togglePasswordVisibility}
+                className="eye-icon"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
               <span className="lighting"></span>
             </div>
 
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+            {errorMessage && <p className="error-message          ">{errorMessage}</p>}
 
             <button className='button-login' type="submit" id="login">Login</button>
             <div className="clearfix supporter">
@@ -130,12 +145,12 @@ const Login = () => {
                 <input id="rememberMe" type="checkbox" />
                 <label htmlFor="rememberMe">Remember Me</label>
               </div>
-              {<a className="forgot pull-right" href="#">Forgot Password?</a> }
+              {<a className="forgot pull-right" href="/forgot-password">Forgot Password?</a>}
             </div>
           </form>
         </div>
         <div className="signup-wrapper text-center">
-          { <a href="/register">Don't have an account? <span className="text-primary">Create One</span></a> }
+          <a href="/register">Don't have an account? <span className="text-primary">Create One</span></a>
         </div>
       </div>
     </div>

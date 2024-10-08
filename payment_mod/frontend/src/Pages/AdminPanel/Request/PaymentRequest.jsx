@@ -6,6 +6,9 @@ import './PaymentRequest.css';
 const RequestTable = () => {
     const [requestList, setRequestList] = useState([]);
     const navigate = useNavigate();
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -14,28 +17,53 @@ const RequestTable = () => {
                 setRequestList(response.data);
             } catch (error) {
                 console.error('Error fetching payment requests:', error);
+            }finally {
+                setLoading(false);
             }
         };
         fetchRequests();
     }, []);
-    const handlePaymentStatusUpdate = async (request) => {
+    const handlePaymentStatusUpdate = async (request,action) => {
         try {
-            await axios.put(`http://localhost:5003/api/updatepaymentrequestaspaid`, {
-                status: 'paid',
-            });
-            setRequestList((prevList) =>
-                prevList.map((item) =>
-                    item.admission_number === request.admission_number
-                        ? { ...item, status: 'paid' }
-                        : item
-                )
-            );
-        } catch (error) {
-            console.error('Error verifying payment:', error);
-            alert('Failed to verify payment.');
+            const {admission_no,name, regno, email,phone_no ,fee_type, cash_mode, transaction_id, transaction_date,amount  } = request;
+
+            // If action is "add", add to exam fee
+            if (action === 'add') {
+                await axios.post('http://localhost:5003/api/storeinpaymentrequestdb', {
+
+                    admission_no,
+                    name,
+                    regno,
+                    email,
+                    phone_no,
+                    fee_type,
+                    cash_mode,
+                    transaction_id,
+                    transaction_date,
+                    amount
+                });
+                alert('Payment Request fee record added!');
+            }
+
+            // Update the status in the payment request table
+            const status = action === 'add' ? 'verified' : 'rejected';
+            await axios.post(`http://localhost:5003/api/updatepaymentrequestaspaid/${transaction_id}`, { status });
+
+            alert(`Payment request status updated to ${status}!`);
+
+            
+
+            // Refresh requests after the update
+            // const response = await axios.post(`http://localhost:5003/api/displaypaymentrequest`);
+            // setRequests(response.data);
+
+        } catch (err) {
+            alert('Error updating payment request: ' + (err.response?.data?.error || err.message));
         }
     };
 
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div className="request-table-container">
@@ -64,36 +92,33 @@ const RequestTable = () => {
                             <th className="th">Fee Type</th>
                             <th className="th">Amount</th>
                             <th className="th">Status</th>
+                            <th className="th">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {requestList.length ? (
-                            requestList.map((payment_request, index) => (
+                            requestList.map((request, index) => (
                                 <tr key={index} className="tr">
-                                    <td className="td">{payment_request.bill_no}</td>
-                                    <td className="td">{payment_request.admission_no}</td>
-                                    <td className="td">{payment_request.regno}</td>
-                                    <td className="td">{payment_request.name}</td>
-                                    <td className="td">{payment_request.email}</td>
-                                    <td className="td">{payment_request.phone_no}</td>
-                                    <td className="td">{payment_request.cash_mode}</td>
-                                    <td className="td">{payment_request.transaction_id}</td>
-                                    <td className="td">{payment_request.transaction_date}</td>
-                                    <td className="td">{payment_request.fee_type}</td>
-                                    <td className="td">₹{payment_request.amount}</td>
-                                    <td className="td">{payment_request.status}</td>
-                                    <td className="td">
-                                        {payment_request.status === 'pending' ? (
-                                            <button
-                                                className="verify-button"
-                                                onClick={() => handlePaymentStatusUpdate(payment_request)}
-                                            >
-                                                Verify
-                                            </button>
-                                        ) : (
-                                            <span>Verified</span>
-                                        )}
-                                    </td>
+                                    <td className="td">{request.bill_no}</td>
+                                    <td className="td">{request.admission_no}</td>
+                                    <td className="td">{request.regno}</td>
+                                    <td className="td">{request.name}</td>
+                                    <td className="td">{request.email}</td>
+                                    <td className="td">{request.phone_no}</td>
+                                    <td className="td">{request.cash_mode}</td>
+                                    <td className="td">{request.transaction_id}</td>
+                                    <td className="td">{request.transaction_date}</td>
+                                    <td className="td">{request.fee_type}</td>
+                                    <td className="td">₹{request.amount}</td>
+                                    <td className="td">{request.status}</td>
+                                    <td>
+                                {request.status !== 'verified' && request.status !== 'rejected' && (
+                                    <>
+                                        <button onClick={() => handlePaymentStatusUpdate(request, 'add')}>Add to Payment History</button>
+                                        <button onClick={() => handlePaymentStatusUpdate(request, 'reject')}>Reject Transaction</button>
+                                    </>
+                                )}
+                            </td>
                                 </tr>
                             ))
                         ) : (

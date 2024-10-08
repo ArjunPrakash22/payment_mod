@@ -1,13 +1,62 @@
+/* Footer.css */
+
+/* General footer styling */
 footer {
-    background-color:#17a462;
-    color: #fff;
-    text-align: center;
-    padding: 20px 0;
+  background-color: #0f8307;
+  padding: 20px;
+}
+
+/* Flex layout for the footer sections */
+.footer_section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.Email a{
+  color: black;
+}
+.Email a:hover {
+  text-decoration: underline;
+}
+
+/* Ensure that "Contact Us" is centered */
+.Contact {
+  text-align: center;
+  flex: 1; /* Ensures it gets equal space */
+}
+
+/* Each section is given a width, except for Contact */
+.location, .WebsiteLinks {
+  width: 30%;
+}
+
+/* Link styling for better visibility */
+.WebsiteLinks a {
+  display: block;
+  margin-bottom: 5px;
+  color: #000; /* Change to black for better visibility */
+  text-decoration: none;
+}
+
+.WebsiteLinks a:hover {
+  text-decoration: underline;
+}
+.Contact{
+
+  align-items: center;
+  border-left: 90px;
+}
+
+/* For smaller screens, stack sections vertically */
+@media (max-width: 768px) {
+  .footer_section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .location, .Contact, .WebsiteLinks {
     width: 100%;
-    font-size: 14px;
-    position: relative; 
+    text-align: center;
   }
-  
-  footer p {
-    margin: 0px auto;
-  }
+}

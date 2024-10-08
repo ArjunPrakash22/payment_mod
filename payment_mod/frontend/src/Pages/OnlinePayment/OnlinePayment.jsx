@@ -7,7 +7,7 @@ import qrCodeImage from '../../Assets/pictures/qr.png';
 const OnlinePayment = () => {
   const location = useLocation();
   const students = location?.state?.students || {};
-  const { studentName, admissionNo, feeType, amount,email } = location.state || {};
+  const { studentName, admissionNo, feeType, amount,email,phone_no,regno } = location.state || {};
 
   const feeAmounts = {
     'Tuition': 100000,
@@ -32,47 +32,23 @@ const OnlinePayment = () => {
   const [error, setError] = useState('');
   const paymentMode = 'online';
 
-  const handlePaymentSubmission = async () => {
-    const paymentData = {
-      name: students.name, 
-      regNo: students.regno, 
-      emailId: students.email, 
-      transactionId,
-      transactionDate: `${transactionDate} ${transactionTime}`,
-      feeType,
-      feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
-      verificationStatus,
-    };
-
-    try {
-      await axios.post('/api/verify-payment', paymentData);
-      alert('Payment submitted successfully!');
-      await Download_Receipt();
-
-    } catch (error) {
-      console.error('Error submitting payment:', error);
-      setError('Failed to submit payment. Please try again.');
-    }
-  };
   const StorePaymentRequestDetails = async () => {
     try {
-      var bill_no=1;
       await axios.post('http://localhost:5003/api/storepaymentrequest', {
-        bill_no: bill_no++, 
-        name: students.name,
-        email: students.email,
-        admission_no: students.admission_no,
-        regno: students.regno,
-        phone_no: students.phone_no,
+        name: studentName,
+        email: email,
+        admission_no: admissionNo,
+        regno: regno,
+        phone_no:phone_no,
         cash_mode: paymentMode, 
         transactionId,
         transactionDate: `${transactionDate} ${transactionTime}`,
         feeType,
-        feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
+        amount: amount,
         status: 'pending', 
       });
       console.log('Payment details stored successfully');
-      await handlePaymentSubmission();
+      
     alert('Payment submitted, verification in progress');
     } catch (error) {
       console.error('Error storing payment details:', error);
@@ -82,70 +58,9 @@ const OnlinePayment = () => {
   };
   
 
-  const storePaymentDetails = async () => {
-    try {
-      await axios.post('http://localhost:5003/api/storePaymentDetails', {
-        name: students.name,
-        email: students.email,
-        admission_no: students.admission_no,
-        regno: students.regno,
-        phone_no: students.phone_no, 
-        transactionId,
-        transactionDate: `${transactionDate} ${transactionTime}`,
-        feeType,
-        feeAmount: isHalfPayment ? totalFeeAmount / 2 : totalFeeAmount,
-        verificationStatus,
-      });
-      console.log('Payment details stored successfully');
-    } catch (error) {
-      console.error('Error storing payment details:', error);
-      setError('Failed to store payment details.');
-    }
-  };
 
-  const handlePaymentSuccess = async () => {
-    await storePaymentDetails();
-    const studentId = students.admission_no;
 
-    try {
-      
-      await axios.put(`http://localhost:3001/update-fee/${studentId}`, { fee_type: feeType });
-      console.log('Fee updated in admin panel.');
-    } catch (error) {
-      console.error('Error updating payment status or fee:', error);
-      setError('Failed to update payment status or fee.');
-    }
-  };
 
-  const Download_Receipt = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5003/api/download_receipt",
-        {
-          email: email,
-          amount: amount,
-          feestype: feeType,
-          paymentMode,
-          name:studentName,
-          admission_no:admissionNo,
-        }, 
-        { responseType: "blob" }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const a = document.createElement('a');
-      a.href = url;
-      a.setAttribute('download', 'fees_receipt.pdf');
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-
-    } catch (error) {
-      console.error('Error downloading the PDF:', error);
-      setError('Failed to download receipt.');
-    }
-  };
 
   const handlePayOnlineClick = () => {
     setShowQRCode(true);
@@ -176,7 +91,7 @@ const OnlinePayment = () => {
         // Submit payment details
       
       await StorePaymentRequestDetails();  // Download the receipt after submission
-      await handlePaymentSuccess();  // Trigger successful payment handling
+   // Trigger successful payment handling
     } catch (error) {
       console.error('Error during payment submission:', error);
       setError('Failed to complete payment process.');
@@ -201,7 +116,9 @@ const OnlinePayment = () => {
       <p>Admission No: {admissionNo || 'N/A'}</p>
       <p>Fee Type: {feeType || 'N/A'}</p>
       <p>Fee Amount: ₹{amount || 0}</p>
+      <p>Phone Number: {phone_no || 'N/A'}</p>
       <p>Email: {email || 'N/A'}</p>
+      <p>Reg No: {regno||'N/A'}</p>
       </div>
       <div className="fee-details">
         <h2 className="fee-type">Fee Type: {feeType}</h2>
