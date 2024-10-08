@@ -35,33 +35,6 @@ const Dashboard = () => {
     fetchData();
   }, [key]);
 
-  /*const handlePayNow = async (feeType, amount) => {
-    try {
-     await axios.post('http://localhost:5003/api/storepaymentrequest', {
-      admission_number: student.admission_number,
-      name: student.name,
-      regno: student.regno,
-      email: student.email,
-      phone_no: student.phone_no,
-      fee_type: feeType,
-      amount: amount,
-      });
-      navigate('/online-payment', {
-         state: { 
-          students:{
-          name: student.name,
-          regno: student.regno,
-          email: student.email,
-          phone_no: student.phone_no,
-         },feeType,
-         amount,
-        },
-      });
-    } catch (error) {
-      console.error('Error sending payment request:', error);
-    }
-  };*/
-
   return (
     <div className="dashboard">
       <div className="header text-center">
@@ -69,7 +42,7 @@ const Dashboard = () => {
         <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District - 629153</p>
       </div>
-      <h2>Student Dashboard</h2>
+      <h2>STUDENT DASHBOARD</h2>
 
       <h1 style={{ color: "#17a462", display: "block", marginBottom: "20px" }}>
         Personal Details
@@ -142,180 +115,197 @@ const Dashboard = () => {
           <p>
             <strong>Hostel Fees:</strong> {student.hostel_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name, // Passing student name               // Passing registration number
-                  admissionNo: student.admission_no, // Passing admission number
-                  feeType: "Hostel Fees", // Fee type
-                  amount: student.hostel_fees,
-                  regno: student.regno,
-                  phone_no: student.phone_no,
-                  email: student.email, // Fee amount
-                },
-              })
-            }
-          >
-            Pay Hostel Fees
-          </button>
+          {student.hostel_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Hostel Fees",
+                    amount: student.hostel_fees,
+                    regno: student.regno,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Hostel Fees
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Tuition Fees:</strong> {student.tuition_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "Tuition Fees",
-                  amount: student.tuition_fees,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay Tuition Fees
-          </button>
+          {student.tuition_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Tuition Fees",
+                    amount: student.tuition_fees,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Tuition Fees
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Transport Fees:</strong> {student.transport_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "Transport Fees",
-                  amount: student.transport_fees,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay Transport Fees
-          </button>
+          {student.transport_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Transport Fees",
+                    amount: student.transport_fees,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Transport Fees
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Caution Deposit:</strong> {student.caution_deposit}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "Caution Deposit",
-                  amount: student.caution_deposit,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay Caution Deposit
-          </button>
+          {student.caution_deposit > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Caution Deposit",
+                    amount: student.caution_deposit,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Caution Deposit
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>College Fees:</strong> {student.clg_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "College Fees",
-                  amount: student.clg_fees,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay College Fees
-          </button>
+          {student.clg_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "College Fees",
+                    amount: student.clg_fees,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay College Fees
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Exam Fees:</strong> {student.exam_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment-exam-provisional", {
-                state: { student },
-              })
-            }
-          >
-            Pay Provisional Exam Fees
-          </button>
-          <button
-            onClick={() =>
-              navigate("/online-payment-exam-arrear", { state: { student } })
-            }
-          >
-            Pay Arrear Exam Fees
-          </button>
+          {student.exam_fees > 0 && (
+            <>
+              <button
+                onClick={() =>
+                  navigate("/online-payment-exam-provisional", {
+                    state: { student },
+                  })
+                }
+              >
+                Pay Provisional Exam Fees
+              </button>
+              <button
+                onClick={() =>
+                  navigate("/online-payment-exam-arrear", { state: { student } })
+                }
+              >
+                Pay Arrear Exam Fees
+              </button>
+            </>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Registration Fees:</strong> {student.reg_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "Transport Fees",
-                  amount: student.reg_fees,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay Registration Fees
-          </button>
+          {student.reg_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Registration Fees",
+                    amount: student.reg_fees,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Registration Fees
+            </button>
+          )}
         </div>
         <div className="card">
           <p>
             <strong>Miscellaneous Fees:</strong> {student.miscellaneous_fees}
           </p>
-          <button
-            onClick={() =>
-              navigate("/online-payment", {
-                state: {
-                  studentName: student.name,
-                  admissionNo: student.admission_no,
-                  feeType: "Other Fees",
-                  amount: student.reg_fees,
-                  phone_no: student.phone_no,
-                  email: student.email,
-                },
-              })
-            }
-          >
-            Pay Other Fees
-          </button>
+          {student.miscellaneous_fees > 0 && (
+            <button
+              onClick={() =>
+                navigate("/online-payment", {
+                  state: {
+                    studentName: student.name,
+                    admissionNo: student.admission_no,
+                    feeType: "Miscellaneous Fees",
+                    amount: student.miscellaneous_fees,
+                    phone_no: student.phone_no,
+                    email: student.email,
+                  },
+                })
+              }
+            >
+              Pay Miscellaneous Fees
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="cards-container">
-        <div className="card">
-          <p>
-            <strong>Reason:</strong> {student.reason}
-          </p>
-        </div>
-      </div>
+     
+      <div className="reason-box">
+  <p>
+    <strong>Reason:</strong> {student.reason}
+  </p>
+</div>
       <div>
         <Logout />
       </div>
