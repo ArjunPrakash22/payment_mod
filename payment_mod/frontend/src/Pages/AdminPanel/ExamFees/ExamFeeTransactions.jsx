@@ -43,6 +43,7 @@ const ExamFeeTable = () => {
             <th className="table-header-cell">Amount</th>
             <th className="table-header-cell">No of Subjects</th>
             <th className="table-header-cell">Transaction ID</th>
+            <th className="table-header-cell">Transaction Date</th>
             <th className="table-header-cell">Transaction Time</th>
           </tr>
         </thead>
@@ -58,6 +59,7 @@ const ExamFeeTable = () => {
               <td className="table-cell" data-label="Amount">{fee.amount}</td>
               <td className="table-cell" data-label="No of Subjects">{fee.no_of_subjects}</td>
               <td className="table-cell" data-label="Transaction ID">{fee.transaction_id}</td>
+              <td className="table-cell" data-label="Transaction Date">{fee.transaction_date}</td>
               <td className="table-cell" data-label="Transaction Time">{fee.transaction_time}</td>
             </tr>
           ))}

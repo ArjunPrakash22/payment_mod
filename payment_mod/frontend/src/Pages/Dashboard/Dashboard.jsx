@@ -42,7 +42,7 @@ const Dashboard = () => {
         <h2>SUDHA SASEENDRAN SIDDHA MEDICAL COLLEGE AND HOSPITAL</h2>
         <p>Meecode, Kaliyakkavilai Post, Kanyakumari District - 629153</p>
       </div>
-      <h2>STUDENT DASHBOARD</h2>
+      <h2>Student Dashboard</h2>
 
       <h1 style={{ color: "#17a462", display: "block", marginBottom: "20px" }}>
         Personal Details
