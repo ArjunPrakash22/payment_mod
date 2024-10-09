@@ -162,6 +162,7 @@ const Dashboard = () => {
         </div>
         <div className="card">
           <p>
+  
             <strong>Tuition Fees:</strong> {student.tuition_fees}
           </p>
           <button
@@ -171,6 +172,7 @@ const Dashboard = () => {
                   studentName: student.name,
                   admissionNo: student.admission_no,
                   feeType: "Tuition Fees",
+                  regno: student.regno,
                   amount: student.tuition_fees,
                   phone_no: student.phone_no,
                   email: student.email,
@@ -192,6 +194,7 @@ const Dashboard = () => {
                   studentName: student.name,
                   admissionNo: student.admission_no,
                   feeType: "Transport Fees",
+                  regno: student.regno,
                   amount: student.transport_fees,
                   phone_no: student.phone_no,
                   email: student.email,
@@ -213,6 +216,7 @@ const Dashboard = () => {
                   studentName: student.name,
                   admissionNo: student.admission_no,
                   feeType: "Caution Deposit",
+                  regno: student.regno,
                   amount: student.caution_deposit,
                   phone_no: student.phone_no,
                   email: student.email,
@@ -234,6 +238,7 @@ const Dashboard = () => {
                   studentName: student.name,
                   admissionNo: student.admission_no,
                   feeType: "College Fees",
+                  regno: student.regno,
                   amount: student.clg_fees,
                   phone_no: student.phone_no,
                   email: student.email,
