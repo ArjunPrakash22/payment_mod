@@ -1,8 +1,8 @@
 /* General footer styling */
 footer {
-  background-color: #0f8307;
+  background-color: #087241;
   padding: 20px;
-  color: black; /* Set all text color to black */
+  color: rgb(221, 203, 203); /* Set all text color to black */
 }
 
 /* Flex layout for the footer sections */
@@ -19,27 +19,28 @@ footer {
 .location, .Contact, .Email, .WebsiteLinks {
   flex: 1; /* Ensures each section gets equal width */
   padding: 0 40px; /* Adds some padding inside each section */
-  color: black; /* Ensure all text inside is black */
+  color: rgb(221, 203, 203); /* Ensure all text inside is black */
 }
 
 /* Adjust the bold tag and paragraph styling */
 .footer_section b {
+  padding-bottom: 20px;
   display: block; /* Ensures bold text is block-level */
   margin-bottom: 5px; /* Adds a gap between <b> and <p> */
-  color: black; /* Ensure bold text is black */
+  color: rgb(221, 203, 203); /* Ensure bold text is black */
 }
 
 /* Styling for paragraph text */
 .footer_section p,
 .footer_section a {
-  color: black; /* Ensure all text and links are black */
+  color: rgb(221, 203, 203); /* Ensure all text and links are black */
   margin: 0; /* Remove excess margins */
   text-align: left; /* Left-align the text */
 }
 
 /* Specific styling for the Email link to ensure it's black */
 .Email a {
-  color: black; /* Force email link color to black */
+  color: rgb(221, 203, 203);/* Force email link color to black */
   text-decoration: none; /* Remove underline from email link */
 }
 
@@ -51,12 +52,21 @@ footer {
 .WebsiteLinks a {
   display: block;
   margin-bottom: 5px;
-  color: black; /* Change link color to black */
+  color: rgb(221, 203, 203);/* Change link color to black */
   text-decoration: none;
 }
 
 .WebsiteLinks a:hover {
   text-decoration: underline;
+}
+.copyright p{
+  color: rgb(221, 203, 203);
+}
+.copyright {
+  background: #000;
+  padding: 20px;
+  width: 100%;
+  margin:0;
 }
 
 /* For smaller screens, stack sections vertically */

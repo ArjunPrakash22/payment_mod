@@ -27,9 +27,9 @@ const Footer = () => {
           <a target="_blank" href='https://www.tnmgrmu.ac.in/'>www.tnmgrmu.ac.in</a>
         </div>
       </div>
-      <p style={{ color: 'black', fontWeight: 'bold' }}>
-  © 2024 SSS MEDICAL COLLEGE & HOSPITAL. All rights reserved.
-</p>
+      <div className='copyright'>
+  <p>© 2024 SSS MEDICAL COLLEGE & HOSPITAL. All rights reserved.</p>
+</div>
     </footer>
   );
 };
