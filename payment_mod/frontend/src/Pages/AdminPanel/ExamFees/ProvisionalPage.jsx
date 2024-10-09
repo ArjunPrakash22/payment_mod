@@ -79,6 +79,17 @@ function ProvisionalPage() {
         }
     };
 
+    const updateAdminPanel = async () => {
+        try {
+            await axios.patch(`http://localhost:5003/api/update-fee/${students.admission_no}`, {
+                fee_type: 'exam_fees'
+            });
+            console.log('Admin panel updated successfully');
+        } catch (error) {
+            console.error('Error updating admin panel:', error);
+        }
+    };
+
     const handlePaymentSubmit = async (e) => {
         e.preventDefault();
         setError(''); 
@@ -100,6 +111,7 @@ function ProvisionalPage() {
 
         try {
             await storeExamFeeTransactions();
+            await updateAdminPanel(); 
             await axios.post(`http://localhost:5003/api/studentfee`, {
                 email: students.email,
                 ...students,

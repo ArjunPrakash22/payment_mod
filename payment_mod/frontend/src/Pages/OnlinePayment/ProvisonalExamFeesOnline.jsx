@@ -77,16 +77,15 @@ function ProvisionalExamFeesOnline() {
                 type :"regular",
                 mode :"online",
                 transaction_id :transactionId,
-                transaction_date: date,         // Use date directly
-                transaction_time: time,         // Use time directly
+                transaction_date: date,         
+                transaction_time: time,        
                 amount: amountToPay,
                 no_of_subjects: subjects.length,
-                status: 'pending',               // Set status as 'pending'
+                status: 'pending',              
             });
-    
+            
             alert('Payment submitted successfully');
-            // Optionally reset the form or redirect the user
-            // navigate('/');
+            
         } catch (error) {
             setError('Error submitting payment: ' + (error.response?.data.message || error.message));
         }
@@ -102,6 +101,8 @@ function ProvisionalExamFeesOnline() {
         link.click();
         document.body.removeChild(link);
     };
+
+   
 
     return (
         <div className="provisional-container">

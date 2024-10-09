@@ -176,6 +176,7 @@ const handlePaymentCompletion = (feeType, student) => {
 
       <div>
       <h1 className="h1">ADMIN PANEL</h1>
+
       <div className="button-container">
         <button className="history-button" onClick={handlePaymentHistoryClick}>Payment History</button>
         <button className="history-button" onClick={handleExamFeesHistoryClick}>Exam Fees History</button>
@@ -184,7 +185,7 @@ const handlePaymentCompletion = (feeType, student) => {
         <button className="history-button" onClick={handleExamFeeChange}>Edit Fee</button>
 
       </div>
-    
+    <div className='logout-button'><Logout/></div>
       <input
         type="text"
         placeholder="Search..."

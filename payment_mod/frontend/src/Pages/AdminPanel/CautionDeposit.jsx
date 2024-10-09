@@ -21,7 +21,7 @@ const CautionDeposit = () => {
   };
 
   const storePaymentDetails = async () => {
-    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; 
+   // const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; 
     const paymentDate = new Date().toISOString().slice(0, 10); 
     try {
       await axios.post(`http://localhost:5000/api/storePaymentDetails`, {
@@ -32,7 +32,7 @@ const CautionDeposit = () => {
         amount: amountToPay,
         phone_no: students.phone_no,
         payment_mode: paymentMode,
-        transaction_id: transactionId,
+       // transaction_id: transactionId,
         feeType: 'Caution Deposit',
         date: paymentDate
       });
@@ -127,12 +127,7 @@ const CautionDeposit = () => {
         <p><strong>Total Amount:</strong> ₹{students.caution_deposit}</p>
       </div>
       <form onSubmit={handlePaymentSubmit} className="payment-form">
-        <div className="form-group">
-          <label>Payment Type:</label>
-          <select value={paymentType} onChange={handlePaymentTypeChange}>
-            <option value="full">Full Payment</option>
-          </select>
-        </div>
+        
         <div className="amount-due">
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>

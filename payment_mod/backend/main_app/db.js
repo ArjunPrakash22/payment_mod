@@ -207,6 +207,7 @@ const DisplayPayment = (_req, res) => {
 
 const StoreInPayment = (req, res) => {
   const receipt_no = generateReceiptNumber(); 
+  
   const {
 
       admission_no,
@@ -226,15 +227,60 @@ const StoreInPayment = (req, res) => {
       receipt_no,admission_number, regno, name, email, phone_no,payment_mode,
       transaction_id, payment_date, fee_type,amount_paid
   ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  console.log(query, [
+    receipt_no, admission_no, regno, name, email, phone_no, payment_mode,
+    transaction_id, date, feeType, amount
+]);
+
+db.query(query, [
+  receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
+  transaction_id, date, feeType,amount
+    
+], (err, _result) => {
+    if (err) {
+        return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(201).json({ message: 'Payment history added' });
+});
+
+};
+const StoreInPaymentFromDashboard = (req, res) => {
+  const receipt_no = generateReceiptNumber(); 
+  
+  const {
+
+      admission_no,
+      regno,
+      name,
+      email,
+      phone_no,
+      cash_mode,  
+      transaction_id,
+      transaction_date,         
+      fee_type,
+      amount        
+  } = req.body;
+
+
+  const query = `INSERT INTO payment (
+      receipt_no,admission_number, regno, name, email, phone_no,payment_mode,
+      transaction_id, payment_date, fee_type,amount_paid
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  console.log(query, [
+    receipt_no, admission_no, regno, name, email, phone_no, cash_mode,
+    transaction_id, transaction_date, fee_type, amount
+]);
 
  
   db.query(query, [
-    receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
-    transaction_id, date, feeType,amount
+    receipt_no,admission_no, regno, name, email, phone_no,cash_mode,
+    transaction_id, transaction_date, fee_type,amount
       
   ], (err, _result) => {
       if (err) {
-          return res.status(500).json({ error: 'Database error' });
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Database error', details: err.message });
+
       }
       res.status(201).json({ message: 'Payment history added' });
   });
@@ -521,14 +567,14 @@ const StoreInPaymentRequest = (req, res) => {
   console.log("Received data:", req.body); // Logging received data
 
   const query = `INSERT INTO payment_request (
-    bill_no, admission_no, regno, name, email, phone_no, cash_mode, transaction_id, transaction_date, fee_type, amount, status
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
+   admission_no, regno, name, email, phone_no, cash_mode, transaction_id, transaction_date, fee_type, amount, status
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`;
 
   console.log("Executing query...");
 
   // Execute the query with a callback
   db.query(query, [
-    bill_no, admission_no, regno, name, email, phone_no, cash_mode, transactionId, transactionDate, feeType, amount
+    admission_no, regno, name, email, phone_no, cash_mode, transactionId, transactionDate, feeType, amount
   ], (error, results) => {
     if (error) {
       console.error('Error details:', error.message); // Logging error message
@@ -559,24 +605,51 @@ const getPaymentRequest = (_req, res) => {
 
 
 const UpdateAdminPanel= async (req, res) => {
-  const { reg_no } = req.params;
+  const { admission_no } = req.params;
   const { fee_type } = req.body;
 
-  const query = `UPDATE student SET ${fee_type} = 0 WHERE regNo = ?`;
+  const query = `UPDATE student SET ${fee_type} = 0 WHERE admission_no = ?`;
 
-  db.query(query, [reg_no], (err, _result) => {
+  db.query(query, [admission_no], (err, _result) => {
       if (err) {
           return res.status(500).send(err);
       }
       res.send('Fee updated to 0');
   });
 };
+
+const UpdateAdminPanelFromRequest = async (req, res) => {
+  const { email, fee_type } = req.body;
+
+  if (!email || !fee_type) {
+    return res.status(400).json({ error: 'Email and fee_type are required' });
+  }
+
+  console.log("swetha");
+
+  // Create a dynamic query using a template literal
+  const query = `UPDATE students SET ?? = ? WHERE email = ?`;
+  const values = [fee_type, 0, email];
+  
+  db.query(query, values, (err, _result) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    res.send('Fee updated to 0');
+  });
+};
+
+
+
+
+
 const paymentRequestUpdate=async(req, res) => {
-  const { id } = req.params;
+  const { transaction_id } = req.params;
   const { status } = req.body;
 
-  const query = 'UPDATE payment_request SET status = ? WHERE id = ?';
-  db.query(query, [status, id], (error, _results) => {
+  const query = 'UPDATE payment_request SET status = ? WHERE transaction_id = ?';
+  db.query(query, [status, transaction_id], (error, _results) => {
       if (error) {
           console.error('Error updating payment request:', error);
           return res.status(500).json({ error: 'Database error' });
@@ -584,6 +657,7 @@ const paymentRequestUpdate=async(req, res) => {
       res.json({ message: 'Payment request updated successfully!' });
   });
 };
+
 const verifyPayment = async (req, res) => {
   const { id } = req.params; 
   const query = 'SELECT status FROM payment_request WHERE id = ?';
@@ -646,11 +720,10 @@ const DisplayExamFeeRequests = async (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      // If no results are found, you can choose to handle it as well
       if (results.length === 0) {
         return res.status(404).json({ message: 'No exam fee requests found' });
       }
-      console.log("vanduthen");
+      
       res.status(200).json(results);
     });
   } catch (error) {
@@ -660,7 +733,6 @@ const DisplayExamFeeRequests = async (req, res) => {
 };
 
 
-// Function to update payment request status
 const updateExamFeeRequestStatus = (req, res) => {
     const { transaction_id } = req.params;
     const { status } = req.body;
@@ -678,29 +750,29 @@ const updateExamFeeRequestStatus = (req, res) => {
 
 
 
-// Function to handle verifying and rejecting
-const handleExamFeeTransaction = async (req, res) => {
-    const { transaction_id, action } = req.body; // action can be 'verify' or 'reject'
+
+// const handleExamFeeTransaction = async (req, res) => {
+//     const { transaction_id, action } = req.body; 
     
-    if (action === 'verify') {
-        const paymentRequestQuery = `SELECT * FROM examfee_request WHERE transaction_id = ?`;
-        db.query(paymentRequestQuery, [transaction_id], (err, results) => {
-            if (err || results.length === 0) {
-                return res.status(404).json({ error: 'Payment request not found' });
-            }
-            const request = results[0];
-            StoreInExamFee({ body: request }, res); // Call the function to store in exam fee
-            updateExamFeeRequestStatus(req, res); // Update the status to verified
-        });
-    } else if (action === 'reject') {
-        updateExamFeeRequestStatus(req, res); // Update the status to rejected
-    } else {
-        res.status(400).json({ error: 'Invalid action' });
-    }
-};
+//     if (action === 'verify') {
+//         const paymentRequestQuery = `SELECT * FROM examfee_request WHERE transaction_id = ?`;
+//         db.query(paymentRequestQuery, [transaction_id], (err, results) => {
+//             if (err || results.length === 0) {
+//                 return res.status(404).json({ error: 'Payment request not found' });
+//             }
+//             const request = results[0];
+//             StoreInExamFee({ body: request }, res);
+//             updateExamFeeRequestStatus(req, res);
+//         });
+//     } else if (action === 'reject') {
+//         updateExamFeeRequestStatus(req, res); 
+//     } else {
+//         res.status(400).json({ error: 'Invalid action' });
+//     }
+// };
 
   
-  const insertData = (req, res) => {
+const insertData = (req, res) => {
     const { subject_name, provisional_status, fees } = req.body;
   
     // Check if all required fields are provided
@@ -839,29 +911,33 @@ const handleExamFeeTransaction = async (req, res) => {
   
 
 module.exports = {
-    login,
-    registration,
-    displayDashboard,
-    updateStudent,
-    getStudents,
-    FeeUpdate,
-    DisplayExamFeeTransactions,
-    StoreInExamFee,
-    DisplayPayment,
-    StoreInPayment,
-    displaySubject,
-    StoreInPaymentRequest,
-    getPaymentRequest,
-    UpdateAdminPanel,
+  login,
+  registration,
+  displayDashboard,
+  updateStudent,
+  getStudents,
+  FeeUpdate,
+  DisplayExamFeeTransactions,
+  StoreInExamFee,
+  DisplayPayment,
+  StoreInPayment,
+  displaySubject,
+  StoreInPaymentRequest,
+  getPaymentRequest,
+  UpdateAdminPanel,
     StoreInExamFeeRequest,
     DisplayExamFeeRequests,
-    handleExamFeeTransaction,
+    //handleExamFeeTransaction,
     updateExamFeeRequestStatus,
+    //verifyPayment,
+    paymentRequestUpdate,
+    UpdateAdminPanelFromRequest,
     insertData,
     emailcheck,
     Aadharcheck,
     verifyPayment,
     paymentRequestUpdate,
+    StoreInPaymentFromDashboard,
     updateFees,
-    db,
+    db
 };

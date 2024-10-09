@@ -56,7 +56,7 @@ const CollegeFeesPage = () => {
   };
 
   const storePaymentDetails = async () => {
-    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+    const transactionId = "";// Placeholder for transaction ID generation
     const paymentDate = new Date().toISOString().slice(0, 10); 
     try {
       await axios.post(`http://localhost:5003/api/storePaymentDetails`, {
@@ -67,7 +67,6 @@ const CollegeFeesPage = () => {
         amount: amountToPay,
         phone_no: students.phone_no, // Ensure this field exists in students object
         payment_mode: paymentMode,
-        transaction_id: transactionId,
         feeType: 'College Fee',
         date: paymentDate
       });
@@ -78,9 +77,6 @@ const CollegeFeesPage = () => {
     }
   };
 
-  const generateTransactionId = () => {
-    return 'TXN' + Math.floor(Math.random() * 1000000000);
-  };
 
 
 
@@ -131,12 +127,7 @@ const handleCancel = () => {
         <p><strong>Total Amount:</strong> ₹{students.clg_fees}</p>
       </div>
       <form onSubmit={handlePaymentSubmit} className="payment-form">
-        <div className="form-group">
-          <label>Payment Type:</label>
-          <select value={paymentType} onChange={handlePaymentTypeChange}>
-            <option value="full">Full Payment</option>
-          </select>
-        </div>
+        
         <div className="amount-due">
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>

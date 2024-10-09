@@ -34,9 +34,7 @@ const OnlinePayment = () => {
 
   const StorePaymentRequestDetails = async () => {
     try {
-      var bill_no=1;
       await axios.post('http://localhost:5003/api/storepaymentrequest', {
-        bill_no: bill_no++, 
         name: studentName,
         email: email,
         admission_no: admissionNo,
@@ -120,10 +118,11 @@ const OnlinePayment = () => {
       <p>Fee Amount: ₹{amount || 0}</p>
       <p>Phone Number: {phone_no || 'N/A'}</p>
       <p>Email: {email || 'N/A'}</p>
+      <p>Reg No: {regno||'N/A'}</p>
       </div>
       <div className="fee-details">
         <h2 className="fee-type">Fee Type: {feeType}</h2>
-        <h3 className="fee-amount">Fee Amount: ₹{isHalfPayment ? (totalFeeAmount / 2).toFixed(2) : totalFeeAmount.toFixed(2)}</h3>
+        <h3 className="fee-amount">Fee Amount: ₹{isHalfPayment ? (amount / 2) : amount}</h3>
       </div>
  
       {!isPaymentTypeSelected && (

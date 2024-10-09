@@ -23,7 +23,7 @@ const HostelFeesPage = () => {
 
 
   const storePaymentDetails = async () => {
-    const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
+   // const transactionId = paymentMode === 'Online' ? generateTransactionId() : ''; // Placeholder for transaction ID generation
     const paymentDate = new Date().toISOString().slice(0, 10); 
     try {
       await axios.post(`http://localhost:5003/api/storePaymentDetails`, {
@@ -34,7 +34,7 @@ const HostelFeesPage = () => {
         amount: amountToPay,
         phone_no: students.phone_no, // Ensure this field exists in students object
         payment_mode: paymentMode,
-        transaction_id: transactionId,
+       // transaction_id: transactionId,
         feeType: 'Hostel Fee',
         date: paymentDate
       });
@@ -124,12 +124,7 @@ const HostelFeesPage = () => {
         <p><strong>Total Amount:</strong> ₹{students.hostel_fees}</p>
       </div>
       <form onSubmit={handlePaymentSubmit} className="payment-form">
-        <div className="form-group">
-          <label>Payment Type:</label>
-          <select value={paymentType} onChange={handlePaymentTypeChange}>
-            <option value="full">Full Payment</option>
-          </select>
-        </div>
+     
         <div className="amount-due">
           <p><strong>Amount to Pay:</strong> ₹{amountToPay}</p>
         </div>
