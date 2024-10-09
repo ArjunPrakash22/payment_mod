@@ -122,7 +122,7 @@ const OnlinePayment = () => {
       </div>
       <div className="fee-details">
         <h2 className="fee-type">Fee Type: {feeType}</h2>
-        <h3 className="fee-amount">Fee Amount: ₹{isHalfPayment ? (totalFeeAmount / 2).toFixed(2) : totalFeeAmount.toFixed(2)}</h3>
+        <h3 className="fee-amount">Fee Amount: ₹{isHalfPayment ? (amount / 2) : amount}</h3>
       </div>
  
       {!isPaymentTypeSelected && (
