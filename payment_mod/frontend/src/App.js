@@ -21,14 +21,17 @@ import {
   ProvisionalExamFeesOnline,
   ForgotPassword,
   AddData,
-  ArrearExamFeesOnline
+  ArrearExamFeesOnline,
+  EditFeePage,
+  
+   // Import the Edit Fee Page
 } from './Pages';
 import PaymentRequest from "./Pages/AdminPanel/Request/PaymentRequest"
 import ExamFeeRequests from "./Pages/AdminPanel/Request/ExamFeeRequests"
 // import Footer from "./Components/Footer/Footer";
 import OnlinePayment from "./Pages/OnlinePayment/OnlinePayment";
 
-import {Footer} from './Components';
+import { Footer } from './Components';
 
 function App() {
   const location = useLocation();
@@ -55,14 +58,15 @@ function App() {
         <Route path="/payment-history" element={<PaymentHistory />} />
         <Route path="/exam-fees" element={<HomePage />} />
         <Route path="/exam-fees/Provisional" element={<ProvisionalPage />} />
-        <Route path="/exam-fees/Arrears" element={<ArrearsPage/>} />
-        <Route path="/exam-fees-transactions" element={<ExamFeeTransactions/>} />
+        <Route path="/exam-fees/Arrears" element={<ArrearsPage />} />
+        <Route path="/exam-fees-transactions" element={<ExamFeeTransactions />} />
         <Route path="/payment-request" element={<PaymentRequest />} />
-        <Route path="/online-payment" element={<OnlinePayment/>}/>
-        <Route path="/online-payment-exam-provisional" element={<ProvisionalExamFeesOnline/>}/>
-        <Route path="/online-payment-exam-arrear" element={<ArrearExamFeesOnline/>}/>
-        <Route path="/exam-fee-request" element={<ExamFeeRequests/>}/>
+        <Route path="/online-payment" element={<OnlinePayment />} />
+        <Route path="/online-payment-exam-provisional" element={<ProvisionalExamFeesOnline />} />
+        <Route path="/online-payment-exam-arrear" element={<ArrearExamFeesOnline />} />
+        <Route path="/exam-fee-request" element={<ExamFeeRequests />} />
         <Route path="/add-data" element={<AddData />} />
+        <Route path="/edit-fee" element={<EditFeePage />} /> {/* Add route for Edit Fee Page */}
       </Routes>
       <Footer />
     </div>

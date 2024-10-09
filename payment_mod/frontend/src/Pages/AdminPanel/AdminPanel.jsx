@@ -54,6 +54,11 @@ const AdminPanel = () => {
   const handleExamFeesPayNowClick = (students) => {
     navigate('/exam-fees', { state: { students } });
   };
+  const handleExamFeeChange = (e, students) => {
+    e.preventDefault();  // If this is in a form, prevent default action
+    navigate('/edit-fee', { state: { students } });  // Pass only students
+  };
+  
  // Centralized function for payment request logic
  const handlePaymentRequest = (feeType, student) => {
   const paymentDetails = {
@@ -176,6 +181,8 @@ const handlePaymentCompletion = (feeType, student) => {
         <button className="history-button" onClick={handleExamFeesHistoryClick}>Exam Fees History</button>
         <button className="history-button" onClick={handlePaymentRequestHistoryClick}>Payment Request History</button>
         <button className="history-button" onClick={handleExamFeeRequestHistoryClick}>Exam Fee Request History</button>
+        <button className="history-button" onClick={handleExamFeeChange}>Edit Fee</button>
+
       </div>
     
       <input

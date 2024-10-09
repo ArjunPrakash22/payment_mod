@@ -20,3 +20,4 @@ export {default as ArrearExamFeesOnline} from './OnlinePayment/ArrearExamFeesOnl
 export {default as ExamFeeRequests} from './AdminPanel/Request/ExamFeeRequests'
 export {default as ForgotPassword} from './ForgotPassword/ForgotPassword'
 export {default as AddData} from './DataAdd/AddData'
+export {default as EditFeePage} from './AdminPanel/Request/EditFeePage'

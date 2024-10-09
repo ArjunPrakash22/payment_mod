@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { download_receipt } = require('./receipt');
-const { registration, FeeUpdate, getStudents, updateStudent, StoreInPayment, DisplayPayment, displaySubject, DisplayExamFeeTransactions, StoreInExamFee, StoreInPaymentRequest, getPaymentRequest,UpdateAdminPanel, DisplayExamFeeRequests,paymentRequestUpdate,verifyPayment} = require('./db'); 
+const { registration, FeeUpdate, getStudents, updateStudent, StoreInPayment, DisplayPayment, displaySubject, DisplayExamFeeTransactions, StoreInExamFee, StoreInPaymentRequest, getPaymentRequest,UpdateAdminPanel, DisplayExamFeeRequests,paymentRequestUpdate,verifyPayment,updateFees} = require('./db'); 
 const { login } = require('./db');
 const { displayDashboard ,StoreInExamFeeRequest,handleExamFeeTransaction,updateExamFeeRequestStatus} = require('./db');
 const {OtpFunc,VerifyOtp,ResetPassword}=require('./forgotpassword');
@@ -23,6 +23,8 @@ router.post('/api/dashboard/', displayDashboard);;
 router.post('/api/verify-otp', VerifyOtp);
 router.post('/api/forgot-password', OtpFunc);
 router.post('/api/reset-password', ResetPassword);
+router.post('/api/update-fees', updateFees);
+
 
 
 
