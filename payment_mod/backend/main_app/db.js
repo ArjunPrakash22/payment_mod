@@ -231,6 +231,18 @@ const StoreInPayment = (req, res) => {
     receipt_no, admission_no, regno, name, email, phone_no, payment_mode,
     transaction_id, date, feeType, amount
 ]);
+
+db.query(query, [
+  receipt_no,admission_no, regno, name, email, phone_no,payment_mode,
+  transaction_id, date, feeType,amount
+    
+], (err, _result) => {
+    if (err) {
+        return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(201).json({ message: 'Payment history added' });
+});
+
 };
 const StoreInPaymentFromDashboard = (req, res) => {
   const receipt_no = generateReceiptNumber(); 

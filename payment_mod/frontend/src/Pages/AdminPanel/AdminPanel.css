@@ -1,4 +1,9 @@
-
+.logout-button{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .admin-panel {
   padding: 20px;
   font-family: Arial, sans-serif;

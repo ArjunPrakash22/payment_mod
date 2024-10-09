@@ -64,12 +64,12 @@ const RequestTable = () => {
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
-
+    const username="SsSaDmin@153@gmail.com"
     return (
         <div className="request-table-container">
             <h1 className="h1">Payment Requests</h1>
             <div className="button-container">
-                <button className="history-button" onClick={() => navigate('/admin')}>
+                <button className="history-button" onClick={() => navigate('/admin',{state:{key:username}})}>
                     Admin Panel
                 </button>
                 <button className="history-button" onClick={() => navigate('/payment-history')}>
